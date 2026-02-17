@@ -1,0 +1,67 @@
+<!-- CONTENEDOR PRINCIPAL -->
+<main class="main-container">
+
+    <!-- SECCIÓN DE PRODUCTOS -->
+    <section class="products-section">
+        <div class="products-header">
+            <h2 class="products-title">Catálogo de Productos</h2>
+
+            <div class="filters">
+                <label for="category-filter" class="filter-label">Categoría:</label>
+                <select id="category-filter" class="filter-select">
+                    <option value="">Todas las categorías</option>
+                    <option value="cuadernos">Cuadernos</option>
+                    <option value="bolígrafos">Bolígrafos</option>
+                    <option value="papel">Papel</option>
+                    <option value="arte">Materiales de arte</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 🔹 CONTENEDOR DINÁMICO DE PRODUCTOS -->
+        <div class="products-grid" id="products-container">
+            <!-- Aquí se renderizan los productos dinámicamente desde JS -->
+        </div>
+    </section>
+
+    <!-- SIDEBAR - CARRITO DE COMPRAS -->
+    <aside class="sidebar">
+        <section class="shopping-cart">
+            <h2 class="cart__title">🛒 Carrito</h2>
+
+            <!-- 🔹 CONTENEDOR DINÁMICO DEL CARRITO -->
+            <div class="cart__items" id="cart-container">
+                <p class="cart__empty-message" id="empty-cart-message">
+                    El carrito está vacío
+                </p>
+            </div>
+
+            <!-- Resumen del carrito -->
+            <div class="cart__summary">
+                <div class="summary__row">
+                    <span>Subtotal:</span>
+                    <span class="summary__value" id="subtotal">$0.00</span>
+                </div>
+                <div class="summary__row">
+                    <span>Envío:</span>
+                    <span class="summary__value" id="shipping">$0.00</span>
+                </div>
+                <div class="summary__row summary__row--total">
+                    <span>Total:</span>
+                    <span class="summary__value summary__value--total" id="total">$0.00</span>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="cart__actions">
+                <button class="btn btn--primary btn--full-width" id="checkout-btn">
+                    Proceder al pago
+                </button>
+                <button class="btn btn--secondary btn--full-width" id="continue-btn">
+                    Seguir comprando
+                </button>
+            </div>
+        </section>
+    </aside>
+
+</main>
