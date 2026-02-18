@@ -7,7 +7,7 @@ export function renderProducts(productosArray) {
     const card = document.createElement("div");
 
     card.innerHTML = `
-      <img src="./img/${producto.image}" alt="${producto.nombre}">
+      <img src="../img/${producto.image}" alt="${producto.nombre}">
       <h3>${producto.nombre}</h3>
       <p>$${producto.precio}</p>
     `;
