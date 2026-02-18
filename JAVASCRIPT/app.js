@@ -1,4 +1,7 @@
 import { productos } from "./data.js";
 import { agregarAlCarrito } from "./carrito.js";
+import { renderProducts } from "./main.js";
 
-console.log("App conectada")
+renderProducts(productos);
+
+console.log("App conectada");
