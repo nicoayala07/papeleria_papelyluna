@@ -1,7 +1,7 @@
 let carrito = [];
 
 export function agregarAlCarrito(producto) {
-    const productoExistente = carrito.find(item => item.id === producto.id && item.precio === producto.precio);
+    const productoExistente = carrito.find(item => item.id === producto.id );
     if (productoExistente) {
         productoExistente.cantidad += 1;
     } else {
