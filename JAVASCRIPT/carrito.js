@@ -15,6 +15,20 @@ export function eliminarDelCarrito(productoId) {
     carrito = carrito.filter(item => item.id !== productoId);
     actualizarCarrito();
 }
+export function cambiarCantidad(productoId, operacion) {
+    const producto = carrito.find(item => item.id === productoId);
+    if (!producto) return;
+    if (operacion === "aumentar") {
+        producto.cantidad += 1;
+    } else if (operacion === "disminuir") {
+        if (producto.cantidad > 1) {
+            producto.cantidad -= 1;
+        } else {
+            eliminarDelCarrito(productoId);
+        }
+    }
+    actualizarCarrito();
+}
 
 export function actualizarCarrito() {
     const carritoContenedor = document.getElementById("cart-container");
