@@ -9,6 +9,13 @@ export function agregarAlCarrito(producto) {
     }
 
     actualizarCarrito();
-
     console.log(carrito);
+}
+
+export function actualizarCarrito() {
+    const carritocontenedor = Document.getElementById("carrito-contenedor");
+    const mensajevacio = Document.getElementById("mensaje-vacio");
+    const subtotal = Document.getElementById("subtotal");
+    cont 
+
 }
