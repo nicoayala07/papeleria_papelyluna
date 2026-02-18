@@ -1,4 +1,4 @@
-const productos = [
+export const productos = [
     { id: 1, nombre: "Cuaderno A5 Rayado", categoria: "cuadernos", precio: 18.000, descripcion: "Cuaderno de 100 hojas rayadas", image:"CuadernoA5rayado.png" },
 
     { id: 2, nombre: "Cuaderno A4 cuadriculado", categoria: "cuadernos", precio: 25.000, descripcion: "Cuaderno de 100 hojas cuadriculadas", image:"CuadernoA5cuadriculado.png" },
