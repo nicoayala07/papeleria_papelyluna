@@ -42,9 +42,5 @@ export function actualizarCarrito() {
                 </div>
             </div>`
         ).join("");
-        document.querySelectorAll(".remove-button").forEach(button => {
-            button.addEventListener("click", () => 
-                eliminarDelCarrito(parseInt(button.getAttribute("data-id"))));
-        });
     }
 }
