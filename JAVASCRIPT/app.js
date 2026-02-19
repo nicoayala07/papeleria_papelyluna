@@ -1,25 +1,26 @@
-import { productos } from "./data.js"; // Importar el array de productos desde el archivo data.js
-import { renderProducts } from "./main.js"; 
+import { productos } from "./data.js";
+import { renderProducts } from "./main.js";
 
-renderProducts(productos); 
-
-console.log("App conectada"); 
 const searchInput = document.querySelector("#search-input");
+const categoryFilter = document.querySelector("#category-filter"); // ✅ conectado
 
-// Render inicial
+function filtrarProductos() {
+  const texto = searchInput.value.toLowerCase();
+  const categoria = categoryFilter.value;
+
+  const filtrados = productos.filter(producto => {
+    const coincideTexto = producto.nombre.toLowerCase().includes(texto);
+    const coincideCategoria = categoria === "" || producto.categoria === categoria;
+    return coincideTexto && coincideCategoria; // ✅ ambos filtros funcionan juntos
+  });
+
+  renderProducts(filtrados);
+}
+
+
 renderProducts(productos);
 
-// Evento de búsqueda
-searchInput.addEventListener("input", () => {
-  const texto = searchInput.value.toLowerCase();
-
-  const productosFiltrados = productos.filter(producto =>
-    producto.nombre.toLowerCase().includes(texto)
-  );
-
-  renderProducts(productosFiltrados);
-});
+searchInput.addEventListener("input", filtrarProductos);
+categoryFilter.addEventListener("change", filtrarProductos); // ✅ evento de categoría
 
 console.log("App conectada");
-
-
