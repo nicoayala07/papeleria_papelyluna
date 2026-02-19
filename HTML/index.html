@@ -4,46 +4,84 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Papelería Papelyluna</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/styles.css">
 </head>
 <body>
+
+    <!-- ENCABEZADO -->
+    <header class="header">
+        <div class="header__logo">
+            <span class="header__logo-icon">🌙</span>
+            <span class="header__logo-text">Papel y Luna</span>
+        </div>
+        <nav class="header__nav">
+            <span class="header__nav-item">Inicio</span>
+            <span class="header__nav-item">Catálogo</span>
+            <span class="header__nav-item">Contacto</span>
+        </nav>
+    </header>
+
     <!-- CONTENEDOR PRINCIPAL -->
     <main class="main-container">
 
         <!-- SECCIÓN DE PRODUCTOS -->
         <section class="products-section">
+
+            <!-- ENCABEZADO DEL CATÁLOGO -->
             <div class="products-header">
                 <h2 class="products-title">Catálogo de Productos</h2>
 
                 <div class="filters">
-                    <label for="category-filter" class="filter-label">Categoría:</label>
+                    <!-- BÚSQUEDA POR NOMBRE -->
+                    <div class="filter-search">
+                        <span class="filter-search__icon">🔍</span>
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Buscar producto..."
+                            class="filter-input"
+                        >
+                    </div>
+
+                    <!-- FILTRO POR CATEGORÍA -->
                     <select id="category-filter" class="filter-select">
                         <option value="">Todas las categorías</option>
                         <option value="cuadernos">Cuadernos</option>
                         <option value="bolígrafos">Bolígrafos</option>
                         <option value="papel">Papel</option>
-                        <option value="arte">Materiales de arte</option>
+                        <option value="materiales de arte">Materiales de arte</option>
                     </select>
                 </div>
             </div>
 
-            <!-- 🔹 CONTENEDOR DINÁMICO DE PRODUCTOS -->
+            <!-- CONTENEDOR DINÁMICO DE PRODUCTOS -->
             <div class="products-grid" id="products-container">
-                <!-- Aquí se renderizan los productos dinámicamente desde JS -->
+                <!-- Productos renderizados dinámicamente desde JS -->
             </div>
         </section>
 
         <!-- SIDEBAR - CARRITO DE COMPRAS -->
         <aside class="sidebar">
             <section class="shopping-cart">
-                <h2 class="cart__title">🛒 Carrito</h2>
 
-                <!-- 🔹 CONTENEDOR DINÁMICO DEL CARRITO -->
-                <div class="cart__items" id="cart-container">
-                    <p class="cart__empty-message" id="empty-cart-message">El carrito está vacío</p>
+                <!-- TÍTULO DEL CARRITO -->
+                <div class="cart__header">
+                    <h2 class="cart__title">Carrito de Compras</h2>
+                    <span class="cart__icon">🛒</span>
                 </div>
 
-                <!-- Resumen del carrito -->
+                <!-- CONTENEDOR DINÁMICO DEL CARRITO -->
+                <div class="cart__items" id="cart-container">
+                    <div class="cart__empty" id="empty-cart-message">
+                        <span class="cart__empty-icon">🛒</span>
+                        <p class="cart__empty-title">Tu carrito está vacío</p>
+                        <p class="cart__empty-subtitle">¡Agrega productos desde el catálogo!</p>
+                    </div>
+                </div>
+
+                <!-- RESUMEN DEL CARRITO -->
                 <div class="cart__summary">
                     <div class="summary__row">
                         <span>Subtotal:</span>
@@ -59,15 +97,16 @@
                     </div>
                 </div>
 
-                <!-- Botones de acción -->
+                <!-- BOTONES DE ACCIÓN -->
                 <div class="cart__actions">
-                    <button class="btn btn--primary btn--full-width" id="checkout-btn">Proceder al pago</button>
-                    <button class="btn btn--secondary btn--full-width" id="continue-btn">Seguir comprando</button>
+                    <button class="btn btn--danger" id="vaciar-btn">🗑 Vaciar Carrito</button>
+                    <button class="btn btn--success" id="checkout-btn">Finalizar Compra ›</button>
                 </div>
+
             </section>
         </aside>
     </main>
-    <!-- Scripts: cargar con defer para que el DOM esté disponible -->
-    <script type="module" src="../JAVASCRIPT/app.js" defer></script>
+
+    <script type="module" src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>
