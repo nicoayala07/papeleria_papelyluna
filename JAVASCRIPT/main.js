@@ -1,13 +1,15 @@
-const productsContainer = document.querySelector("#products-container");
+import { agregarAlCarrito } from "./carrito.js";
 
-export function renderProducts(productosArray) {
-  productsContainer.innerHTML = "";
+const productsContainer = document.querySelector("#products-container"); // Contenedor donde se mostrarán los productos
 
-  productosArray.forEach(producto => {
-    const card = document.createElement("div");
+export function renderProducts(productosArray) {  // Función para renderizar los productos en el DOM
+  productsContainer.innerHTML = ""; 
 
-    card.innerHTML = `
-  <img src="../img/${producto.image}" alt="${producto.nombre}">
+  productosArray.forEach(producto => { 
+    const card = document.createElement("div"); // Crear un elemento div para cada producto
+
+    card.innerHTML = `                             
+  <img src="../img/${producto.image}" alt="${producto.nombre}">     
   <h3>${producto.nombre}</h3>
   <p>$${producto.precio}</p>
   <button class="btn-add" data-id="${producto.id}">
