@@ -24,8 +24,10 @@ export function renderProducts(productosArray) {  // Función para renderizar lo
     const addButton = card.querySelector(".btn-add"); // Seleccionar el botón de agregar al carrito dentro de la tarjeta del producto
 
 addButton.addEventListener("click", () => {
-   agregarAlCarrito(producto);
+  console.log("CLICK OK:", producto.nombre);
+  agregarAlCarrito(producto);
 });
+
 
   });
 }
