@@ -48,6 +48,15 @@ export function actualizarCarrito() {
     const subtotalEl  = document.getElementById("subtotal");
     const envioEl = document.getElementById("shipping");
     const totalEl = document.getElementById("total");
+if (
+  !carritoContenedor ||
+  !mensajeVacio ||
+  !subtotalEl ||
+  !envioEl ||
+  !totalEl
+) {
+  return;
+}
 
     if (carrito.length === 0) {
         mensajeVacio.style.display = "block";

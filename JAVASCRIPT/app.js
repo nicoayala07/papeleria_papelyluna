@@ -1,13 +1,9 @@
-import { productos } from "./data.js"; 
-import { renderProducts } from "./main.js"; 
-import { vaciarCarrito } from "./carrito.js"; 
+import { productos } from "./data.js";
+import { renderProducts } from "./main.js";
 
-renderProducts(productos); 
-
-console.log("App conectada"); 
 const searchInput = document.querySelector("#search-input");
 
-
+// Render inicial (UNO SOLO)
 renderProducts(productos);
 
 searchInput.addEventListener("input", () => {
@@ -21,57 +17,3 @@ searchInput.addEventListener("input", () => {
 });
 
 console.log("App conectada");
-
-
-
-document.querySelector("#vaciar-btn").addEventListener("click", () => {
-    vaciarCarrito();
-});
-
-
-
-document.querySelector("#checkout-btn").addEventListener("click", () => {
-    const carrito = obtenerCarrito();
-
-    if (carrito.length === 0) {
-        alert("Tu carrito está vacío.");
-        return;
-    }
-
-    // Llenar items del modal
-    const modalItems = document.querySelector("#modal-items");
-    modalItems.innerHTML = "";
-    carrito.forEach(item => {
-        const fila = document.createElement("div");
-        fila.classList.add("modal__item");
-        fila.innerHTML = `
-            <span>${item.nombre} x${item.cantidad}</span>
-            <span>$${(item.precio * item.cantidad).toLocaleString("es-CO")}</span>
-        `;
-        modalItems.appendChild(fila);
-    });
-
-    // Llenar totales
-    const subtotal = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
-    const envio = 5000;
-    const total = subtotal + envio;
-
-    document.querySelector("#modal-subtotal").textContent = `$${subtotal.toLocaleString("es-CO")}`;
-    document.querySelector("#modal-envio").textContent = `$${envio.toLocaleString("es-CO")}`;
-    document.querySelector("#modal-total").textContent = `$${total.toLocaleString("es-CO")}`;
-
-    // Mostrar modal
-    document.querySelector("#modal-overlay").style.display = "flex";
-});
-
-// Cancelar
-document.querySelector("#modal-cancelar").addEventListener("click", () => {
-    document.querySelector("#modal-overlay").style.display = "none";
-});
-
-// Confirmar
-document.querySelector("#modal-confirmar").addEventListener("click", () => {
-    document.querySelector("#modal-overlay").style.display = "none";
-    vaciarCarrito();
-    alert("¡Pedido confirmado! Gracias por tu compra 🎉");
-});

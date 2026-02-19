@@ -19,10 +19,16 @@ export function renderProducts(productosArray) {
       </button>
     `;
 
-    productsContainer.appendChild(card);
+    productsContainer.appendChild(card); // Agregar el producto al contenedor
 
-    card.querySelector(".btn-add").addEventListener("click", () => {
-      agregarAlCarrito(producto);
-    });
+
+    const addButton = card.querySelector(".btn-add"); // Seleccionar el botón de agregar al carrito dentro de la tarjeta del producto
+
+addButton.addEventListener("click", () => {
+  console.log("CLICK OK:", producto.nombre);
+  agregarAlCarrito(producto);
+});
+
+
   });
 }
