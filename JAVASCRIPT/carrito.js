@@ -51,7 +51,9 @@ export function actualizarCarrito() {
 
     if (carrito.length === 0) {
         if (mensajeVacio) mensajeVacio.style.display = "block";
-        carritoContenedor.innerHTML = "";
+
+            carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
+
         if (subtotalEl) subtotalEl.textContent = "$0.00";
         if (envioEl) envioEl.textContent = "$0.00";
         if (totalEl) totalEl.textContent = "$0.00";
@@ -59,7 +61,8 @@ export function actualizarCarrito() {
     }
 
     if (mensajeVacio) mensajeVacio.style.display = "none";
-    carritoContenedor.innerHTML = "";
+
+    carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
 
     carrito.forEach(item => {
         const subtotalItem = item.precio * item.cantidad;

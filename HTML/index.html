@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Papelería Papelyluna</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">    
     <link rel="stylesheet" href="../CSS/styles.css">
 </head>
 <body>
@@ -13,16 +13,11 @@
     <!-- ENCABEZADO -->
     <header class="header">
         <div class="header__logo">
-            <span class="header__logo-icon">🌙</span>
+            <span class="header__logo-icon"><i class="fa-solid fa-moon"></i></span>
             <span class="header__logo-text">Papel y Luna</span>
         </div>
-        <nav class="header__nav">
-            <span class="header__nav-item">Inicio</span>
-            <span class="header__nav-item">Catálogo</span>
-            <span class="header__nav-item">Contacto</span>
-        </nav>
     </header>
-
+    
     <!-- CONTENEDOR PRINCIPAL -->
     <main class="main-container">
 
@@ -36,7 +31,7 @@
                 <div class="filters">
                     <!-- BÚSQUEDA POR NOMBRE -->
                     <div class="filter-search">
-                        <span class="filter-search__icon">🔍</span>
+                        <span class="filter-search__icon"><i class="fa-solid fa-search"></i></span>
                         <input
                             type="text"
                             id="search-input"
@@ -74,7 +69,7 @@
                 <!-- CONTENEDOR DINÁMICO DEL CARRITO -->
                 <div class="cart__items" id="cart-container">
                     <div class="cart__empty" id="empty-cart-message">
-                        <span class="cart__empty-icon"></span>
+                        <span class="cart__empty-icon"><i class="fa-solid fa-shopping-cart"></i></span>
                         <p class="cart__empty-title">Tu carrito está vacío</p>
                         <p class="cart__empty-subtitle">¡Agrega productos desde el catálogo!</p>
                     </div>
@@ -105,31 +100,6 @@
             </section>
         </aside>
     </main>
-<!-- MODAL FINALIZAR COMPRA -->
-<div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
-        <h2 class="modal__title">Resumen del Pedido</h2>
-        <div class="modal__items" id="modal-items"></div>
-        <div class="modal__summary">
-            <div class="summary__row">
-                <span>Subtotal:</span>
-                <span id="modal-subtotal"></span>
-            </div>
-            <div class="summary__row">
-                <span>Envío:</span>
-                <span id="modal-envio"></span>
-            </div>
-            <div class="summary__row summary__row--total">
-                <span>Total:</span>
-                <span id="modal-total"></span>
-            </div>
-        </div>
-        <div class="modal__actions">
-            <button class="btn btn--danger" id="modal-cancelar">Cancelar</button>
-            <button class="btn btn--success" id="modal-confirmar">Confirmar Pedido ›</button>
-        </div>
-    </div>
-</div>
     <script type="module" src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>
