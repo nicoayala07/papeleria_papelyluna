@@ -6,9 +6,10 @@ export function renderProducts(productosArray) {
   productsContainer.innerHTML = "";
 
   productosArray.forEach(producto => {
+
     const card = document.createElement("div");
     card.classList.add("product-card"); // ✅ clase CSS agregada
-
+    
     card.innerHTML = `
       <img src="../img/${producto.image}" alt="${producto.nombre}">
       <h3>${producto.nombre}</h3>
