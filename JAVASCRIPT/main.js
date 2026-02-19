@@ -4,7 +4,7 @@ export function renderProducts(productosArray) {
   productsContainer.innerHTML = "";
 
   productosArray.forEach(producto => {
-    const card = document.createElement("div");
+    const card = document.createElement("div"); card.classList.add("productos"); 
 
     card.innerHTML = `
       <img src="../img/${producto.image}" alt="${producto.nombre}">
