@@ -1,3 +1,15 @@
+export function obtenerCarrito() {
+    return carrito;
+}
+
+
+export function vaciarCarrito() {
+    carrito = [];
+    actualizarCarrito();
+}
+
+
+
 let carrito = [];
 
 export function agregarAlCarrito(producto) {
@@ -92,4 +104,6 @@ export function actualizarCarrito() {
     subtotalEl.textContent = `$${subtotal.toLocaleString("es-CO")}`;
     envioEl.textContent = `$${envio.toLocaleString("es-CO")}`;
     totalEl.textContent = `$${total.toLocaleString("es-CO")}`;
+
+    
 }

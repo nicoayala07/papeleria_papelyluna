@@ -106,7 +106,31 @@
             </section>
         </aside>
     </main>
-
+<!-- MODAL FINALIZAR COMPRA -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <h2 class="modal__title">Resumen del Pedido</h2>
+        <div class="modal__items" id="modal-items"></div>
+        <div class="modal__summary">
+            <div class="summary__row">
+                <span>Subtotal:</span>
+                <span id="modal-subtotal"></span>
+            </div>
+            <div class="summary__row">
+                <span>Envío:</span>
+                <span id="modal-envio"></span>
+            </div>
+            <div class="summary__row summary__row--total">
+                <span>Total:</span>
+                <span id="modal-total"></span>
+            </div>
+        </div>
+        <div class="modal__actions">
+            <button class="btn btn--danger" id="modal-cancelar">Cancelar</button>
+            <button class="btn btn--success" id="modal-confirmar">Confirmar Pedido ›</button>
+        </div>
+    </div>
+</div>
     <script type="module" src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>
