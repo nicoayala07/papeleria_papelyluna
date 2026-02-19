@@ -1,7 +1,7 @@
 export const productos = [
     { id: 1, nombre: "Cuaderno A5 Rayado", categoria: "cuadernos", precio: 18000, descripcion: "Cuaderno de 100 hojas rayadas", image:"CuadernoA5rayado.png" },
 
-    { id: 2, nombre: "Cuaderno A4 cuadriculado", categoria: "cuadernos", precio: 25000, descripcion: "Cuaderno de 100 hojas cuadriculadas", image:"CuadernoA5cuadriculado.png" },
+    { id: 2, nombre: "Cuaderno A4 cuadriculado", categoria: "cuadernos", precio: 25000, descripcion: "Cuaderno de 100 hojas cuadriculadas", image:"CuadernoA4cuadriculado.png" },
 
     { id: 3, nombre: "Cuaderno de tapa dura espiral", categoria: "cuadernos", precio: 32000, descripcion: "Cuaderno de tapa dura con espiral y hojas rayadas", image:"CuadernoTapaDuraEspiral.png" },
 
