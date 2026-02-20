@@ -5,7 +5,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     border-radius: 12px;
 }
-
 body {
     background-color: #f4f6f9;
 }
@@ -30,6 +29,11 @@ body {
 .header {
     background: linear-gradient(to bottom, #1e73e8, #155ab6);    
     padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    border-radius: 8px;
     color: #000000;
 }
 .header__logo, .header__logo{

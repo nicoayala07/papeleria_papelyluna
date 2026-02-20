@@ -1,21 +1,13 @@
 let carrito = [];
 
-export function obtenerCarrito() {
-    return carrito;
-}
-
-export function vaciarCarrito() {
-    carrito = [];
-    actualizarCarrito();
-}
-
 export function agregarAlCarrito(producto) {
-    const productoExistente = carrito.find(item => item.id === producto.id);
+    const productoExistente = carrito.find(item => item.id === producto.id );
     if (productoExistente) {
         productoExistente.cantidad += 1;
     } else {
         carrito.push({...producto, cantidad: 1});
     }
+
     actualizarCarrito();
 }
 
@@ -23,7 +15,6 @@ export function eliminarDelCarrito(productoId) {
     carrito = carrito.filter(item => item.id !== productoId);
     actualizarCarrito();
 }
-
 export function cambiarCantidad(productoId, operacion) {
     const producto = carrito.find(item => item.id === productoId);
     if (!producto) return;
@@ -42,29 +33,23 @@ export function cambiarCantidad(productoId, operacion) {
 export function actualizarCarrito() {
     const carritoContenedor = document.getElementById("cart-container");
     const mensajeVacio = document.getElementById("empty-cart-message");
-    const subtotalEl = document.getElementById("subtotal");
+    const subtotalEl  = document.getElementById("subtotal");
     const envioEl = document.getElementById("shipping");
     const totalEl = document.getElementById("total");
 
-    // ✅ Solo salir si el contenedor principal no existe
-    if (!carritoContenedor) return;
-
     if (carrito.length === 0) {
-        if (mensajeVacio) mensajeVacio.style.display = "block";
-
-            carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
-
-        if (subtotalEl) subtotalEl.textContent = "$0.00";
-        if (envioEl) envioEl.textContent = "$0.00";
-        if (totalEl) totalEl.textContent = "$0.00";
+        mensajeVacio.style.display = "block";
+        carritoContenedor.innerHTML = "";
+        subtotalEl.textContent = "$0.00";
+        envioEl.textContent = "$0.00";
+        totalEl.textContent = "$0.00";
         return;
+
     }
+        mensajeVacio.style.display = "none";
+        carritoContenedor.innerHTML = "";
 
-    if (mensajeVacio) mensajeVacio.style.display = "none";
-
-    carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
-
-    carrito.forEach(item => {
+        carrito.forEach(item => {
         const subtotalItem = item.precio * item.cantidad;
 
         const divItem = document.createElement("div");
@@ -87,7 +72,6 @@ export function actualizarCarrito() {
         `;
         carritoContenedor.appendChild(divItem);
     });
-
     carritoContenedor.querySelectorAll(".btn-cantidad").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = parseInt(btn.getAttribute("data-id"));
@@ -95,19 +79,17 @@ export function actualizarCarrito() {
             cambiarCantidad(id, operacion);
         });
     });
-
     carritoContenedor.querySelectorAll(".btn-eliminar").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = parseInt(btn.getAttribute("data-id"));
             eliminarDelCarrito(id);
         });
     });
-
     const subtotal = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
     const envio = subtotal > 0 ? 5000 : 0;
     const total = subtotal + envio;
 
-    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toLocaleString("es-CO")}`;
-    if (envioEl) envioEl.textContent = `$${envio.toLocaleString("es-CO")}`;
-    if (totalEl) totalEl.textContent = `$${total.toLocaleString("es-CO")}`;
+    subtotalEl.textContent = `$${subtotal.toLocaleString("es-CO")}`;
+    envioEl.textContent = `$${envio.toLocaleString("es-CO")}`;
+    totalEl.textContent = `$${total.toLocaleString("es-CO")}`;
 }
