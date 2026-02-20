@@ -2,21 +2,29 @@
    VARIABLES Y RESET
 =========================== */
 :root {
-    --principal: #6d28d9;        /* morado base */
-    --principal-brillo: #a855f7; /* brillo metálico */
-    --principal-oscuro: #3b0764; /* profundidad */
+    /* MORADO METÁLICO */
+    --principal: #6d28d9;
+    --principal-brillo: #a855f7;
+    --principal-oscuro: #3b0764;
 
-    --gris-fondo: #f5f3ff;
-    --gris-borde: #e9d5ff;
+    /* NEGRO ELEGANTE */
+    --negro-profundo: #0f0f14;
+    --negro-secundario: #1a1a22;
 
-    --texto: #1e1b4b;
-    --texto-suave: #6b7280;
+    /* AMARILLO ACENTO */
+    --amarillo: #facc15;
+    --amarillo-oscuro: #eab308;
+
+    --gris-borde: #2a2a35;
+
+    --texto: #f5f5f5;
+    --texto-suave: #9ca3af;
     --blanco: #ffffff;
 
     --rojo: #ef4444;
     --verde: #10b981;
 
-    --sombra: 0 8px 25px rgba(109, 40, 217, 0.25);
+    --sombra: 0 8px 25px rgba(109, 40, 217, 0.35);
     --radio: 14px;
 }
 
@@ -27,12 +35,14 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--gris-fondo);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(
+        135deg,
+        var(--negro-profundo),
+        var(--negro-secundario)
+    );
     color: var(--texto);
 }
-
-
 
 /* ===========================
    HEADER
@@ -51,6 +61,7 @@ body {
     border-radius: 0 0 20px 20px;
     color: var(--blanco);
     box-shadow: 0 6px 20px rgba(109, 40, 217, 0.4);
+    border-bottom: 3px solid var(--amarillo);
     background-size: 200% 200%;
     transition: background-position 0.5s ease;
 }
@@ -59,15 +70,23 @@ body {
     background-position: right center;
 }
 
-.header__logo-text {
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: 1px;
+.header__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.fa-solid.fa-moon {
-    color: gold;
+.logo {
+    width: 60px;
+    height: auto;
+    border-radius: 30px;
+}
+
+.header__logo-text {
+    font-family: 'Great Vibes', cursive;
+    font-style: italic;
     font-size: 1.5rem;
+    font-weight: bold;
 }
 
 /* ===========================
@@ -80,26 +99,26 @@ body {
     padding: 1.5rem;
     max-width: 1400px;
     margin: 0 auto;
+    flex-direction: row-reverse; 
 }
 
 /* ===========================
    SECCIÓN DE PRODUCTOS
 =========================== */
-
 .products-section {
     flex: 1;
-    background: var(--blanco);
+    background: #1c1c26;
     border-radius: var(--radio);
     padding: 1.25rem;
     box-shadow: var(--sombra);
 }
 
 .products-title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--principal-oscuro);
+    font-family: 'Great Vibes', cursive;
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--principal-brillo);
 }
-
 
 .products-header {
     display: flex;
@@ -107,8 +126,6 @@ body {
     gap: 1rem;
     margin-bottom: 1.25rem;
 }
-
-
 
 /* ===========================
    FILTROS
@@ -123,7 +140,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--gris-fondo);
+    background: var(--negro-secundario);
     border: 1px solid var(--gris-borde);
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
@@ -144,7 +161,7 @@ body {
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--gris-borde);
     border-radius: 8px;
-    background: var(--gris-fondo);
+    background: var(--negro-secundario);
     font-size: 0.9rem;
     color: var(--texto);
     outline: none;
@@ -161,7 +178,7 @@ body {
 }
 
 .product-card {
-    background: var(--blanco);
+    background: #242433;
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 0.75rem;
@@ -175,11 +192,8 @@ body {
 
 .product-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(109, 40, 217, 0.25);
+    box-shadow: 0 8px 20px rgba(250, 204, 21, 0.25);
 }
-
-
-
 
 .product-card img {
     width: 100%;
@@ -191,59 +205,66 @@ body {
 .product-card h3 {
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--oscuro);
+    color: var(--texto);
     line-height: 1.3;
 }
 
 .product-card__price {
+    font-style: normal;
     font-size: 0.95rem;
     font-weight: 800;
-    color: var(--principal);
+    color: var(--amarillo);
 }
 
 .product-card__desc {
+    font-style: normal;
     font-size: 0.75rem;
     color: var(--texto-suave);
     line-height: 1.4;
 }
 
+/* ===========================
+   BOTÓN AGREGAR
+=========================== */
 .btn-add {
+    font-family: 'Allura', cursive;
+    font-size: 0.9rem;
     margin-top: auto;
     width: 100%;
     padding: 0.5rem;
     background: linear-gradient(
         135deg,
-        var(--principal-oscuro),
-        var(--principal),
-        var(--principal-brillo)
+        var(--amarillo),
+        var(--amarillo-oscuro)
     );
-    color: var(--blanco);
+    color: var(--negro-profundo);
     border: none;
     border-radius: 8px;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(109, 40, 217, 0.4);
-    transition: transform 0.2s, opacity 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-add:hover {
     transform: translateY(-2px);
-    opacity: 0.85;
+    box-shadow: 0 0 15px var(--amarillo);
 }
 
 /* ===========================
    SIDEBAR - CARRITO
 =========================== */
 .sidebar {
-    background: var(--blanco);
+    background: #1c1c26;
     position: sticky;
     top: 1.5rem;
     width: 340px;
     border-radius: var(--radio);
     box-shadow: var(--sombra);
     overflow: hidden;
+    
 }
+
 .shopping-cart {
     display: flex;
     flex-direction: column;
@@ -262,11 +283,12 @@ body {
 }
 
 .cart__title {
+    font-family: 'Great Vibes', cursive;
+    font-style: italic;
     font-size: 1rem;
     font-weight: 700;
     color: var(--blanco);
 }
-
 
 /* ===========================
    ITEMS DEL CARRITO
@@ -297,7 +319,7 @@ body {
 .cart__empty-title {
     font-weight: 700;
     font-size: 1rem;
-    color: var(--oscuro);
+    color: var(--texto);
     margin-bottom: 0.25rem;
 }
 
@@ -315,7 +337,6 @@ body {
     padding: 0.6rem 0;
     border-bottom: 1px solid var(--gris-borde);
     font-size: 0.85rem;
-
 }
 
 .carrito__item-info {
@@ -325,10 +346,11 @@ body {
 .carrito__item-nombre {
     font-weight: 600;
     font-size: 0.82rem;
-    color: var(--oscuro);
+    color: var(--texto);
 }
 
 .carrito__item-precio-unitario {
+    font-style: normal;
     font-size: 0.75rem;
     color: var(--texto-suave);
 }
@@ -344,7 +366,7 @@ body {
     height: 24px;
     border: 1px solid var(--gris-borde);
     border-radius: 6px;
-    background: var(--gris-fondo);
+    background: var(--negro-secundario);
     font-size: 0.9rem;
     cursor: pointer;
     display: flex;
@@ -354,9 +376,9 @@ body {
 }
 
 .btn-cantidad:hover {
-    background: var(--azul);
-    color: var(--blanco);
-    border-color: var(--azul);
+    background: var(--amarillo);
+    color: var(--negro-profundo);
+    border-color: var(--amarillo-oscuro);
 }
 
 .carrito__item-cantidad {
@@ -374,7 +396,7 @@ body {
 
 .carrito__item-subtotal p {
     font-weight: 700;
-    color: var(--azul);
+    color: var(--amarillo);
     font-size: 0.85rem;
 }
 
@@ -405,6 +427,7 @@ body {
 }
 
 .summary__row {
+    font-style: normal;
     display: flex;
     justify-content: space-between;
     font-size: 0.88rem;
@@ -414,14 +437,14 @@ body {
 .summary__row--total {
     font-size: 1rem;
     font-weight: 800;
-    color: var(--oscuro);
+    color: var(--amarillo);
     border-top: 1px solid var(--gris-borde);
     padding-top: 0.5rem;
     margin-top: 0.25rem;
 }
 
 .summary__value--total {
-    color: var(--azul);
+    color: var(--amarillo);
 }
 
 /* ===========================
@@ -444,9 +467,6 @@ body {
     cursor: pointer;
     transition: opacity 0.2s, transform 0.1s;
 }
-.summary__value--total {
-    color: var(--principal);
-}
 
 .btn:hover {
     opacity: 0.9;
@@ -459,7 +479,11 @@ body {
 }
 
 .btn--success {
-    background: linear-gradient(to right, #2e7d32, #1b5e20);
+    background: linear-gradient(
+        135deg,
+        var(--principal),
+        var(--principal-brillo)
+    );
     color: var(--blanco);
 }
 

@@ -1,3 +1,5 @@
+import { productos } from "./data.js"; // 🔥 Agregado
+
 let carrito = [];
 
 export function obtenerCarrito() {
@@ -5,38 +7,75 @@ export function obtenerCarrito() {
 }
 
 export function vaciarCarrito() {
+    carrito.forEach(item => {
+        const prodOriginal = productos.find(p => p.id === item.id);
+        if (prodOriginal) prodOriginal.stock += item.cantidad;
+    });
     carrito = [];
+    actualizarStockVisual(); // 🔥 Agregado
     actualizarCarrito();
 }
 
 export function agregarAlCarrito(producto) {
     const productoExistente = carrito.find(item => item.id === producto.id);
+
+    if (producto.stock <= 0) {
+        alert("No hay stock disponible");
+        return;
+    }
+
     if (productoExistente) {
         productoExistente.cantidad += 1;
     } else {
-        carrito.push({...producto, cantidad: 1});
+        carrito.push({ ...producto, cantidad: 1 });
     }
+
+    producto.stock -= 1;
+    actualizarStockVisual(); // 🔥 Agregado
     actualizarCarrito();
 }
 
 export function eliminarDelCarrito(productoId) {
+    const item = carrito.find(i => i.id === productoId);
+    if (item) {
+        const prodOriginal = productos.find(p => p.id === productoId);
+        if (prodOriginal) prodOriginal.stock += item.cantidad; 
+    }
     carrito = carrito.filter(item => item.id !== productoId);
+    actualizarStockVisual(); // 🔥 Agregado
     actualizarCarrito();
 }
 
 export function cambiarCantidad(productoId, operacion) {
-    const producto = carrito.find(item => item.id === productoId);
-    if (!producto) return;
+    const productoCarrito = carrito.find(item => item.id === productoId);
+    const productoOriginal = productos.find(p => p.id === productoId);
+    if (!productoCarrito || !productoOriginal) return;
+
     if (operacion === "aumentar") {
-        producto.cantidad += 1;
+        if (productoOriginal.stock > 0) {
+            productoCarrito.cantidad += 1;
+            productoOriginal.stock -= 1;
+        }
     } else if (operacion === "disminuir") {
-        if (producto.cantidad > 1) {
-            producto.cantidad -= 1;
-        } else {
-            eliminarDelCarrito(productoId);
+        if (productoCarrito.cantidad > 1) {
+            productoCarrito.cantidad -= 1;
+            productoOriginal.stock += 1;
         }
     }
+
+    actualizarStockVisual(); // 🔥 Agregado
     actualizarCarrito();
+}
+
+// 🔥 Nueva función para actualizar el stock en las tarjetas
+function actualizarStockVisual() {
+    productos.forEach(producto => {
+        const card = document.querySelector(`[data-id="${producto.id}"]`);
+        const stockSpan = card?.querySelector(".stock-value");
+        if (stockSpan) {
+            stockSpan.textContent = producto.stock;
+        }
+    });
 }
 
 export function actualizarCarrito() {
@@ -46,17 +85,25 @@ export function actualizarCarrito() {
     const envioEl = document.getElementById("shipping");
     const totalEl = document.getElementById("total");
 
-    // ✅ Solo salir si el contenedor principal no existe
     if (!carritoContenedor) return;
 
     if (carrito.length === 0) {
-        if (mensajeVacio) mensajeVacio.style.display = "block";
+        if (mensajeVacio) {
+            mensajeVacio.style.display = ""; // Restaurar visibilidad (quita el display: none)
+        }
+        carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
 
-            carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
+        if (subtotalEl) {
+            subtotalEl.textContent = "$0";
+        }
 
-        if (subtotalEl) subtotalEl.textContent = "$0.00";
-        if (envioEl) envioEl.textContent = "$0.00";
-        if (totalEl) totalEl.textContent = "$0.00";
+        if (envioEl) {
+            envioEl.textContent = "$0";
+        }
+
+        if (totalEl) {
+            totalEl.textContent = "$0";
+        }
         return;
     }
 
@@ -90,15 +137,15 @@ export function actualizarCarrito() {
 
     carritoContenedor.querySelectorAll(".btn-cantidad").forEach(btn => {
         btn.addEventListener("click", () => {
-            const id = parseInt(btn.getAttribute("data-id"));
-            const operacion = btn.getAttribute("data-operacion");
+            const id = parseInt(btn.dataset.id);
+            const operacion = btn.dataset.operacion;
             cambiarCantidad(id, operacion);
         });
     });
 
     carritoContenedor.querySelectorAll(".btn-eliminar").forEach(btn => {
         btn.addEventListener("click", () => {
-            const id = parseInt(btn.getAttribute("data-id"));
+            const id = parseInt(btn.dataset.id);
             eliminarDelCarrito(id);
         });
     });

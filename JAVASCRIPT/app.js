@@ -22,9 +22,6 @@ function filtrarProductos() {
     searchInput.addEventListener("input", filtrarProductos);
     document.querySelector("#category-filter").addEventListener("change", filtrarProductos);
 
-// Filtro de búsqueda
-
-
 // Vaciar carrito   
 document.querySelector("#vaciar-btn").addEventListener("click", () => {
     vaciarCarrito();
