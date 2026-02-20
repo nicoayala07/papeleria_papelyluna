@@ -2,18 +2,22 @@
    VARIABLES Y RESET
 =========================== */
 :root {
-    --azul: #1e73e8;
-    --azul-claro: #00bfff;
-    --oscuro: #2c2f36;
-    --gris-fondo: #f0f2f5;
-    --gris-borde: #e5e7eb;
-    --texto: #333;
-    --texto-suave: #666;
+    --principal: #6d28d9;        /* morado base */
+    --principal-brillo: #a855f7; /* brillo metálico */
+    --principal-oscuro: #3b0764; /* profundidad */
+
+    --gris-fondo: #f5f3ff;
+    --gris-borde: #e9d5ff;
+
+    --texto: #1e1b4b;
+    --texto-suave: #6b7280;
     --blanco: #ffffff;
-    --rojo: #e53935;
-    --verde: #2e7d32;
-    --sombra: 0 4px 16px rgba(0,0,0,0.08);
-    --radio: 12px;
+
+    --rojo: #ef4444;
+    --verde: #10b981;
+
+    --sombra: 0 8px 25px rgba(109, 40, 217, 0.25);
+    --radio: 14px;
 }
 
 * {
@@ -23,27 +27,36 @@
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: var(--gris-fondo);
     color: var(--texto);
 }
 
 
+
+/* ===========================
+   HEADER
+=========================== */
 .header {
-    background: linear-gradient(135deg, var(--azul), var(--azul-claro));
+    background: linear-gradient(
+        135deg,
+        var(--principal-oscuro),
+        var(--principal),
+        var(--principal-brillo)
+    );
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-radius: 0 0 20px 20px;
     color: var(--blanco);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(109, 40, 217, 0.4);
+    background-size: 200% 200%;
+    transition: background-position 0.5s ease;
 }
 
-.header__logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.header:hover {
+    background-position: right center;
 }
 
 .header__logo-text {
@@ -72,6 +85,7 @@ body {
 /* ===========================
    SECCIÓN DE PRODUCTOS
 =========================== */
+
 .products-section {
     flex: 1;
     background: var(--blanco);
@@ -80,6 +94,13 @@ body {
     box-shadow: var(--sombra);
 }
 
+.products-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--principal-oscuro);
+}
+
+
 .products-header {
     display: flex;
     flex-direction: column;
@@ -87,11 +108,7 @@ body {
     margin-bottom: 1.25rem;
 }
 
-.products-title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--oscuro);
-}
+
 
 /* ===========================
    FILTROS
@@ -158,8 +175,11 @@ body {
 
 .product-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 20px rgba(109, 40, 217, 0.25);
 }
+
+
+
 
 .product-card img {
     width: 100%;
@@ -178,7 +198,7 @@ body {
 .product-card__price {
     font-size: 0.95rem;
     font-weight: 800;
-    color: var(--azul);
+    color: var(--principal);
 }
 
 .product-card__desc {
@@ -191,17 +211,24 @@ body {
     margin-top: auto;
     width: 100%;
     padding: 0.5rem;
-    background: linear-gradient(135deg, var(--azul), var(--azul-claro));
+    background: linear-gradient(
+        135deg,
+        var(--principal-oscuro),
+        var(--principal),
+        var(--principal-brillo)
+    );
     color: var(--blanco);
     border: none;
     border-radius: 8px;
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.2s;
+    box-shadow: 0 6px 20px rgba(109, 40, 217, 0.4);
+    transition: transform 0.2s, opacity 0.2s;
 }
 
 .btn-add:hover {
+    transform: translateY(-2px);
     opacity: 0.85;
 }
 
@@ -217,14 +244,17 @@ body {
     box-shadow: var(--sombra);
     overflow: hidden;
 }
-
 .shopping-cart {
     display: flex;
     flex-direction: column;
 }
 
 .cart__header {
-    background: var(--oscuro);
+    background: linear-gradient(
+        135deg,
+        var(--principal-oscuro),
+        var(--principal)
+    );
     padding: 1rem 1.25rem;
     display: flex;
     justify-content: space-between;
@@ -236,6 +266,7 @@ body {
     font-weight: 700;
     color: var(--blanco);
 }
+
 
 /* ===========================
    ITEMS DEL CARRITO
@@ -412,6 +443,9 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: opacity 0.2s, transform 0.1s;
+}
+.summary__value--total {
+    color: var(--principal);
 }
 
 .btn:hover {
