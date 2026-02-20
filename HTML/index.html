@@ -1,67 +1,106 @@
-<!-- CONTENEDOR PRINCIPAL -->
-<main class="main-container">
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Papelería Papelyluna</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">   
+    <link rel="stylesheet" href="../CSS/styles.css">
+</head>
+<body>
 
-    <!-- SECCIÓN DE PRODUCTOS -->
-    <section class="products-section">
-        <div class="products-header">
-            <h2 class="products-title">Catálogo de Productos</h2>
-
-            <div class="filters">
-                <label for="category-filter" class="filter-label">Categoría:</label>
-                <select id="category-filter" class="filter-select">
-                    <option value="">Todas las categorías</option>
-                    <option value="cuadernos">Cuadernos</option>
-                    <option value="bolígrafos">Bolígrafos</option>
-                    <option value="papel">Papel</option>
-                    <option value="arte">Materiales de arte</option>
-                </select>
-            </div>
+    <!-- ENCABEZADO -->
+    <header class="header">
+        <div class="header__logo">
+            <span class="header__logo-icon"><i class="fa-solid fa-moon"></i></span>
+            <span class="header__logo-text">Papel y Luna</span>
         </div>
+    </header>
+    
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="main-container">
 
-        <!-- 🔹 CONTENEDOR DINÁMICO DE PRODUCTOS -->
-        <div class="products-grid" id="products-container">
-            <!-- Aquí se renderizan los productos dinámicamente desde JS -->
-        </div>
-    </section>
+        <!-- SECCIÓN DE PRODUCTOS -->
+        <section class="products-section">
 
-    <!-- SIDEBAR - CARRITO DE COMPRAS -->
-    <aside class="sidebar">
-        <section class="shopping-cart">
-            <h2 class="cart__title">🛒 Carrito</h2>
+            <!-- ENCABEZADO DEL CATÁLOGO -->
+            <div class="products-header">
+                <h2 class="products-title">Catálogo de Productos</h2>
 
-            <!-- 🔹 CONTENEDOR DINÁMICO DEL CARRITO -->
-            <div class="cart__items" id="cart-container">
-                <p class="cart__empty-message" id="empty-cart-message">
-                    El carrito está vacío
-                </p>
+                <div class="filters">
+                    <!-- BÚSQUEDA POR NOMBRE -->
+                    <div class="filter-search">
+                        <span class="filter-search__icon"><i class="fa-solid fa-search"></i></span>
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Buscar producto..."
+                            class="filter-input"
+                        >
+                    </div>
+
+                    <!-- FILTRO POR CATEGORÍA -->
+                    <select id="category-filter" class="filter-select">
+                        <option value="">Todas las categorías</option>
+                        <option value="cuadernos">Cuadernos</option>
+                        <option value="bolígrafos">Bolígrafos</option>
+                        <option value="papel">Papel</option>
+                        <option value="materiales de arte">Materiales de arte</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Resumen del carrito -->
-            <div class="cart__summary">
-                <div class="summary__row">
-                    <span>Subtotal:</span>
-                    <span class="summary__value" id="subtotal">$0.00</span>
-                </div>
-                <div class="summary__row">
-                    <span>Envío:</span>
-                    <span class="summary__value" id="shipping">$0.00</span>
-                </div>
-                <div class="summary__row summary__row--total">
-                    <span>Total:</span>
-                    <span class="summary__value summary__value--total" id="total">$0.00</span>
-                </div>
-            </div>
-
-            <!-- Botones de acción -->
-            <div class="cart__actions">
-                <button class="btn btn--primary btn--full-width" id="checkout-btn">
-                    Proceder al pago
-                </button>
-                <button class="btn btn--secondary btn--full-width" id="continue-btn">
-                    Seguir comprando
-                </button>
+            <!-- CONTENEDOR DINÁMICO DE PRODUCTOS -->
+            <div class="products-grid" id="products-container">
+                <!-- Productos renderizados dinámicamente desde JS -->
             </div>
         </section>
-    </aside>
 
-</main>
+        <!-- SIDEBAR - CARRITO DE COMPRAS -->
+        <aside class="sidebar">
+            <section class="shopping-cart">
+
+                <!-- TÍTULO DEL CARRITO -->
+                <div class="cart__header">
+                    <h2 class="cart__title">Carrito de Compras</h2>
+                </div>
+
+                <!-- CONTENEDOR DINÁMICO DEL CARRITO -->
+                <div class="cart__items" id="cart-container">
+                    <div class="cart__empty" id="empty-cart-message">
+                        <span class="cart__empty-icon"><i class="fa-solid fa-shopping-cart"></i></span>
+                        <p class="cart__empty-title">Tu carrito está vacío</p>
+                        <p class="cart__empty-subtitle">¡Agrega productos desde el catálogo!</p>
+                    </div>
+                </div>
+
+                <!-- RESUMEN DEL CARRITO -->
+                <div class="cart__summary">
+                    <div class="summary__row">
+                        <span>Subtotal:</span>
+                        <span class="summary__value" id="subtotal">$0.00</span>
+                    </div>
+                    <div class="summary__row">
+                        <span>Envío:</span>
+                        <span class="summary__value" id="shipping">$0.00</span>
+                    </div>
+                    <div class="summary__row summary__row--total">
+                        <span>Total:</span>
+                        <span class="summary__value summary__value--total" id="total">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="cart__actions">
+                    <button class="btn btn--danger" id="vaciar-btn"> Vaciar Carrito</button>
+                    <button class="btn btn--success" id="checkout-btn">Finalizar Compra ›</button>
+                </div>
+
+            </section>
+        </aside>
+    </main>
+    
+    <script type="module" src="../JAVASCRIPT/app.js"></script>
+</body>
+</html>
