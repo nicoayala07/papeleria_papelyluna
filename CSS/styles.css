@@ -260,6 +260,7 @@ body {
     font-size: 3rem;
     margin-bottom: 0.75rem;
     opacity: 0.4;
+    cursor: pointer;
 }
 
 .cart__empty-title {
@@ -283,6 +284,7 @@ body {
     padding: 0.6rem 0;
     border-bottom: 1px solid var(--gris-borde);
     font-size: 0.85rem;
+
 }
 
 .carrito__item-info {
