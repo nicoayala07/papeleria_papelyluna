@@ -5,6 +5,15 @@ const productsContainer = document.querySelector("#products-container");
 export function renderProducts(productosArray) {
   productsContainer.innerHTML = "";
 
+ if (productosArray.length === 0) {
+    productsContainer.innerHTML = `
+      <p class="products-empty">
+        No se encontraron productos :(
+      </p>
+    `;
+    return;
+  }
+
   productosArray.forEach(producto => {
 
     const card = document.createElement("div");
