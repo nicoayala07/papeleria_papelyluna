@@ -23,15 +23,9 @@ function filtrarProductos() {
     document.querySelector("#category-filter").addEventListener("change", filtrarProductos);
 
 // Filtro de búsqueda
-searchInput.addEventListener("input", () => {
-    const texto = searchInput.value.toLowerCase();
-    const productosFiltrados = productos.filter(producto =>
-        producto.nombre.toLowerCase().includes(texto)
-    );
-    renderProducts(productosFiltrados);
-});
 
-// Vaciar carrito
+
+// Vaciar carrito   
 document.querySelector("#vaciar-btn").addEventListener("click", () => {
     vaciarCarrito();
 });
