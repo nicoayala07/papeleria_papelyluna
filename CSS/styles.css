@@ -6,9 +6,7 @@
     border-radius: 12px;
 }
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f2f5; 
-    color: #333;
+    background-color: #f4f6f9;
 }
 .fa-solid.fa-moon {
     color: gold;
@@ -27,8 +25,9 @@ body {
     cursor: pointer;
 }
 
+
 .header {
-    background: linear-gradient(135deg, #1e73e8, #00bfff);
+    background: linear-gradient(to bottom, #1e73e8, #155ab6);    
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -39,21 +38,10 @@ body {
 }
 .header__logo, .header__logo{
     background: linear-gradient(#1e73e8, #155ab6);    
-
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    border-radius: 0 0 20px 20px; /* esquinas redondeadas abajo */
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    gap: 0.5rem;
 }
-
-.header__logo-text {
-    font-size: 1.5rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
 
 .main-container {
     display: flex;
@@ -71,6 +59,7 @@ body {
     position: sticky;
     top: 1.5rem;
     width: 500px;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -129,42 +118,39 @@ body {
     background: linear-gradient(to right, #2e7d32, #1b5e20);    
     border-radius: 0;
 }
-
+/* Contenedor principal */
+/* Contenedor principal */
 #products-container {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
- background: #fff;
-
 }
 
+/* Cada producto */
 .producto {
-  width: 180px;      
+  width: 150px;      /* ancho fijo */
   text-align: center;
   font-size: 12px;
-  border-radius: 15px;
-  padding: 15px;
-  box-shadow: 0 8px 14px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #ccc;
+  padding: 5px;
 }
 
-
+/* Contenedor de imagen fijo */
 .producto .img-container {
-  width: 100%;       
-  height: 150px;     
-   overflow: hidden;
+  width: 100%;       /* ancho igual al producto */
+  height: 150px;     /* alto fijo */
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 5px;
 }
 
-
+/* Imagen ocupa todo el contenedor y se recorta proporcionalmente */
 .producto .img-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;   
-  object-position: center;  
+  object-fit: cover;   /* recorta para llenar el contenedor */
+  object-position: center;  /* centra la imagen */
 }
-
