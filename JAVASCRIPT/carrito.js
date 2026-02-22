@@ -1,22 +1,20 @@
-import { productos } from "./data.js"; // 🔥 Agregado
-
 let carrito = [];
 
-export function obtenerCarrito() {
+function obtenerCarrito() {
     return carrito;
 }
 
-export function vaciarCarrito() {
+function vaciarCarrito() {
     carrito.forEach(item => {
         const prodOriginal = productos.find(p => p.id === item.id);
         if (prodOriginal) prodOriginal.stock += item.cantidad;
     });
     carrito = [];
-    actualizarStockVisual(); // 🔥 Agregado
+    actualizarStockVisual();
     actualizarCarrito();
 }
 
-export function agregarAlCarrito(producto) {
+function agregarAlCarrito(producto) {
     const productoExistente = carrito.find(item => item.id === producto.id);
 
     if (producto.stock <= 0) {
@@ -31,22 +29,22 @@ export function agregarAlCarrito(producto) {
     }
 
     producto.stock -= 1;
-    actualizarStockVisual(); // 🔥 Agregado
+    actualizarStockVisual();
     actualizarCarrito();
 }
 
-export function eliminarDelCarrito(productoId) {
+function eliminarDelCarrito(productoId) {
     const item = carrito.find(i => i.id === productoId);
     if (item) {
         const prodOriginal = productos.find(p => p.id === productoId);
-        if (prodOriginal) prodOriginal.stock += item.cantidad; 
+        if (prodOriginal) prodOriginal.stock += item.cantidad;
     }
     carrito = carrito.filter(item => item.id !== productoId);
-    actualizarStockVisual(); // 🔥 Agregado
+    actualizarStockVisual();
     actualizarCarrito();
 }
 
-export function cambiarCantidad(productoId, operacion) {
+function cambiarCantidad(productoId, operacion) {
     const productoCarrito = carrito.find(item => item.id === productoId);
     const productoOriginal = productos.find(p => p.id === productoId);
     if (!productoCarrito || !productoOriginal) return;
@@ -63,22 +61,21 @@ export function cambiarCantidad(productoId, operacion) {
         }
     }
 
-    actualizarStockVisual(); // 🔥 Agregado
+    actualizarStockVisual();
     actualizarCarrito();
 }
 
-// 🔥 Nueva función para actualizar el stock en las tarjetas
 function actualizarStockVisual() {
     productos.forEach(producto => {
         const card = document.querySelector(`[data-id="${producto.id}"]`);
-        const stockSpan = card?.querySelector(".stock-value");
+        const stockSpan = card ? card.querySelector(".stock-value") : null;
         if (stockSpan) {
             stockSpan.textContent = producto.stock;
         }
     });
 }
 
-export function actualizarCarrito() {
+function actualizarCarrito() {
     const carritoContenedor = document.getElementById("cart-container");
     const mensajeVacio = document.getElementById("empty-cart-message");
     const subtotalEl = document.getElementById("subtotal");
@@ -88,27 +85,15 @@ export function actualizarCarrito() {
     if (!carritoContenedor) return;
 
     if (carrito.length === 0) {
-        if (mensajeVacio) {
-            mensajeVacio.style.display = ""; // Restaurar visibilidad (quita el display: none)
-        }
+        if (mensajeVacio) mensajeVacio.style.display = "";
         carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
-
-        if (subtotalEl) {
-            subtotalEl.textContent = "$0";
-        }
-
-        if (envioEl) {
-            envioEl.textContent = "$0";
-        }
-
-        if (totalEl) {
-            totalEl.textContent = "$0";
-        }
+        if (subtotalEl) subtotalEl.textContent = "$0";
+        if (envioEl) envioEl.textContent = "$0";
+        if (totalEl) totalEl.textContent = "$0";
         return;
     }
 
     if (mensajeVacio) mensajeVacio.style.display = "none";
-
     carritoContenedor.querySelectorAll(".carrito__item").forEach(item => item.remove());
 
     carrito.forEach(item => {

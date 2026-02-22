@@ -1,7 +1,3 @@
-import { productos } from "./data.js";
-import { renderProducts } from "./main.js";
-import { vaciarCarrito, obtenerCarrito } from "./carrito.js";
-
 const searchInput = document.querySelector("#search-input");
 
 // Render inicial
@@ -19,10 +15,11 @@ function filtrarProductos() {
 
     renderProducts(resultados);
 }
-    searchInput.addEventListener("input", filtrarProductos);
-    document.querySelector("#category-filter").addEventListener("change", filtrarProductos);
 
-// Vaciar carrito   
+searchInput.addEventListener("input", filtrarProductos);
+document.querySelector("#category-filter").addEventListener("change", filtrarProductos);
+
+// Vaciar carrito
 document.querySelector("#vaciar-btn").addEventListener("click", () => {
     vaciarCarrito();
 });

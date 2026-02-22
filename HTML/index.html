@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Papelería Papelyluna</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Dancing+Script&family=Great+Vibes&display=swap" rel="stylesheet">   
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Dancing+Script&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/styles.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
     <!-- ENCABEZADO -->
     <header class="header">
         <div class="header__logo">
-            <img src="../img/logo.png" alt="Logo" class="logo">
+            <img src="../img/Logo.png" alt="Logo" class="logo">
             <span class="header__logo-text">Papel y Luna</span>
         </div>
     </header>
@@ -31,7 +31,7 @@
                 <div class="filters">
                     <!-- BÚSQUEDA POR NOMBRE -->
                     <div class="filter-search">
-                        <span class="filter-search__icon"><></i></span>
+                        <span class="filter-search__icon"><i class="fa-solid fa-search"></i></span>
                         <input
                             type="text"
                             id="search-input"
@@ -93,7 +93,7 @@
 
                 <!-- BOTONES DE ACCIÓN -->
                 <div class="cart__actions">
-                    <button class="btn btn--danger" id="vaciar-btn"> Vaciar Carrito</button>
+                    <button class="btn btn--danger" id="vaciar-btn">Vaciar Carrito</button>
                     <button class="btn btn--success" id="checkout-btn">Finalizar Compra ›</button>
                 </div>
 
@@ -101,6 +101,10 @@
         </aside>
     </main>
     
-    <script type="module" src="../JAVASCRIPT/app.js"></script>
+    <!-- ORDEN IMPORTANTE: data → carrito → main → app -->
+<script src="../JAVASCRIPT/data.js"></script>
+<script src="../JAVASCRIPT/carrito.js"></script>
+<script src="../JAVASCRIPT/main.js"></script>
+<script src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>
