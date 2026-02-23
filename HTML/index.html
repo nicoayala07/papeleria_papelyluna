@@ -10,53 +10,124 @@
 </head>
 <body>
 
-    <!-- ENCABEZADO -->
-    <header class="header">
-        <div class="header__logo">
-            <img src="../img/Logo.png" alt="Logo" class="logo">
-            <span class="header__logo-text">Papel y Luna</span>
+    <!-- SIDEBAR DE NAVEGACIÓN -->  
+    <nav class="sidebar-nav">
+        <div class="sidebar-nav__logo">
+            <img src="../img/Logo.png" alt="Logo" class="sidebar-nav__logo-img">
         </div>
-    </header>
+
+        <div class="sidebar-nav__links">
+            <button class="nav-btn activa" data-vista="inicio" onclick="navegarA('inicio')" title="Inicio">
+                <i class="fa-solid fa-house"></i>
+            </button>
+            <button class="nav-btn" data-vista="productos" onclick="navegarA('productos')" title="Productos">
+                <i class="fa-solid fa-cash-register"></i>
+            </button>
+            <button class="nav-btn" data-vista="ventas" onclick="navegarA('ventas')" title="NuevasVentas">
+                <i class="fa-solid fa-box-open"></i>
+            </button>
+            <button class="nav-btn" data-vista="historial" onclick="navegarA('historial')" title="Historial">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-nav__bottom">
+            <button class="nav-btn" onclick="toggleBuscador()" title="Buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div id="search-overlay" class="search-overlay">
+        <div class="search-overlay__box">
+            <input type="text" id="search-input" placeholder="Buscar productos..." class="search-overlay__input" autocomplete="off"> 
+            <button onclick="toggleBuscador()" class="search-overlay__close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
     
     <!-- CONTENEDOR PRINCIPAL -->
     <main class="main-container">
+        <section id="vista-inicio" class="vista activa">
 
-        <!-- SECCIÓN DE PRODUCTOS -->
-        <section class="products-section">
-
-            <!-- ENCABEZADO DEL CATÁLOGO -->
-            <div class="products-header">
-                <h2 class="products-title">Catálogo de Productos</h2>
-
-                <div class="filters">
-                    <!-- BÚSQUEDA POR NOMBRE -->
-                    <div class="filter-search">
-                        <span class="filter-search__icon"><i class="fa-solid fa-search"></i></span>
-                        <input
-                            type="text"
-                            id="search-input"
-                            placeholder="Buscar producto..."
-                            class="filter-input"
-                        >
-                    </div>
-
-                    <!-- FILTRO POR CATEGORÍA -->
-                    <select id="category-filter" class="filter-select">
-                        <option value="">Todas las categorías</option>
-                        <option value="cuadernos">Cuadernos</option>
-                        <option value="bolígrafos">Bolígrafos</option>
-                        <option value="papel">Papel</option>
-                        <option value="materiales de arte">Materiales de arte</option>
-                    </select>
+            <div class="tickers">
+                <div class="ticker__track">
+                    <span>Cuadernos Premium</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>Boligrafos Gel</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>Materiales de arte</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>Papel Blond A4</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>CUADERNOS PREMIUM</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>BOLÍGRAFOS GEL</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>MATERIALES DE ARTE</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>PAPEL BOND A4</span>
+                    <span class="ticker__dot">✦</span>
+                    <span>NOTAS ADHESIVAS</span>
+                    <span class="ticker__dot">✦</span>
                 </div>
             </div>
-
-            <!-- CONTENEDOR DINÁMICO DE PRODUCTOS -->
-            <div class="products-grid" id="products-container">
-                <!-- Productos renderizados dinámicamente desde JS -->
+            <div class="hero__visual">
+                <div class=" hero__content">
+                    <p class="hero_eyebrow">2026-Papeleria Moderna</p>
+                    <h1 class="hero__title">El ARTE<br>DE <br>LA <em>LECTURA</em></h1>
+                    <p class="hero__desc">Herramientas de calidad para cada trazo de tu historia. Cuadernos, bolígrafos y materiales de arte seleccionados.</p>
+                    <div class="hero__actions">
+                        <button class="hero__btn hero__btn--primary" onclick="navegarA('ventas')">
+                            Ver Catálogo <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button class="hero__btn hero__btn--secondary" onclick="navegarA('historial')">
+                            Historial
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="hero__visual">
+                    <div class="hero__img-container">
+                        <img src="../img/CuadernoTapaDuraEspiral.png" alt="Producto destacado" class="hero__img hero__img--main">
+                        <img src="../img/SetAcuarelasPinceles.png" alt="Producto" class="hero__img hero__img--secondary">
+                    </div>
+                    <div class="hero__badge">
+                        <span class="hero__badge-text">STOCK</span>
+                        <span class="hero__badge-sub">EN VIVO</span>
+                </div>
             </div>
+        </div>
+
+        <!-- PRODUCTOS DESTACADOS -->   
+        <div class="featured">
+            <div class="featured__header">
+                <h2 class="featured__title">Productos destacados</h2>
+                <p class="featured__sub">Productos seleccionados</p>
+                <button class="featured__ver-todo" onclick="navegarA('ventas')">ver todo</button>
+            </div>
+            <div class="featured__grid" id="featured-container"></div>
+        </div>
         </section>
 
+        <!-- VISTA VENTAS -->
+        <section id="vista-ventas" class="vista">
+            <div class="vista-ventas__layout">
+             <div class="catalogo">
+                    <div class="catalogo__header">
+                        <h2 class="catalogo__title">Catálogo</h2>
+                        <select id="category-filter" class="filter-select">
+                            <option value="">Todas las categorías</option>
+                            <option value="cuadernos">Cuadernos</option>
+                            <option value="bolígrafos">Bolígrafos</option>
+                            <option value="papel">Papel</option>
+                            <option value="materiales de arte">Materiales de arte</option>
+                        </select>
+                    </div>
+                    <div class="products-grid" id="products-container"></div>
+                </div>
+            </div>
         <!-- SIDEBAR - CARRITO DE COMPRAS -->
         <aside class="sidebar">
             <section class="shopping-cart">
@@ -99,12 +170,42 @@
 
             </section>
         </aside>
+     </section>
+
+        <section id="vista-productos" class="vista">
+            <div class="vista header">
+                <h2 class="vista-title">gestion de productos</h2>
+                <button class ="btn btn--success" id="btn-nuevo-producto"> 
+                    <i class="fa-solid fa-plus"></i> 
+                </button>
+            </div>
+            <div id="productos-lista"></div>
+        </section>
+        |
+        <section id="vista-historial" class="vista">
+            <div class="vista header">
+                <h2 class="vista-title">Historial de Ventas</h2>
+            </div>
+            <div id="historial-lista"></div>
+        </section>
+
+        <section id="vista-factura" class="vista">
+            <div class="vista header">
+                <h2 class="vista-title">factura</h2>
+                <button class ="btn btn--secondary" onclick="navegarA('historial')">
+                    <i class="fa-solid fa-arrow-left"></i>volver
+                </button>
+            </div>  
+            <div id="factura-contenido"></div>
+        </section>
+
     </main>
     
     <!-- ORDEN IMPORTANTE: data → carrito → main → app -->
-<script src="../JAVASCRIPT/data.js"></script>
-<script src="../JAVASCRIPT/carrito.js"></script>
-<script src="../JAVASCRIPT/main.js"></script>
-<script src="../JAVASCRIPT/app.js"></script>
+    <script src="../JAVASCRIPT/data.js"></script>
+    <script src="../JAVASCRIPT/carrito.js"></script>
+    <script src="../JAVASCRIPT/main.js"></script>
+    <script src="../JAVASCRIPT/router.js"></script>
+    <script src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>

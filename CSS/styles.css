@@ -45,50 +45,91 @@ body {
 }
 
 /* ===========================
-   HEADER
+   SIDEBAR NAV
 =========================== */
-.header {
+.sidebar-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
     background: linear-gradient(
         135deg,
         var(--principal-oscuro),
-        var(--principal),
-        var(--principal-brillo)
-    );
-    padding: 1rem 2rem;
+        var(--principal)
+    );    
+    border-right: 1px solid var(--gris-borde);
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    border-radius: 0 0 20px 20px;
+    padding: 1.25rem 0;
+    z-index: 100;
+    gap: 0;
+}
+
+.sidebar-nav__logo {
+    margin-bottom: 2rem;
+}
+
+.sidebar-nav__logo-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--amarillo);
+}
+
+.sidebar-nav__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.sidebar-nav__bottom {
+    margin-top: auto;
+    padding-bottom: 0.5rem;
+}
+
+.nav-btn {
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    border-radius: var(--radio);
+    color: var(--gris);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.nav-btn:hover {
+    background: var(--negro-3);
     color: var(--blanco);
-    box-shadow: 0 6px 20px rgba(109, 40, 217, 0.4);
-    border-bottom: 3px solid var(--amarillo);
-    background-size: 200% 200%;
-    transition: background-position 0.5s ease;
 }
 
-.header:hover {
-    background-position: right center;
+.nav-btn.activa {
+    background: var(--amarillo);
+    color: var(--negro);
 }
 
-.header__logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.nav-btn[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 52px;
+    background: var(--negro-3);
+    color: var(--blanco);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    border: 1px solid var(--negro-4);
+    font-family: 'DM Sans', sans-serif;
 }
-
-.logo {
-    width: 60px;
-    height: auto;
-    border-radius: 30px;
-}
-
-.header__logo-text {
-    font-family: 'Great Vibes', cursive;
-    font-style: italic;
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
 /* ===========================
    LAYOUT PRINCIPAL
 =========================== */
@@ -484,6 +525,13 @@ body {
         var(--principal-brillo)
     );
     color: var(--blanco);
+}
+.vista {
+    display: none;
+}
+
+.vista.activa {
+    display: block;
 }
 
 /* ===========================
