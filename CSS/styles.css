@@ -1,0 +1,705 @@
+<<<<<<< Updated upstream
+=======
+/* ============================================================
+   1. VARIABLES Y RESET
+============================================================ */
+:root {
+    --principal: #6d28d9;
+    --principal-brillo: #a855f7;
+    --principal-oscuro: #3b0764;
+
+    --negro-profundo: #0f0f14;
+    --negro-secundario: #1a1a22;
+
+    --amarillo: #facc15;
+    --amarillo-oscuro: #eab308;
+
+    --gris-borde: #2a2a35;
+    --texto: #f5f5f5;
+    --texto-suave: #9ca3af;
+    --blanco: #ffffff;
+
+    --rojo: #ef4444;
+    --verde: #10b981;
+
+    --sombra: 0 8px 25px rgba(109, 40, 217, 0.35);
+    --radio: 14px;
+    --sidebar-w: 64px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, var(--negro-profundo), var(--negro-secundario));
+    color: var(--texto);
+    
+}
+
+
+/* ============================================================
+   2. LAYOUT PRINCIPAL
+============================================================ */
+.main-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+}
+
+.vista {
+    display: none;
+}
+
+.vista.activa {
+    display: block;
+}
+
+
+/* ============================================================
+   3. SIDEBAR DE NAVEGACIÓN
+============================================================ */
+.sidebar-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    border-right: 1px solid var(--gris-borde);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 0;
+    z-index: 100;
+}
+
+.sidebar-nav__logo {
+    margin-bottom: 2rem;
+}
+
+.sidebar-nav__logo-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--amarillo);
+}
+
+.sidebar-nav__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.sidebar-nav__bottom {
+    margin-top: auto;
+    padding-bottom: 0.5rem;
+}
+
+.nav-btn {
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    border-radius: var(--radio);
+    color: var(--texto-suave);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.nav-btn:hover {
+    background: var(--negro-secundario);
+    color: var(--blanco);
+}
+
+.nav-btn.activa {
+    background: var(--amarillo);
+    color: var(--negro-profundo);
+}
+
+.nav-btn[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 52px;
+    background: var(--negro-secundario);
+    color: var(--blanco);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    border: 1px solid var(--gris-borde);
+    z-index: 10;
+}
+
+
+/* ============================================================
+   4. BUSCADOR OVERLAY
+============================================================ */
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-overlay.activa {
+    display: flex;
+}
+
+.search-overlay__box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 90%;
+    max-width: 600px;
+    background: var(--negro-secundario);
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    padding: 1rem 1.25rem;
+}
+
+.search-overlay__input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 1.25rem;
+    color: var(--texto);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.search-overlay__input::placeholder {
+    color: var(--texto-suave);
+}
+
+.search-overlay__close {
+    background: none;
+    border: none;
+    color: var(--texto-suave);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.search-overlay__close:hover {
+    color: var(--blanco);
+}
+
+
+/* ============================================================
+   5. VISTA INICIO — TICKER
+============================================================ */
+.tickers {
+    background: var(--amarillo);
+    overflow: hidden;
+    padding: 0.6rem 0;
+}
+
+.ticker__track {
+    display: flex;
+    gap: 2rem;
+    white-space: nowrap;
+    animation: ticker 25s linear infinite;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--negro-profundo);
+}
+
+.ticker__dot {
+    opacity: 0.4;
+}
+
+@keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+
+/* ============================================================
+   6. VISTA INICIO — HERO
+============================================================ */
+
+
+/* ============================================================
+   7. VISTA INICIO — PRODUCTOS DESTACADOS
+============================================================ */
+
+
+/* ============================================================
+   8. VISTA VENTAS — LAYOUT
+============================================================ */
+.vista-ventas__layout {
+    display: flex;
+    height: 100vh;
+    flex-direction: row-reverse;
+    overflow: hidden;
+}
+
+.catalogo {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    border-left: 1px solid var(--gris-borde);
+}
+
+.catalogo__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.catalogo__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+
+/* ============================================================
+   9. VISTA VENTAS — FILTROS
+============================================================ */
+.filters {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    background: var(--negro-secundario);
+    font-size: 0.9rem;
+    color: var(--texto);
+    outline: none;
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   10. VISTA VENTAS — GRILLA DE PRODUCTOS
+============================================================ */
+#products-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.product-card {
+    background: #242433;
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(250, 204, 21, 0.25);
+}
+
+.product-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.product-card h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--texto);
+    line-height: 1.3;
+}
+
+.product-card__price {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--amarillo);
+}
+
+.product-card__desc {
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+    line-height: 1.4;
+}
+
+.product-card__stock {
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+}
+
+.stock-value {
+    color: var(--texto);
+    font-weight: 600;
+}
+
+.products-empty {
+    color: var(--texto-suave);
+    text-align: center;
+    padding: 3rem;
+}
+
+.btn-add {
+    margin-top: auto;
+    width: 100%;
+    padding: 0.5rem;
+    background: linear-gradient(135deg, var(--amarillo), var(--amarillo-oscuro));
+    color: var(--negro-profundo);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--amarillo);
+}
+
+
+/* ============================================================
+   11. VISTA VENTAS — CARRITO
+============================================================ */
+.sidebar {
+    background: #1c1c26;
+    position: sticky;
+    top: 0;
+    width: 340px;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: var(--sombra);
+}
+
+.shopping-cart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.cart__header {
+    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--blanco);
+}
+
+#cart-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75rem;
+}
+
+.cart__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--texto-suave);
+}
+
+.cart__empty-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.4;
+}
+
+.cart__empty-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--texto);
+    margin-bottom: 0.25rem;
+}
+
+.cart__empty-subtitle {
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+}
+
+.carrito__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--gris-borde);
+    font-size: 0.85rem;
+}
+
+.carrito__item-info { flex: 1; }
+
+.carrito__item-nombre {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--texto);
+}
+
+.carrito__item-precio-unitario {
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+}
+
+.carrito__item-controles {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-cantidad {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    background: var(--negro-secundario);
+    color: var(--texto);
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-cantidad:hover {
+    background: var(--amarillo);
+    color: var(--negro-profundo);
+    border-color: var(--amarillo-oscuro);
+}
+
+.carrito__item-cantidad {
+    font-weight: 700;
+    min-width: 18px;
+    text-align: center;
+}
+
+.carrito__item-subtotal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.carrito__item-subtotal p {
+    font-weight: 700;
+    color: var(--amarillo);
+    font-size: 0.85rem;
+}
+
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: var(--rojo);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-eliminar:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+
+/* ============================================================
+   12. VISTA VENTAS — RESUMEN Y ACCIONES DEL CARRITO
+============================================================ */
+.cart__summary {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--gris-borde);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.summary__row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    color: var(--texto-suave);
+}
+
+.summary__row--total {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--amarillo);
+    border-top: 1px solid var(--gris-borde);
+    padding-top: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.summary__value--total {
+    color: var(--amarillo);
+}
+
+.cart__actions {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-top: 1px solid var(--gris-borde);
+}
+
+
+/* ============================================================
+   13. BOTONES GENERALES
+============================================================ */
+.btn {
+    flex: 1;
+    height: 42px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn--danger {
+    background: linear-gradient(to right, #e53935, #c62828);
+    color: var(--blanco);
+}
+
+.btn--success {
+    background: linear-gradient(135deg, var(--principal), var(--principal-brillo));
+    color: var(--blanco);
+}
+
+.btn--secondary {
+    background: var(--negro-secundario);
+    color: var(--texto);
+    border: 1px solid var(--gris-borde);
+}
+
+
+/* ============================================================
+   14. VISTA PRODUCTOS — CRUD
+============================================================ */
+
+/* ============================================================
+   15. VISTA HISTORIAL
+============================================================ */
+
+
+/* ============================================================
+   16. VISTA FACTURA
+============================================================ */
+
+
+/* ============================================================
+   17. MODAL DE PAGO
+============================================================ */
+
+
+/* ============================================================
+   18. RESPONSIVE
+============================================================ */
+@media (max-width: 768px) {
+    .vista-ventas__layout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    #products-container {
+        grid-template-columns: repeat(auto-fill,  minmax(140px, 1fr));
+    }
+
+    .main-container {
+        margin-left: 0;
+    }
+}
+
+/* --- ESTILOS DEL MODAL DE COBRO --- */
+.modal-pos {
+    background: var(--negro-secundario);
+    padding: 2.5rem;
+    border-radius: var(--radio);
+    border: 1px solid var(--principal);
+    width: 95%;
+    max-width: 500px;
+    position: relative;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.modal-pos h3 {
+    color: var(--amarillo);
+    font-family: 'Segoe UI', Arial, sans-serif; /* Fuente unificada */
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.total-display {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gris-borde);
+    padding-bottom: 1rem;
+}
+
+.total-display .monto {
+    color: var(--blanco);
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.efectivo-box {
+    background: var(--negro-profundo);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px dashed var(--principal-brillo);
+}
+>>>>>>> Stashed changes

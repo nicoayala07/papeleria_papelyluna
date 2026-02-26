@@ -17,4 +17,8 @@ searchInput.addEventListener("input", () => {
   renderProducts(productosFiltrados);
 });
 
+<<<<<<< Updated upstream
 console.log("App conectada");
+=======
+
+>>>>>>> Stashed changes
