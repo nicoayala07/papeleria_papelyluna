@@ -13,7 +13,14 @@ function navegarA(nombreVista){
         btn.addEventListener("click", () => {
             navegarA(btn.dataset.vista);
         });
-    });
+    })
+    
+    document.getElementById("search-input").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+        navegarA("ventas");
+        document.getElementById("search-overlay").classList.remove("activa");
+        }
+});;
 
 document.getElementById("btn-ver-catalogo").addEventListener("click", () => {
     navegarA("ventas");})
