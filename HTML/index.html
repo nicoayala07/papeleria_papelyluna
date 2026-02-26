@@ -20,10 +20,10 @@
             <button class="nav-btn activa" data-vista="inicio" title="Inicio">
                 <i class="fa-solid fa-house"></i>
             </button>
-            <button class="nav-btn" data-vista="ventas" title="productos">
+            <button class="nav-btn" data-vista="ventas" title="Catalogo">
                 <i class="fa-solid fa-cash-register"></i>
             </button>
-            <button class="nav-btn" data-vista="productos"title="nueva ventas">
+            <button class="nav-btn" data-vista="productos" title="Nuevos productos">
                 <i class="fa-solid fa-box-open"></i>
             </button>
             <button class="nav-btn" data-vista="historial"title="Historial">
@@ -171,19 +171,80 @@
 
             </section>
         </aside>
-    </div>
-    
-    </section>
+    </div> <!-- Cierre de .vista-ventas__layout -->
+</section> <!-- Cierre de #vista-ventas -->
+<section id="vista-productos" class="vista">
+        <div class="productos__layout">
 
-        <section id="vista-productos" class="vista">
-            <div class="vista header">
-                <h2 class="vista-title">gestion de productos</h2>
-                <button class ="btn btn--success" id="btn-nuevo-producto"> 
-                    <i class="fa-solid fa-plus"></i> 
-                </button>
+            <div class="productos__lista">
+                <div class="productos__lista-header">
+                    <h2 class="vista-title">Gestión de Productos</h2>
+                    <button class="btn btn--success" id="btn-nuevo-producto">
+                        <i class="fa-solid fa-plus"></i> Nuevo
+                    </button>
+                </div>
+                <div id="productos-container"></div>
+            </div>    
+            
+            <div class="productos__form" id="productos-form">
+                <h3 class="productos__form--title" id="form-title">Nuevo Producto</h3>
+
+                <div class="form__group">
+                    <label>Nombre</label>
+                    <input type="text" id="prod-nombre" placeholder="Nombre del producto" required>
+                </div>
+
+                <div class="form__group">
+                    <label>Categoria</label>
+                    <select id="prod-categoria" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="Cuadernos">Cuadernos</option>
+                        <option value="Bolígrafos">Bolígrafos</option>
+                        <option value="Papel">Papel</option>
+                        <option value="Materiales de arte">Materiales de arte</option>
+                        <option value="Organización">Organización</option>
+                        <option value="Oficina">Oficina</option>
+                        <option value="Escolar">Escolar</option>
+                        <option value="Escritura">Escritura</option>
+
+                    </select>
+                </div>
+                <div class="form__group">
+                    <label>Precio del venta</label>
+                    <input type="number" id="prod-precio" placeholder="0" required>
+                </div>
+
+                <div class="form__group">
+                    <label>costo de compra</label>
+                    <input type="number" id="prod-costo" placeholder="0" required>
+                </div>
+
+                <div class="form__group">
+                    <label>codigo interno</label>
+                    <input type="text" id="prod-codigo" required>
+                </div>
+
+                <div class="form__group">
+                    <label>Seguimiento de inventario</label>
+                    <select id="prod-seguimiento">
+                        <option value="si">Si</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <div class="form__group">
+                    <label>Stock</label>
+                    <input type="number" id="prod-stock" placeholder="0" required>
+                </div>
+
+                <div class="form__actions">
+                    <button class="btn btn--secondary" id="btn-cancelar-prod">Cancelar</button>
+                    <button class="btn btn--success" id="btn-guardar-prod">Guardar</button>
+                </div>
             </div>
-            <div id="productos-lista"></div>
-        </section>
+        </div>
+
+    </section>
         
         <section id="vista-historial" class="vista">
             <div class="vista header">
@@ -209,6 +270,7 @@
     <script src="../JAVASCRIPT/carrito.js"></script>
     <script src="../JAVASCRIPT/main.js"></script>
     <script src="../JAVASCRIPT/router.js"></script>
+    <script src="../JAVASCRIPT/productos.js"></script>
     <script src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>

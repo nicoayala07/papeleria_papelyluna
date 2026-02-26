@@ -1,12 +1,13 @@
 function navegarA(nombreVista){
     document.querySelectorAll(".vista").forEach(v => v.classList.remove("activa"));
-
-    document.getElementById("vista-"+nombreVista).classList.add("activa");
+    document.getElementById("vista-"+ nombreVista).classList.add("activa");
 
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("activa"));
     
     const btnActiva= document.querySelector(`[data-vista="${nombreVista}"]`);
     if (btnActiva) btnActiva.classList.add("activa"); 
+
+    if (nombreVista === "productos") ListarProductos();
     
 }
     document.querySelectorAll(".nav-btn[data-vista]").forEach(btn => {
@@ -16,9 +17,10 @@ function navegarA(nombreVista){
     })
     
     document.getElementById("search-input").addEventListener("keydown", (e) => {
-        if (e.key === "Enter", e.key ==="Escape") {
+        if (e.key === "Enter") {
         navegarA("ventas");
         document.getElementById("search-overlay").classList.remove("activa");
+        e.target.value="";
         }
 });;
 
