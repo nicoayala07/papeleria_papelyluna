@@ -1,25 +1,97 @@
 const productos = [
+    // --- CUADERNOS ---
     { id: 1, nombre: "Cuaderno A5 Rayado", categoria: "cuadernos", precio: 18000, descripcion: "Cuaderno de 100 hojas rayadas", image:"CuadernoA5rayado.png" ,stock: 30},
-
     { id: 2, nombre: "Cuaderno A4 cuadriculado", categoria: "cuadernos", precio: 25000, descripcion: "Cuaderno de 100 hojas cuadriculadas", image:"CuadernoA4cuadriculado.png",stock: 30 },
-
     { id: 3, nombre: "Cuaderno de tapa dura espiral", categoria: "cuadernos", precio: 32000, descripcion: "Cuaderno de tapa dura con espiral y hojas rayadas", image:"CuadernoTapaDuraEspiral.png" ,stock: 30},
+    {id:25, nombre:"Cuaderno 5 Materias", categoria:"cuadernos", precio: 28000, descripcion: "Cuaderno argollado con separadores", image:"Cuaderno5Materias.png", stock: 25},
+    {id:26, nombre:"Libreta de Bolsillo", categoria:"cuadernos", precio: 6500, descripcion: "Pequeña libreta para notas rápidas", image:"LibretaBolsillo.png", stock: 50},
+    {id:27, nombre:"Cuaderno Cosido 100 Hojas", categoria:"cuadernos", precio: 12000, descripcion: "Cuaderno cosido resistente", image:"CuadernoCosido.png", stock: 40},
+    {id:28, nombre:"Block de Dibujo", categoria:"cuadernos", precio: 15000, descripcion: "Hojas blancas sin lineas 120g", image:"BlockDibujo.png", stock: 30},
+    {id:29, nombre:"Cuaderno Inteligente", categoria:"cuadernos", precio: 55000, descripcion: "Hojas reposicionables, sistema de discos", image:"CuadernoInteligente.png", stock: 15},
+    {id:30, nombre:"Cuaderno Pautado Música", categoria:"cuadernos", precio: 14000, descripcion: "Cuaderno con pentagramas", image:"CuadernoMusica.png", stock: 20},
+    {id:31, nombre:"Cuaderno de Caligrafía", categoria:"cuadernos", precio: 9000, descripcion: "Pautas especiales para mejorar letra", image:"CuadernoCaligrafia.png", stock: 35},
 
+    // --- BOLÍGRAFOS ---
     {id: 4, nombre:"Bolígrafo azul gel",categoria:"bolígrafos", precio: 4500, descripcion: "Bolígrafo de tinta azul con punta de gel", image:"BolígrafoAzulGel.png",stock: 30},
-
     {id: 5, nombre:"Bolígrafo negro retráctil",categoria:"bolígrafos", precio: 4000, descripcion: "Bolígrafo de tinta negra con punta retráctil", image:"BolígrafoNegroRetractil.png",stock: 30},
-
     {id:6, nombre:"Bolígrafo rojo de tinta líquida",categoria:"bolígrafos", precio: 4500, descripcion: "Bolígrafo de tinta roja con punta de tinta líquida", image:"BolígrafoRojoLiquida.png",stock: 30},
+    {id:32, nombre:"Bolígrafo Borrable", categoria:"bolígrafos", precio: 8000, descripcion: "Tinta térmica borrable con fricción", image:"BoligrafoBorrable.png", stock: 40},
+    {id:33, nombre:"Pluma Fuente Escolar", categoria:"bolígrafos", precio: 25000, descripcion: "Pluma fuente recargable", image:"PlumaFuente.png", stock: 15},
+    {id:34, nombre:"Bolígrafo 4 Colores", categoria:"bolígrafos", precio: 12000, descripcion: "Un solo cuerpo con 4 tintas", image:"Boligrafo4Colores.png", stock: 30},
+    {id:35, nombre:"Repuestos Gel (Pack x3)", categoria:"bolígrafos", precio: 7500, descripcion: "Minas de repuesto tinta gel negra", image:"RepuestosGel.png", stock: 50},
+    {id:36, nombre:"Bolígrafo Tinta Invisible", categoria:"bolígrafos", precio: 5000, descripcion: "Incluye luz UV para ver lo escrito", image:"BoligrafoInvisible.png", stock: 20},
+    {id:37, nombre:"Bolígrafo Ergonómico", categoria:"bolígrafos", precio: 6000, descripcion: "Grip de goma para escritura cómoda", image:"BoligrafoErgo.png", stock: 45},
+    {id:38, nombre:"Estuche Bolígrafos Lujo", categoria:"bolígrafos", precio: 85000, descripcion: "Set de regalo metálico", image:"EstucheLujo.png", stock: 10},
 
+    // --- PAPEL ---
     {id:7, nombre:"Papel bond blanco A4 (resma 500 hojas)",categoria:"papel", precio: 28000, descripcion: "Papel bond blanco de tamaño A4, resma de 500 hojas", image:"PapelBondA4.png",stock: 30},
-
     {id:8, nombre:"Papel reciclado color crema A4 (resma)",categoria:"papel", precio: 35000, descripcion: "Papel reciclado de tamaño A4, color crema, resma", image:"PapelRecicladoA4.png",stock: 30},
-
     {id:9, nombre:"Bloc de notas adhesivas (set)",categoria:"papel", precio: 12000, descripcion: "Bloc de notas adhesivas de tamaño A4, set de 10 hojas", image:"BlocNotasAdhesivas.png",stock: 30},
+    {id:39, nombre:"Papel Fotográfico A4", categoria:"papel", precio: 18000, descripcion: "Paquete x20 hojas alto brillo", image:"PapelFoto.png", stock: 25},
+    {id:40, nombre:"Cartulina Colores (Block)", categoria:"papel", precio: 9500, descripcion: "Block de cartulinas surtidas", image:"CartulinaBlock.png", stock: 35},
+    {id:41, nombre:"Papel Kraft (Rollo 5m)", categoria:"papel", precio: 4500, descripcion: "Ideal para empaques y manualidades", image:"PapelKraft.png", stock: 60},
+    {id:42, nombre:"Papel Seda (Paquete)", categoria:"papel", precio: 3000, descripcion: "10 pliegos colores surtidos", image:"PapelSeda.png", stock: 80},
+    {id:43, nombre:"Papel Carbón", categoria:"papel", precio: 5000, descripcion: "Caja x10 hojas para copias", image:"PapelCarbon.png", stock: 40},
+    {id:44, nombre:"Opalina Blanca (Paquete)", categoria:"papel", precio: 11000, descripcion: "Cartulina opalina 180g x50 hojas", image:"Opalina.png", stock: 30},
+    {id:45, nombre:"Papel Pergamino", categoria:"papel", precio: 7000, descripcion: "Block A4 para dibujo técnico", image:"PapelPergamino.png", stock: 25},
 
+    // --- MATERIALES DE ARTE ---
     {id:10, nombre:"Set de acuarelas con pinceles",categoria:"materiales de arte", precio: 45000, descripcion: "Set de acuarelas con pinceles de diferentes tamaños", image:"SetAcuarelasPinceles.png",stock: 30},
-
     {id:11, nombre:"Lápices de colores profesionales (set de 24)",categoria:"materiales de arte", precio: 38000, descripcion: "Set de lápices de colores profesionales con 24 colores diferentes", image:"LapicesColoresProfesionales.png",stock: 30},
+    {id:12, nombre:"Marcadores permanentes (set de 12)",categoria:"materiales de arte", precio: 29000, descripcion: "Set de marcadores permanentes de diferentes colores", image:"MarcadoresPermanentes.png",stock: 30},
+    {id:46, nombre:"Lienzo 30x40cm", categoria:"materiales de arte", precio: 14000, descripcion: "Lienzo tensado listo para pintar", image:"Lienzo.png", stock: 20},
+    {id:47, nombre:"Set Pinceles Profesionales", categoria:"materiales de arte", precio: 32000, descripcion: "Set x10 pinceles pelo sintético", image:"SetPinceles.png", stock: 15},
+    {id:48, nombre:"Pinturas Acrílicas (Set)", categoria:"materiales de arte", precio: 28000, descripcion: "12 tubos de colores básicos", image:"Acrilicos.png", stock: 25},
+    {id:49, nombre:"Caballete de Mesa", categoria:"materiales de arte", precio: 45000, descripcion: "Soporte de madera ajustable", image:"Caballete.png", stock: 10},
+    {id:50, nombre:"Paleta de Mezcla", categoria:"materiales de arte", precio: 4000, descripcion: "Paleta plástica ovalada", image:"Paleta.png", stock: 50},
+    {id:51, nombre:"Carboncillos (Caja)", categoria:"materiales de arte", precio: 15000, descripcion: "Barritas de carbón para bocetos", image:"Carboncillos.png", stock: 30},
+    {id:52, nombre:"Óleos (Set Básico)", categoria:"materiales de arte", precio: 55000, descripcion: "Set de iniciación pintura al óleo", image:"Oleos.png", stock: 12},
 
-    {id:12, nombre:"Marcadores permanentes (set de 12)",categoria:"materiales de arte", precio: 29000, descripcion: "Set de marcadores permanentes de diferentes colores", image:"MarcadoresPermanentes.png",stock: 30}
+    // --- ORGANIZACION ---
+    {id:13, nombre:"Carpeta A4 con elástico", categoria:"organizacion", precio: 8500, descripcion: "Carpeta plástica resistente con cierre elástico", image:"CarpetaElastico.png", stock: 40},
+    {id:14, nombre:"Archivador de palanca", categoria:"organizacion", precio: 15000, descripcion: "Archivador lomo ancho para documentos A4", image:"ArchivadorPalanca.png", stock: 25},
+    {id:24, nombre:"Agenda 2026 Ejecutiva", categoria:"organizacion", precio: 45000, descripcion: "Agenda diaria con tapa de cuero sintético", image:"Agenda2026.png", stock: 20},
+    {id:53, nombre:"Organizador Escritorio", categoria:"organizacion", precio: 25000, descripcion: "Malla metálica con compartimentos", image:"OrganizadorMalla.png", stock: 18},
+    {id:54, nombre:"Bandeja Documentos", categoria:"organizacion", precio: 18000, descripcion: "Bandeja apilable tamaño oficio", image:"BandejaDoc.png", stock: 22},
+    {id:55, nombre:"Caja Archivo", categoria:"organizacion", precio: 6000, descripcion: "Caja de cartón armable X200", image:"CajaArchivo.png", stock: 100},
+    {id:56, nombre:"Separadores Carpetas", categoria:"organizacion", precio: 4500, descripcion: "Juego de 12 separadores A-Z", image:"Separadores.png", stock: 60},
+    {id:57, nombre:"Portafolio Ejecutivo", categoria:"organizacion", precio: 35000, descripcion: "Carpeta tipo maletín con cierre", image:"Portafolio.png", stock: 15},
+    {id:58, nombre:"Tablero Corcho 60x40", categoria:"organizacion", precio: 22000, descripcion: "Marco de madera, incluye chinches", image:"TableroCorcho.png", stock: 20},
+    {id:59, nombre:"Revistero Plástico", categoria:"organizacion", precio: 12000, descripcion: "Organizador vertical para revistas", image:"Revistero.png", stock: 30},
+
+    // --- OFICINA ---
+    {id:15, nombre:"Grapadora Metálica", categoria:"oficina", precio: 22000, descripcion: "Grapadora de escritorio resistente, incluye grapas", image:"GrapadoraMetalica.png", stock: 20},
+    {id:16, nombre:"Perforadora 2 huecos", categoria:"oficina", precio: 19500, descripcion: "Perforadora metálica con guía de papel", image:"Perforadora.png", stock: 15},
+    {id:17, nombre:"Tijeras de acero 7 pulgadas", categoria:"oficina", precio: 12000, descripcion: "Tijeras ergonómicas de acero inoxidable", image:"TijerasOficina.png", stock: 35},
+    {id:18, nombre:"Cinta Adhesiva Transparente", categoria:"oficina", precio: 3500, descripcion: "Rollo de cinta adhesiva 18mm x 50m", image:"CintaAdhesiva.png", stock: 100},
+    {id:21, nombre:"Calculadora Científica", categoria:"oficina", precio: 65000, descripcion: "Calculadora con 240 funciones", image:"CalculadoraCientifica.png", stock: 15},
+    {id:22, nombre:"Clips de colores (Caja)", categoria:"oficina", precio: 4000, descripcion: "Caja de 100 clips recubiertos de vinilo", image:"ClipsColores.png", stock: 60},
+    {id:60, nombre:"Sello Fechador", categoria:"oficina", precio: 15000, descripcion: "Sello manual con fecha ajustable", image:"SelloFechador.png", stock: 25},
+    {id:61, nombre:"Almohadilla Tinta", categoria:"oficina", precio: 5000, descripcion: "Almohadilla para sellos color negro", image:"Almohadilla.png", stock: 40},
+    {id:62, nombre:"Destructora Papel Manual", categoria:"oficina", precio: 85000, descripcion: "Trituradora pequeña para escritorio", image:"Destructora.png", stock: 8},
+    {id:63, nombre:"Pizarra Blanca 40x60", categoria:"oficina", precio: 28000, descripcion: "Superficie borrable magnética", image:"PizarraBlanca.png", stock: 15},
+
+    // --- ESCOLAR ---
+    {id:19, nombre:"Pegamento en barra 40g", categoria:"escolar", precio: 6000, descripcion: "Pegamento no tóxico lavable", image:"PegamentoBarra.png", stock: 50},
+    {id:20, nombre:"Set de Geometría", categoria:"escolar", precio: 9500, descripcion: "Incluye regla, escuadras y transportador", image:"SetGeometria.png", stock: 40},
+    {id:64, nombre:"Lonchera Térmica", categoria:"escolar", precio: 35000, descripcion: "Mantiene temperatura, diseño infantil", image:"Lonchera.png", stock: 20},
+    {id:65, nombre:"Cartuchera Doble", categoria:"escolar", precio: 18000, descripcion: "Dos compartimentos con cierre", image:"Cartuchera.png", stock: 35},
+    {id:66, nombre:"Compás Precisión", categoria:"escolar", precio: 8500, descripcion: "Metálico con adaptador de lápiz", image:"Compas.png", stock: 40},
+    {id:67, nombre:"Regla Flexible 30cm", categoria:"escolar", precio: 3000, descripcion: "Material irrompible", image:"ReglaFlex.png", stock: 60},
+    {id:68, nombre:"Etiquetas Cuadernos", categoria:"escolar", precio: 2000, descripcion: "Paquete x50 etiquetas adhesivas", image:"Etiquetas.png", stock: 100},
+    {id:69, nombre:"Forro Libros (Rollo)", categoria:"escolar", precio: 5000, descripcion: "Plástico transparente adhesivo 3m", image:"ForroLibros.png", stock: 50},
+    {id:70, nombre:"Plastilina (Caja x12)", categoria:"escolar", precio: 6500, descripcion: "Barritas de colores no tóxicas", image:"Plastilina.png", stock: 45},
+    {id:71, nombre:"Tijeras Punta Roma", categoria:"escolar", precio: 4500, descripcion: "Seguras para niños", image:"TijerasRoma.png", stock: 50},
+
+    // --- ESCRITURA ---
+    {id:23, nombre:"Resaltadores Pastel (Set x6)", categoria:"escritura", precio: 18000, descripcion: "Marcadores resaltadores de tonos suaves", image:"ResaltadoresPastel.png", stock: 30},
+    {id:72, nombre:"Portaminas 0.5mm", categoria:"escritura", precio: 7000, descripcion: "Cuerpo metálico resistente", image:"Portaminas.png", stock: 40},
+    {id:73, nombre:"Minas 0.5mm HB", categoria:"escritura", precio: 2000, descripcion: "Estuche x12 minas", image:"Minas.png", stock: 80},
+    {id:74, nombre:"Corrector Cinta", categoria:"escritura", precio: 5500, descripcion: "Corrección seca e instantánea", image:"CorrectorCinta.png", stock: 45},
+    {id:75, nombre:"Borrador Miga de Pan", categoria:"escritura", precio: 1500, descripcion: "No mancha ni rompe el papel", image:"Borrador.png", stock: 100},
+    {id:76, nombre:"Marcador Pizarra (x4)", categoria:"escritura", precio: 12000, descripcion: "Set colores básicos borrables", image:"MarcadorPizarra.png", stock: 30},
+    {id:77, nombre:"Estilógrafo 0.2mm", categoria:"escritura", precio: 9000, descripcion: "Tinta pigmentada resistente al agua", image:"Estilografo.png", stock: 25},
+    {id:78, nombre:"Lápices HB (Caja x12)", categoria:"escritura", precio: 8000, descripcion: "Lápices de grafito hexagonal", image:"LapicesHB.png", stock: 50},
+    {id:79, nombre:"Sacapuntas Depósito", categoria:"escritura", precio: 3500, descripcion: "Con contenedor para viruta", image:"Sacapuntas.png", stock: 60},
+    {id:80, nombre:"Pluma Caligrafía", categoria:"escritura", precio: 15000, descripcion: "Punta biselada para lettering", image:"PlumaLettering.png", stock: 20}
 ]

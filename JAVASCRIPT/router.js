@@ -16,7 +16,7 @@ function navegarA(nombreVista){
     })
     
     document.getElementById("search-input").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
+        if (e.key === "Enter", e.key ==="Escape") {
         navegarA("ventas");
         document.getElementById("search-overlay").classList.remove("activa");
         }
