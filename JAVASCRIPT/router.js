@@ -9,6 +9,8 @@ function navegarA(nombreVista){
 
     if (nombreVista === "productos") ListarProductos();
 
+    if (nombreVista === "ventas" && typeof renderProducts === "function") renderProducts(productos);
+
     // Refresca el historial cada vez que entras a esa vista
     if (nombreVista === "historial") renderHistorial();
 }
@@ -20,10 +22,22 @@ document.querySelectorAll(".nav-btn[data-vista]").forEach(btn => {
 });
 
 document.getElementById("search-input").addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === "Escape") {
+    if (e.key === "Enter") {
+        const termino = e.target.value.toLowerCase().trim();
         navegarA("ventas");
+
+        if (termino) {
+            const filtrados = productos.filter(p => 
+                p.nombre.toLowerCase().includes(termino) || 
+                p.categoria.toLowerCase().includes(termino)
+            );
+            renderProducts(filtrados);
+        }
+
         document.getElementById("search-overlay").classList.remove("activa");
         e.target.value="";
+    } else if (e.key === "Escape") {
+        document.getElementById("search-overlay").classList.remove("activa");
     }
 });
 
@@ -31,38 +45,6 @@ document.getElementById("btn-ver-catalogo").addEventListener("click", () => nave
 document.getElementById("btn-ver-historial").addEventListener("click", () => navegarA("historial"));
 document.getElementById("btn-ver-todo").addEventListener("click", () => navegarA("ventas"));
 document.getElementById("btn-volver-historial").addEventListener("click", () => navegarA("historial"));
-    document.getElementById("vista-"+ nombreVista).classList.add("activa");
-
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("activa"));
-    
-    const btnActiva= document.querySelector(`[data-vista="${nombreVista}"]`);
-    if (btnActiva) btnActiva.classList.add("activa"); 
-
-    if (nombreVista === "productos") ListarProductos();
-    
-
-    document.querySelectorAll(".nav-btn[data-vista]").forEach(btn => {
-        btn.addEventListener("click", () => {
-            navegarA(btn.dataset.vista);
-        });
-    })
-    
-    document.getElementById("search-input").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-        navegarA("ventas");
-        document.getElementById("search-overlay").classList.remove("activa");
-        e.target.value="";
-        }
-});;
-
-document.getElementById("btn-ver-catalogo").addEventListener("click", () => {
-    navegarA("ventas");})
-document.getElementById("btn-ver-historial").addEventListener("click", () => {
-    navegarA("historial");})
-document.getElementById("btn-ver-todo").addEventListener("click", () => {
-    navegarA("ventas");})
-document.getElementById("btn-volver-historial").addEventListener("click", () => {
-    navegarA("historial");})
 
 document.getElementById("btn-buscador").addEventListener("click", () => {
     const overlay = document.getElementById("search-overlay");
