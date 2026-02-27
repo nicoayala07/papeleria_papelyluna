@@ -1156,13 +1156,13 @@ body {
     padding: 2rem 2.5rem;
     color: var(--texto-suave);
     font-size: 0.9rem;
+
 }
 
 .vista-historial {
     padding: 2rem;
     max-width: 800px;
     margin: 0 auto;
-
 
 }
 
@@ -1461,7 +1461,6 @@ body {
     padding-top: 0.5rem;
     border-top: 1px solid var(--gris-borde);
 
-}
 
 .modal-overlay.activa {
     display: flex;
@@ -1707,4 +1706,4 @@ body {
     .sidebar {
         width: 100%;
     }
-}
+}}
