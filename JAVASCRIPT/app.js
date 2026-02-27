@@ -1,11 +1,13 @@
-const searchInput    = document.querySelector("#search-input");
-const categoryFilter = document.querySelector("#category-filter");
+const searchInput = document.querySelector("#search-input");
 
-renderProducts(productos);
+// ─── RENDER INICIAL ────────────────────────────────────────────────────────
+renderProducts(productos);   // catálogo en vista ventas
+renderFeatured();            // productos destacados en vista inicio
 
+// ─── FILTROS ───────────────────────────────────────────────────────────────
 function filtrarProductos() {
     const texto     = searchInput.value.toLowerCase();
-    const categoria = categoryFilter ? categoryFilter.value.toLowerCase() : "";
+    const categoria = document.querySelector("#category-filter").value.toLowerCase();
 
     const resultados = productos.filter(producto => {
         const coincideNombre    = producto.nombre.toLowerCase().includes(texto);
@@ -17,9 +19,23 @@ function filtrarProductos() {
 }
 
 searchInput.addEventListener("input", filtrarProductos);
-if (categoryFilter) categoryFilter.addEventListener("change", filtrarProductos);
+document.querySelector("#category-filter").addEventListener("change", filtrarProductos);
 
+// ─── CARRITO ───────────────────────────────────────────────────────────────
 document.querySelector("#vaciar-btn").addEventListener("click", () => {
     vaciarCarrito();
 });
 
+
+// ─── BOTONES HERO ──────────────────────────────────────────────────────────
+document.querySelector("#btn-ver-catalogo")?.addEventListener("click", () => {
+    document.querySelector('[data-vista="ventas"]').click();
+});
+
+document.querySelector("#btn-ver-historial")?.addEventListener("click", () => {
+    document.querySelector('[data-vista="historial"]').click();
+});
+
+document.querySelector("#btn-ver-todo")?.addEventListener("click", () => {
+    document.querySelector('[data-vista="ventas"]').click();
+});

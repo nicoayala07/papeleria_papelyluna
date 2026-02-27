@@ -1,5 +1,6 @@
-function navegarA(nombreVista) {
+function navegarA(nombreVista){
     document.querySelectorAll(".vista").forEach(v => v.classList.remove("activa"));
+
     document.getElementById("vista-" + nombreVista).classList.add("activa");
 
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("activa"));
@@ -30,6 +31,38 @@ document.getElementById("btn-ver-catalogo").addEventListener("click", () => nave
 document.getElementById("btn-ver-historial").addEventListener("click", () => navegarA("historial"));
 document.getElementById("btn-ver-todo").addEventListener("click", () => navegarA("ventas"));
 document.getElementById("btn-volver-historial").addEventListener("click", () => navegarA("historial"));
+    document.getElementById("vista-"+ nombreVista).classList.add("activa");
+
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("activa"));
+    
+    const btnActiva= document.querySelector(`[data-vista="${nombreVista}"]`);
+    if (btnActiva) btnActiva.classList.add("activa"); 
+
+    if (nombreVista === "productos") ListarProductos();
+    
+
+    document.querySelectorAll(".nav-btn[data-vista]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            navegarA(btn.dataset.vista);
+        });
+    })
+    
+    document.getElementById("search-input").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+        navegarA("ventas");
+        document.getElementById("search-overlay").classList.remove("activa");
+        e.target.value="";
+        }
+});;
+
+document.getElementById("btn-ver-catalogo").addEventListener("click", () => {
+    navegarA("ventas");})
+document.getElementById("btn-ver-historial").addEventListener("click", () => {
+    navegarA("historial");})
+document.getElementById("btn-ver-todo").addEventListener("click", () => {
+    navegarA("ventas");})
+document.getElementById("btn-volver-historial").addEventListener("click", () => {
+    navegarA("historial");})
 
 document.getElementById("btn-buscador").addEventListener("click", () => {
     const overlay = document.getElementById("search-overlay");
@@ -39,6 +72,6 @@ document.getElementById("btn-buscador").addEventListener("click", () => {
     }
 });
 
-document.getElementById("btn-cerrar-buscador").addEventListener("click", () => {
+document.getElementById("btn-cerrar-buscador").addEventListener("click", ()=> {
     document.getElementById("search-overlay").classList.remove("activa");
 });
