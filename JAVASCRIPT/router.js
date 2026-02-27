@@ -21,6 +21,18 @@ document.querySelectorAll(".nav-btn[data-vista]").forEach(btn => {
     });
 });
 
+function cerrarBuscador(reiniciar = true) {
+    const overlay = document.getElementById("search-overlay");
+    const input = document.getElementById("search-input");
+
+    overlay.classList.remove("activa");
+
+    if (reiniciar) {
+        input.value = "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+}
+
 document.getElementById("search-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         const termino = e.target.value.toLowerCase().trim();
@@ -34,10 +46,9 @@ document.getElementById("search-input").addEventListener("keydown", (e) => {
             renderProducts(filtrados);
         }
 
-        document.getElementById("search-overlay").classList.remove("activa");
-        e.target.value="";
+        cerrarBuscador(true);
     } else if (e.key === "Escape") {
-        document.getElementById("search-overlay").classList.remove("activa");
+        cerrarBuscador(true);
     }
 });
 
@@ -55,5 +66,11 @@ document.getElementById("btn-buscador").addEventListener("click", () => {
 });
 
 document.getElementById("btn-cerrar-buscador").addEventListener("click", ()=> {
-    document.getElementById("search-overlay").classList.remove("activa");
+    cerrarBuscador(true);
+});
+
+document.getElementById("search-overlay").addEventListener("click", (e) => {
+    if (e.target.id === "search-overlay") {
+        cerrarBuscador(true);
+    }
 });
