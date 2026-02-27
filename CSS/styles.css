@@ -1614,12 +1614,37 @@ body {
 ============================================================ */
 @media (max-width: 900px) {
     .hero {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 0.8fr; /* se mantiene a la derecha pero más pequeña */
         padding: 2rem 1.5rem;
+        align-items: center;
     }
 
+    /* Mantener la imagen a la derecha (no abajo) */
     .hero__visual {
-        display: none;
+        display: flex;
+        order: 0;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .hero__img-container {
+        width: 100%;
+        max-width: 300px; /* más pequeña en pantallas medianas */
+    }
+
+    /* Evita que “desaparezca” y se adapta al ancho */
+    .hero__img--main {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 38vh;
+        object-fit: contain;
+    }
+
+    .hero__img--secondary {
+        width: 45%;
+        right: -10px;
+        bottom: -10px;
     }
 
     .featured {
@@ -1791,6 +1816,19 @@ body {
 }
 
 @media (max-width: 600px) {
+    .hero {
+        grid-template-columns: 1fr; /* aquí sí se va a una columna para que no quede apretado */
+    }
+
+    .hero__visual {
+        justify-content: center;
+        margin-top: 1.25rem;
+    }
+
+    .hero__img-container {
+        max-width: 260px;
+    }
+
     .hero__title {
         font-size: 2.5rem;
     }
