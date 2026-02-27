@@ -45,13 +45,52 @@ function registrarVenta(carrito) {
 
 
 function eliminarVenta(ventaId) {
-    const historial = cargarHistorial().filter(v => v.id !== ventaId);
-    guardarHistorial(historial);
+    const historial = cargarHistorial();
+    const venta = historial.find(v => v.id === ventaId);
+
+    // Restaurar stock de los productos de esa venta
+    if (venta) {
+        const stockGuardado = JSON.parse(localStorage.getItem("papelyluna_stock") || "[]");
+
+        venta.productos.forEach(p => {
+            // En el array de productos (data.js)
+            const prodOriginal = productos.find(prod => prod.id === p.id);
+            if (prodOriginal) prodOriginal.stock += p.cantidad;
+
+            // En el localStorage de stock
+            const stockItem = stockGuardado.find(s => s.id === p.id);
+            if (stockItem) stockItem.stock += p.cantidad;
+        });
+
+        localStorage.setItem("papelyluna_stock", JSON.stringify(stockGuardado));
+        actualizarStockVisual();
+    }
+
+    const nuevoHistorial = historial.filter(v => v.id !== ventaId);
+    guardarHistorial(nuevoHistorial);
     renderHistorial();
 }
 
 function limpiarHistorial() {
     if (!confirm("¿Seguro que quieres borrar todo el historial?")) return;
+
+    const historial = cargarHistorial();
+    const stockGuardado = JSON.parse(localStorage.getItem("papelyluna_stock") || "[]");
+
+    historial.forEach(venta => {
+        venta.productos.forEach(p => {
+            // En el array de productos (data.js)
+            const prodOriginal = productos.find(prod => prod.id === p.id);
+            if (prodOriginal) prodOriginal.stock += p.cantidad;
+
+            // En el localStorage de stock
+            const stockItem = stockGuardado.find(s => s.id === p.id);
+            if (stockItem) stockItem.stock += p.cantidad;
+        });
+    });
+
+    localStorage.setItem("papelyluna_stock", JSON.stringify(stockGuardado));
+    actualizarStockVisual();
     guardarHistorial([]);
     renderHistorial();
 }
@@ -190,6 +229,6 @@ function renderFactura(ventaId) {
         </div>
     `;
 
-    // Navegar a la vista factura
+    
     navegarA("factura");
 }
