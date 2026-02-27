@@ -1134,6 +1134,7 @@ body {
 /* ============================================================
    15. VISTAS INTERNAS (historial, factura, productos)
 ============================================================ */
+
 .vista-header {
     display: flex;
     justify-content: space-between;
@@ -1161,6 +1162,7 @@ body {
     padding: 2rem;
     max-width: 800px;
     margin: 0 auto;
+
 
 }
 
@@ -1288,6 +1290,7 @@ body {
 /* ============================================================
    16. MODAL DE PAGO
 ============================================================ */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -1301,6 +1304,7 @@ body {
     justify-content: center;
     backdrop-filter: blur(8px);
 }
+
 .vista-factura {
     padding: 2rem;
     max-width: 720px;
@@ -1456,6 +1460,7 @@ body {
     gap: 0.75rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--gris-borde);
+
 }
 
 .modal-overlay.activa {
