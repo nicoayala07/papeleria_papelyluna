@@ -92,11 +92,11 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             if (typeof registrarVenta === 'function') {
-    registrarVenta(carritoActual); 
-         }
+                registrarVenta(carritoActual); 
+            }
 
             modalCobro.classList.remove("activa");
-            if (typeof vaciarCarrito === 'function') vaciarCarrito();
+            if (typeof confirmarCompra === 'function') confirmarCompra(); // ← CAMBIADO
 
             mostrarVistaFactura(datosVenta);
         });
@@ -160,3 +160,29 @@ function mostrarVistaFactura(venta) {
         </div>
     `;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
