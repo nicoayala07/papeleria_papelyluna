@@ -654,3 +654,49 @@ body {
         margin-left: 0;
     }
 }
+
+/* --- ESTILOS DEL MODAL DE COBRO --- */
+.modal-pos {
+    background: var(--negro-secundario);
+    padding: 2.5rem;
+    border-radius: var(--radio);
+    border: 1px solid var(--principal);
+    width: 95%;
+    max-width: 500px;
+    position: relative;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.modal-pos h3 {
+    color: var(--amarillo);
+    font-family: 'Segoe UI', Arial, sans-serif; /* Fuente unificada */
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.total-display {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gris-borde);
+    padding-bottom: 1rem;
+}
+
+.total-display .monto {
+    color: var(--blanco);
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.efectivo-box {
+    background: var(--negro-profundo);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px dashed var(--principal-brillo);
+}
