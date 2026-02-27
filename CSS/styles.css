@@ -610,11 +610,184 @@ body {
     color: var(--texto);
     border: 1px solid var(--gris-borde);
 }
-
-
 /* ============================================================
    14. VISTA PRODUCTOS — CRUD
 ============================================================ */
+#vista-productos.activa {
+    display: flex;
+    flex: 1;
+    min-height: 100vh;
+}
+
+.productos__layout {
+    display: flex;
+    flex: 1;
+}
+
+.productos__form {
+    width: 340px;
+    background: #1c1c26;
+    border-left: 1px solid var(--gris-borde);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: var(--sombra);
+    padding: 1.5rem;
+    gap: 1.5rem;
+}
+.Form__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    padding: 1rem 1.25rem;
+    border-radius: var(--radio);
+}
+.productos__form-title {
+    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    padding: 1rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    border-radius: var(--radio);
+    text-align: center;
+    border: 2px solid var(--principal-brillo);
+}
+
+.form__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.form__group label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--texto-suave);
+    font-weight: 600;
+}
+
+.form__group input,
+.form__group select {
+    background: var(--negro-profundo);
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    color: var(--texto);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.form__group input:focus,
+.form__group select:focus {
+    border-color: var(--principal);
+}
+
+.form__actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+/* LISTA — derecha */
+.productos__lista {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.productos__lista-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* TABLA DE PRODUCTOS */
+.producto-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    background: var(--negro-secundario);
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    margin-bottom: 0.4rem;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.producto-item:hover {
+    border-color: var(--principal);
+    background: #1f1f2e;
+}
+
+.producto__item-nombre {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+.producto__item-precio {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--amarillo);
+}
+
+.producto__item-codigo {
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+    font-family: monospace;
+}
+
+.producto__item-acciones {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.btn-editar,
+.btn-eliminar-prod {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.btn-editar {
+    background: rgba(109, 40, 217, 0.2);
+    color: var(--principal-brillo);
+    border: 1px solid var(--principal);
+}
+
+.btn-editar:hover {
+    background: var(--principal);
+    color: var(--blanco);
+}
+
+.btn-eliminar-prod {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--rojo);
+    border: 1px solid var(--rojo);
+}
+
+.btn-eliminar-prod:hover {
+    background: var(--rojo);
+    color: var(--blanco);
+}
 
 /* ============================================================
    15. VISTA HISTORIAL
@@ -629,32 +802,6 @@ body {
 /* ============================================================
    17. MODAL DE PAGO
 ============================================================ */
-
-
-/* ============================================================
-   18. RESPONSIVE
-============================================================ */
-@media (max-width: 768px) {
-    .vista-ventas__layout {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-    }
-
-    #products-container {
-        grid-template-columns: repeat(auto-fill,  minmax(140px, 1fr));
-    }
-
-    .main-container {
-        margin-left: 0;
-    }
-}
-
 /* --- ESTILOS DEL MODAL DE COBRO --- */
 .modal-pos {
     background: var(--negro-secundario);
@@ -699,4 +846,28 @@ body {
     border-radius: 12px;
     margin-bottom: 1.5rem;
     border: 1px dashed var(--principal-brillo);
+}
+
+/* ============================================================
+   18. RESPONSIVE
+============================================================ */
+@media (max-width: 768px) {
+    .vista-ventas__layout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    #products-container {
+        grid-template-columns: repeat(auto-fill,  minmax(140px, 1fr));
+    }
+
+    .main-container {
+        margin-left: 0;
+    }
 }
