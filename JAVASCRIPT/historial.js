@@ -190,6 +190,6 @@ function renderFactura(ventaId) {
         </div>
     `;
 
-    // Navegar a la vista factura
+    
     navegarA("factura");
 }
