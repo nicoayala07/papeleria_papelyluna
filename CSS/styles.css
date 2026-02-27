@@ -700,3 +700,138 @@ body {
     margin-bottom: 1.5rem;
     border: 1px dashed var(--principal-brillo);
 }
+
+/* --- ESTILOS DE LA VISTA FACTURA --- */
+
+.ticket-container {
+    background: var(--negro-profundo);
+    color: var(--texto);
+    padding: 2rem;
+    border-radius: var(--radio);
+    border: 1px dashed var(--principal);
+    max-width: 450px;
+    margin: 2rem auto;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.ticket-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--amarillo);
+    padding-bottom: 1rem;
+}
+
+.ticket-header h2 {
+    color: var(--amarillo);
+    margin: 0;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+}
+
+.ticket-info-secundaria {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    color: var(--texto-suave);
+}
+
+.ticket-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.ticket-tabla thead {
+    border-bottom: 1px solid var(--gris-borde);
+    color: var(--amarillo);
+}
+
+.ticket-tabla th, .ticket-tabla td {
+    padding: 10px 5px;
+}
+
+.ticket-resumen-caja {
+    background: var(--negro-secundario);
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.resumen-fila {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.total-destacado {
+    border-top: 1px solid var(--gris-borde);
+    padding-top: 10px;
+    margin-top: 5px;
+    color: var(--amarillo);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.ticket-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--texto-suave);
+    font-size: 0.8rem;
+}
+
+/* Centrar el botón de nueva venta */
+.ticket-acciones {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-bottom: 3rem;
+    width: 100%;
+}
+
+/* Contenedor del Ticket */
+.ticket-container {
+    background: var(--negro-profundo);
+    color: var(--texto);
+    padding: 2rem;
+    border-radius: var(--radio);
+    border: 1px dashed var(--principal);
+    max-width: 400px;
+    margin: 0 auto;
+    font-family: 'Courier New', Courier, monospace; /* Fuente tipo ticket */
+}
+
+.ticket-header {
+    text-align: center;
+    border-bottom: 2px solid var(--amarillo);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.ticket-tabla {
+    width: 100%;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    border-collapse: collapse;
+}
+
+.ticket-tabla th {
+    border-bottom: 1px solid #444;
+    text-align: left;
+    color: var(--amarillo);
+}
+
+.ticket-resumen-caja {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.total-destacado {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--amarillo);
+}
