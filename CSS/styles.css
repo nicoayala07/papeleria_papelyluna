@@ -2,40 +2,33 @@
    1. VARIABLES Y RESET
 ============================================================ */
 :root {
-    /* Paleta principal (tema morado) */
     --principal: #6d28d9;
     --principal-brillo: #a855f7;
     --principal-oscuro: #3b0764;
 
-    /* Fondos oscuros */
-    --negro-profundo: #0f0f14;       /* antes --negro */
-    --negro-secundario: #1a1a22;     /* antes --negro-2 / --negro-3 */
+    --negro-profundo: #0f0f14;
+    --negro-secundario: #1a1a22;
     --negro: #0a0a0a;
     --negro-2: #111111;
     --negro-3: #1a1a1a;
     --negro-4: #222222;
 
-    /* Amarillos */
     --amarillo: #facc15;
     --amarillo-oscuro: #eab308;
-    --amarillo-2: #e6b800;           /* alias legacy */
+    --amarillo-2: #e6b800;
 
-    /* Textos y blancos */
     --texto: #f5f5f5;
     --texto-suave: #9ca3af;
     --blanco: #ffffff;
     --blanco-2: #e0d8cc;
 
-    /* Semánticos */
     --rojo: #ef4444;
     --verde: #10b981;
 
-    /* Grises */
     --gris: #666666;
     --gris-2: #444444;
     --gris-borde: #2a2a35;
 
-    /* Utilidades */
     --sombra: 0 8px 25px rgba(109, 40, 217, 0.35);
     --radio: 14px;
     --sidebar-w: 64px;
@@ -67,7 +60,6 @@ body {
     min-height: 100vh;
 }
 
-/* Compatibilidad con .app-content (legacy) */
 .app-content {
     margin-left: var(--sidebar-w);
     flex: 1;
@@ -231,7 +223,6 @@ body {
 
 /* ============================================================
    5. TICKER
-   Soporta tanto .tickers (nuevo) como .ticker (legacy)
 ============================================================ */
 .tickers,
 .ticker {
@@ -923,6 +914,7 @@ body {
     color: var(--texto);
     border: 1px solid var(--gris-borde);
 }
+
 .btn--sm {
     height: 42px;
     padding: 0 1.1rem;
@@ -948,6 +940,7 @@ body {
 .historial__acciones .btn--sm i {
     font-size: 1rem;
 }
+
 
 /* ============================================================
    14. VISTA PRODUCTOS - CRUD
@@ -1038,7 +1031,6 @@ body {
     padding-top: 1rem;
 }
 
-/* Lista de productos - panel izquierdo */
 .productos__lista {
     flex: 1;
     overflow-y: auto;
@@ -1052,7 +1044,6 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Tabla de productos */
 .producto-item {
     display: grid;
     grid-template-columns: 1fr auto auto auto;
@@ -1132,9 +1123,8 @@ body {
 
 
 /* ============================================================
-   15. VISTAS INTERNAS (historial, factura, productos)
+   15. VISTA HISTORIAL
 ============================================================ */
-
 .vista-header {
     display: flex;
     justify-content: space-between;
@@ -1181,7 +1171,6 @@ body {
     text-transform: uppercase;
 }
 
-/* Estado vacío */
 .historial__empty {
     display: flex;
     flex-direction: column;
@@ -1210,7 +1199,6 @@ body {
     color: var(--texto-suave);
 }
 
-/* Cards del historial */
 .historial__card {
     display: flex;
     justify-content: space-between;
@@ -1287,9 +1275,11 @@ body {
     gap: 0.4rem;
 }
 
+
 /* ============================================================
-   16. MODAL DE PAGO
+   16. VISTA FACTURA
 ============================================================ */
+
 
 .modal-overlay {
     position: fixed;
@@ -1321,7 +1311,6 @@ body {
     gap: 1.75rem;
 }
 
-/* Cabecera de factura */
 .factura__header {
     display: flex;
     justify-content: space-between;
@@ -1370,7 +1359,6 @@ body {
     color: var(--texto-suave);
 }
 
-/* Tabla de productos */
 .factura__tabla {
     width: 100%;
     border-collapse: collapse;
@@ -1379,7 +1367,6 @@ body {
 
 .factura__tabla thead {
     background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
-    border-radius: 8px;
 }
 
 .factura__tabla thead tr th {
@@ -1427,7 +1414,6 @@ body {
     text-align: center;
 }
 
-/* Totales */
 .factura__totales {
     display: flex;
     flex-direction: column;
@@ -1453,13 +1439,31 @@ body {
     margin-top: 0.25rem;
 }
 
-/* Footer factura */
 .factura__footer {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--gris-borde);
+
+}
+
+
+/* ============================================================
+   17. MODAL DE PAGO
+============================================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
 }
 
 
@@ -1512,8 +1516,10 @@ body {
     border: 1px dashed var(--principal-brillo);
 }
 
-/* --- ESTILOS DE LA VISTA FACTURA --- */
 
+/* ============================================================
+   18. TICKET / COMPROBANTE DE VENTA
+============================================================ */
 .ticket-container {
     background: var(--negro-profundo);
     color: var(--texto);
@@ -1522,7 +1528,7 @@ body {
     border: 1px dashed var(--principal);
     max-width: 450px;
     margin: 2rem auto;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
@@ -1560,14 +1566,15 @@ body {
     color: var(--amarillo);
 }
 
-.ticket-tabla th, .ticket-tabla td {
+.ticket-tabla th,
+.ticket-tabla td {
     padding: 10px 5px;
 }
 
 .ticket-resumen-caja {
-    background: var(--negro-secundario);
-    padding: 1.5rem;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 4px;
 }
 
 .resumen-fila {
@@ -1577,12 +1584,14 @@ body {
 }
 
 .total-destacado {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--amarillo);
     border-top: 1px solid var(--gris-borde);
     padding-top: 10px;
     margin-top: 5px;
-    color: var(--amarillo);
-    font-weight: 700;
-    font-size: 1.2rem;
 }
 
 .ticket-footer {
@@ -1592,7 +1601,6 @@ body {
     font-size: 0.8rem;
 }
 
-/* Centrar el botón de nueva venta */
 .ticket-acciones {
     display: flex;
     justify-content: center;
@@ -1601,63 +1609,18 @@ body {
     width: 100%;
 }
 
-/* Contenedor del Ticket */
-.ticket-container {
-    background: var(--negro-profundo);
-    color: var(--texto);
-    padding: 2rem;
-    border-radius: var(--radio);
-    border: 1px dashed var(--principal);
-    max-width: 400px;
-    margin: 0 auto;
-    font-family: 'Courier New', Courier, monospace; /* Fuente tipo ticket */
-}
 
-.ticket-header {
-    text-align: center;
-    border-bottom: 2px solid var(--amarillo);
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-}
-
-.ticket-tabla {
-    width: 100%;
-    margin: 1.5rem 0;
-    font-size: 0.9rem;
-    border-collapse: collapse;
-}
-
-.ticket-tabla th {
-    border-bottom: 1px solid #444;
-    text-align: left;
-    color: var(--amarillo);
-}
-
-.ticket-resumen-caja {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 1rem;
-    border-radius: 4px;
-}
-
-.total-destacado {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--amarillo);
-}
 /* ============================================================
-   17. RESPONSIVE
+   19. RESPONSIVE
 ============================================================ */
 @media (max-width: 900px) {
-    .hero__c {
+    .hero {
         grid-template-columns: 1fr;
         padding: 2rem 1.5rem;
     }
 
     .hero__visual {
         display: none;
-
     }
 
     .featured {

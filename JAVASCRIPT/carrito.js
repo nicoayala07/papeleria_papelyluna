@@ -1,27 +1,66 @@
+const CLAVE_STOCK = "papelyluna_stock";
+
 let carrito = [];
+
+// ── Persistencia de stock ─────────────────────────────────────
+
+function guardarStock() {
+    const stockData = productos.map(p => ({ id: p.id, stock: p.stock }));
+    localStorage.setItem(CLAVE_STOCK, JSON.stringify(stockData));
+}
+
+function cargarStock() {
+    const datos = localStorage.getItem(CLAVE_STOCK);
+    if (!datos) return;
+    const stockGuardado = JSON.parse(datos);
+    stockGuardado.forEach(item => {
+        const prod = productos.find(p => p.id === item.id);
+        if (prod) prod.stock = item.stock;
+    });
+}
+
+// ── Inicialización ────────────────────────────────────────────
+
+cargarStock();
+
+document.addEventListener("DOMContentLoaded", () => {
+    actualizarCarrito();
+    actualizarStockVisual();
+});
+
+// ── Funciones del carrito ─────────────────────────────────────
 
 function obtenerCarrito() {
     return carrito;
 }
 
+// Cancelar compra — SÍ devuelve stock
 function vaciarCarrito() {
     carrito.forEach(item => {
         const prodOriginal = productos.find(p => p.id === item.id);
         if (prodOriginal) prodOriginal.stock += item.cantidad;
     });
     carrito = [];
+    guardarStock();
+    actualizarStockVisual();
+    actualizarCarrito();
+}
+
+// Confirmar compra — NO devuelve stock (la venta se realizó)
+function confirmarCompra() {
+    carrito = [];
+    guardarStock();
     actualizarStockVisual();
     actualizarCarrito();
 }
 
 function agregarAlCarrito(producto) {
-    const productoExistente = carrito.find(item => item.id === producto.id);
-
     if (producto.stock <= 0) {
         alert("No hay stock disponible");
         return;
     }
 
+    const productoExistente = carrito.find(item => item.id === producto.id);
     if (productoExistente) {
         productoExistente.cantidad += 1;
     } else {
@@ -29,6 +68,7 @@ function agregarAlCarrito(producto) {
     }
 
     producto.stock -= 1;
+    guardarStock();
     actualizarStockVisual();
     actualizarCarrito();
 }
@@ -40,6 +80,7 @@ function eliminarDelCarrito(productoId) {
         if (prodOriginal) prodOriginal.stock += item.cantidad;
     }
     carrito = carrito.filter(item => item.id !== productoId);
+    guardarStock();
     actualizarStockVisual();
     actualizarCarrito();
 }
@@ -61,17 +102,18 @@ function cambiarCantidad(productoId, operacion) {
         }
     }
 
+    guardarStock();
     actualizarStockVisual();
     actualizarCarrito();
 }
+
+// ── Render visual ─────────────────────────────────────────────
 
 function actualizarStockVisual() {
     productos.forEach(producto => {
         const card = document.querySelector(`[data-id="${producto.id}"]`);
         const stockSpan = card ? card.querySelector(".stock-value") : null;
-        if (stockSpan) {
-            stockSpan.textContent = producto.stock;
-        }
+        if (stockSpan) stockSpan.textContent = producto.stock;
     });
 }
 
@@ -143,3 +185,25 @@ function actualizarCarrito() {
     if (envioEl) envioEl.textContent = `$${envio.toLocaleString("es-CO")}`;
     if (totalEl) totalEl.textContent = `$${total.toLocaleString("es-CO")}`;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
