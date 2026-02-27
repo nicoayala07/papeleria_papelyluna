@@ -91,9 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 pagoCon: metodo === "Efectivo" ? parseFloat(inputEfectivo.value) : total
             };
 
-            if (typeof guardarVentaEnHistorial === 'function') {
-                guardarVentaEnHistorial(datosVenta);
-            }
+            if (typeof registrarVenta === 'function') {
+    registrarVenta(carritoActual); 
+         }
 
             modalCobro.classList.remove("activa");
             if (typeof vaciarCarrito === 'function') vaciarCarrito();

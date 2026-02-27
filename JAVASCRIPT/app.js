@@ -23,16 +23,3 @@ document.querySelector("#vaciar-btn").addEventListener("click", () => {
     vaciarCarrito();
 });
 
-document.querySelector("#checkout-btn").addEventListener("click", () => {
-    const carrito = obtenerCarrito();
-
-    if (carrito.length === 0) {
-        alert("Tu carrito está vacío.");
-        return;
-    }
-
-    registrarVenta(carrito);
-    confirmarCompra();    
-    navegarA("historial");
-    renderHistorial();
-});
