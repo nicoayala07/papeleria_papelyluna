@@ -923,7 +923,31 @@ body {
     color: var(--texto);
     border: 1px solid var(--gris-borde);
 }
+.btn--sm {
+    height: 42px;
+    padding: 0 1.1rem;
+    font-size: 0.9rem;
+    border-radius: 9px;
+    flex: unset;
+    min-width: 42px;
+}
 
+.btn--outline {
+    background: transparent;
+    color: var(--principal-brillo);
+    border: 1px solid var(--principal);
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn--outline:hover {
+    background: var(--principal);
+    color: var(--blanco);
+    opacity: 1;
+}
+
+.historial__acciones .btn--sm i {
+    font-size: 1rem;
+}
 
 /* ============================================================
    14. VISTA PRODUCTOS - CRUD
@@ -1133,6 +1157,133 @@ body {
     font-size: 0.9rem;
 }
 
+.vista-historial {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+
+}
+
+.historial__topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.historial__count {
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* Estado vacío */
+.historial__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    text-align: center;
+    gap: 0.75rem;
+}
+
+.historial__empty-icon {
+    font-size: 3.5rem;
+    color: var(--principal);
+    opacity: 0.4;
+    margin-bottom: 0.5rem;
+}
+
+.historial__empty-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+.historial__empty-sub {
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+}
+
+/* Cards del historial */
+.historial__card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e1e2a;
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    gap: 1rem;
+}
+
+.historial__card:hover {
+    border-color: var(--principal);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(109, 40, 217, 0.2);
+}
+
+.historial__card-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.historial__numero {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--amarillo);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    min-width: 52px;
+}
+
+.historial__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.historial__fecha {
+    font-size: 0.82rem;
+    color: var(--texto-suave);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.historial__resumen {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+.historial__card-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.historial__total {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--verde);
+    white-space: nowrap;
+}
+
+.historial__acciones {
+    display: flex;
+    gap: 0.4rem;
+}
 
 /* ============================================================
    16. MODAL DE PAGO
@@ -1149,6 +1300,162 @@ body {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(8px);
+}
+.vista-factura {
+    padding: 2rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.factura {
+    background: #1e1e2a;
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+/* Cabecera de factura */
+.factura__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--amarillo);
+    gap: 1rem;
+}
+
+.factura__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.factura__logo-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--amarillo);
+}
+
+.factura__logo-nombre {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--blanco);
+    letter-spacing: 0.02em;
+}
+
+.factura__meta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.factura__numero {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--amarillo);
+}
+
+.factura__fecha {
+    font-size: 0.82rem;
+    color: var(--texto-suave);
+}
+
+/* Tabla de productos */
+.factura__tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.factura__tabla thead {
+    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    border-radius: 8px;
+}
+
+.factura__tabla thead tr th {
+    padding: 0.65rem 0.85rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--blanco);
+}
+
+.factura__tabla thead tr th:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.factura__tabla thead tr th:last-child {
+    border-radius: 0 8px 8px 0;
+    text-align: right;
+}
+
+.factura__tabla tbody tr {
+    border-bottom: 1px solid var(--gris-borde);
+    transition: background 0.15s;
+}
+
+.factura__tabla tbody tr:hover {
+    background: rgba(109, 40, 217, 0.08);
+}
+
+.factura__tabla tbody td {
+    padding: 0.7rem 0.85rem;
+    color: var(--texto);
+    vertical-align: middle;
+}
+
+.factura__tabla tbody td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: var(--amarillo);
+}
+
+.factura__tabla tbody td:nth-child(3) {
+    color: var(--texto-suave);
+    text-align: center;
+}
+
+/* Totales */
+.factura__totales {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.factura__fila {
+    display: flex;
+    gap: 2.5rem;
+    font-size: 0.88rem;
+    color: var(--texto-suave);
+    min-width: 240px;
+    justify-content: space-between;
+}
+
+.factura__fila--total {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--verde);
+    border-top: 1px solid var(--gris-borde);
+    padding-top: 0.6rem;
+    margin-top: 0.25rem;
+}
+
+/* Footer factura */
+.factura__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--gris-borde);
 }
 
 .modal-overlay.activa {
