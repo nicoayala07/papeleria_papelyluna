@@ -1,6 +1,7 @@
 const CLAVE_CARRITO = "papelyluna_carrito";
 const CLAVE_STOCK   = "papelyluna_stock";
 
+// ── Persistencia ─────────────────────────────────────────────
 
 function guardarCarritoEnStorage() {
     localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
@@ -26,17 +27,17 @@ function cargarStockDesdeStorage() {
     });
 }
 
-
+// ── Inicialización ────────────────────────────────────────────
 
 let carrito = cargarCarritoDesdeStorage();
+cargarStockDesdeStorage();
 
 document.addEventListener("DOMContentLoaded", () => {
-    cargarStockDesdeStorage();
     actualizarCarrito();
     actualizarStockVisual();
 });
 
-
+// ── Funciones del carrito ─────────────────────────────────────
 
 function obtenerCarrito() {
     return carrito;
@@ -104,6 +105,7 @@ function cambiarCantidad(productoId, operacion) {
 }
 
 function vaciarCarrito() {
+    // Devuelve el stock (cancelar compra)
     carrito.forEach(item => {
         const prodOriginal = productos.find(p => p.id === item.id);
         if (prodOriginal) prodOriginal.stock += item.cantidad;
@@ -116,7 +118,17 @@ function vaciarCarrito() {
     actualizarCarrito();
 }
 
+function confirmarCompra() {
+    // NO devuelve stock — la compra se realizó
+    carrito = [];
 
+    guardarCarritoEnStorage();
+    guardarStockEnStorage();
+    actualizarStockVisual();
+    actualizarCarrito();
+}
+
+// ── Render visual ─────────────────────────────────────────────
 
 function actualizarStockVisual() {
     productos.forEach(producto => {
