@@ -1,113 +1,119 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Referencias
-    const modalCobro = document.getElementById("modal-cobro");
-    const selectMetodo = document.getElementById("metodo-pago");
-    const inputEfectivo = document.getElementById("efectivo-recibido");
-    const spanCambio = document.getElementById("cambio-valor");
-    const spanTotalModal = document.getElementById("modal-total-valor");
-    const btnCheckout = document.querySelector("#checkout-btn");
+    const modalCobro     = document.getElementById("modal-cobro");
+    const selectMetodo   = document.getElementById("metodo-pago");
+    const inputEfectivo  = document.getElementById("efectivo-recibido");
+    const spanCambio     = document.getElementById("cambio-valor");
+    const spanTotal      = document.getElementById("modal-total-valor");
+    const secEfectivo    = document.getElementById("seccion-efectivo");
+    const secDebe        = document.getElementById("seccion-debe");
+    const btnCobrar      = document.getElementById("btn-cobrar");
 
-    if (!btnCheckout) return;
+    // Abrir modal de cobro
+    btnCobrar?.addEventListener("click", () => {
+        const items = obtenerCarrito();
+        if (items.length === 0) return;
 
-    // 1. Abrir Modal
-    btnCheckout.addEventListener("click", () => {
-        const carritoActual = obtenerCarrito();
-        if (carritoActual.length === 0) {
-            alert("No se puede cerrar una venta sin productos.");
-            return;
-        }
+        const total = calcularTotal();
+        spanTotal.textContent = "$" + total.toLocaleString("es-CO");
+        spanTotal.dataset.totalNum = total;
 
-        const subtotal = carritoActual.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-        const envio = subtotal > 0 ? 5000 : 0;
-        const totalVenta = subtotal + envio;
+        // Resetear campos
+        if (inputEfectivo) inputEfectivo.value = "";
+        if (spanCambio) { spanCambio.textContent = "$0"; spanCambio.className = "cambio-valor"; }
+        selectMetodo.value = "Efectivo";
+        secEfectivo.style.display = "flex";
+        secDebe.style.display = "none";
 
-        spanTotalModal.textContent = `$${totalVenta.toLocaleString("es-CO")}`;
-        spanTotalModal.dataset.totalNum = totalVenta;
-        
         modalCobro.classList.add("activa");
+        if (inputEfectivo) inputEfectivo.focus();
     });
 
-    // 2. Lógica del Cambio (DINÁMICO)
-    if (inputEfectivo) {
-        inputEfectivo.addEventListener("input", () => {
-            const total = parseFloat(spanTotalModal.dataset.totalNum) || 0;
+    // Cambio dinámico al escribir efectivo
+    inputEfectivo?.addEventListener("input", () => {
+        const total    = parseFloat(spanTotal.dataset.totalNum) || 0;
+        const recibido = parseFloat(inputEfectivo.value) || 0;
+        const cambio   = recibido - total;
+
+        if (cambio >= 0) {
+            spanCambio.textContent = "$" + cambio.toLocaleString("es-CO");
+            spanCambio.className = "cambio-valor";
+        } else {
+            spanCambio.textContent = "Monto insuficiente";
+            spanCambio.className = "cambio-valor insuficiente";
+        }
+    });
+
+    // Cambiar sección visible según método de pago
+    selectMetodo?.addEventListener("change", () => {
+        const metodo = selectMetodo.value;
+        secEfectivo.style.display = metodo === "Efectivo" ? "flex" : "none";
+        secDebe.style.display     = metodo === "Debe"     ? "flex" : "none";
+    });
+
+    // Cancelar cobro
+    const cerrarModal = () => {
+        modalCobro.classList.remove("activa");
+    };
+    document.getElementById("btn-cancelar-cobro")?.addEventListener("click", cerrarModal);
+    document.getElementById("btn-cancelar-cobro-2")?.addEventListener("click", cerrarModal);
+
+    // Confirmar venta
+    document.getElementById("btn-confirmar-venta")?.addEventListener("click", () => {
+        const total   = parseFloat(spanTotal.dataset.totalNum) || 0;
+        const metodo  = selectMetodo.value;
+        const items   = obtenerCarrito();
+
+        // Validación efectivo
+        if (metodo === "Efectivo") {
             const recibido = parseFloat(inputEfectivo.value) || 0;
-            const cambio = recibido - total;
-
-            if (spanCambio) {
-                if (cambio >= 0) {
-                    spanCambio.textContent = `$${cambio.toLocaleString("es-CO")}`;
-                    spanCambio.style.color = "var(--verde)";
-                } else {
-                    spanCambio.textContent = "Monto insuficiente";
-                    spanCambio.style.color = "var(--rojo)";
-                }
+            if (recibido < total) {
+                alert("El monto recibido no es suficiente.");
+                return;
             }
-        });
-    }
+        }
 
-    // 3. Mostrar/Ocultar sección efectivo según método
-    if (selectMetodo) {
-        selectMetodo.addEventListener("change", () => {
-            const seccionEfectivo = document.getElementById("seccion-efectivo");
-            if (seccionEfectivo) {
-                seccionEfectivo.style.display = selectMetodo.value === "Efectivo" ? "block" : "none";
+        // Validación Debe: debe tener cliente
+        if (metodo === "Debe") {
+            const clienteSelect = document.getElementById("cobro-cliente");
+            if (clienteSelect && !clienteSelect.value) {
+                alert("Selecciona un cliente para registrar la cuenta por cobrar.");
+                return;
             }
-        });
-    }
+        }
 
-    // 4. Cancelar Cobro
-    const btnCancelar = document.getElementById("btn-cancelar-cobro");
-    if (btnCancelar) {
-        btnCancelar.addEventListener("click", () => {
-            modalCobro.classList.remove("activa");
-            if (inputEfectivo) inputEfectivo.value = "";
-            if (spanCambio) spanCambio.textContent = "$0";
-        });
-    }
+        const venta = {
+            id: ventaActiva.id,
+            fecha: new Date().toLocaleString("es-CO"),
+            productos: items.map(i => ({ ...i, subtotal: i.precio * i.cantidad })),
+            total,
+            metodoPago: metodo,
+            pagoCon: metodo === "Efectivo" ? parseFloat(inputEfectivo.value) : total,
+            clienteId: metodo === "Debe" ? (document.getElementById("cobro-cliente")?.value || "") : ""
+        };
 
-    // 5. Confirmación final
-    const btnConfirmar = document.getElementById("btn-confirmar-venta");
-    if (btnConfirmar) {
-        btnConfirmar.addEventListener("click", () => {
-            const total = parseFloat(spanTotalModal.dataset.totalNum) || 0;
-            const metodo = selectMetodo.value;
-            const carritoActual = obtenerCarrito();
+        // Registrar en historial (localStorage por ahora — en MVP2 se hace POST)
+        if (typeof registrarVenta === "function") registrarVenta(venta);
 
-            if (metodo === "Efectivo") {
-                const recibido = parseFloat(inputEfectivo.value) || 0;
-                if (recibido < total) {
-                    alert("El monto recibido no es suficiente.");
-                    return;
-                }
-            }
+        cerrarModal();
+        // Limpiar la venta activa
+        ventaActiva = { id: generarId(), items: [] };
+        renderCarrito();
+        renderVentasGuardadas();
 
-            const datosVenta = {
-                id: Date.now(),
-                fecha: new Date().toLocaleString(),
-                productos: [...carritoActual],
-                total: total,
-                metodoPago: metodo,
-                pagoCon: metodo === "Efectivo" ? parseFloat(inputEfectivo.value) : total
-            };
-
-            if (typeof registrarVenta === 'function') {
-                registrarVenta(carritoActual); 
-            }
-
-            modalCobro.classList.remove("activa");
-            if (typeof confirmarCompra === 'function') confirmarCompra(); // ← CAMBIADO
-
-            mostrarVistaFactura(datosVenta);
-        });
-    }
+        // Mostrar factura
+        mostrarVistaFactura(venta);
+    });
 });
 
-// Función de factura
+// ── Factura ────────────────────────────────────────────────────
 function mostrarVistaFactura(venta) {
     const contenedor = document.getElementById("factura-contenido");
     if (!contenedor) return;
-    if (typeof navegarA === 'function') navegarA("factura");
+    navegarA("factura");
+
+    const cambio = venta.metodoPago === "Efectivo"
+        ? (venta.pagoCon - venta.total).toLocaleString("es-CO")
+        : null;
 
     contenedor.innerHTML = `
         <div class="ticket-container">
@@ -115,54 +121,50 @@ function mostrarVistaFactura(venta) {
                 <h2>PAPEL Y LUNA</h2>
                 <p>Comprobante de Venta</p>
             </div>
-            
             <div class="ticket-info-secundaria">
                 <span>F: ${venta.fecha}</span>
-                <span>ID: ${venta.id.toString().slice(-6)}</span>
+                <span>ID: ${venta.id}</span>
             </div>
-
             <table class="ticket-tabla">
                 <thead>
-                    <tr>
-                        <th>Cant.</th>
-                        <th>Producto</th>
-                        <th style="text-align: right;">Total</th>
-                    </tr>
+                    <tr><th>Cant.</th><th>Producto</th><th style="text-align:right">Total</th></tr>
                 </thead>
                 <tbody>
                     ${venta.productos.map(p => `
                         <tr>
                             <td>${p.cantidad}</td>
                             <td>${p.nombre}</td>
-                            <td style="text-align: right;">$${(p.precio * p.cantidad).toLocaleString("es-CO")}</td>
+                            <td style="text-align:right">$${(p.precio * p.cantidad).toLocaleString("es-CO")}</td>
                         </tr>
-                    `).join('')}
+                    `).join("")}
                 </tbody>
             </table>
-
             <div class="ticket-resumen-caja">
                 <div class="resumen-fila total-destacado">
                     <span>TOTAL:</span>
                     <span>$${venta.total.toLocaleString("es-CO")}</span>
                 </div>
-            </div>
-
-            <div style="margin-top: 1rem; font-size: 0.85rem; border-top: 1px dashed #444; padding-top: 1rem;">
-                <p>Método: ${venta.metodoPago}</p>
-                ${venta.metodoPago === 'Efectivo' ? `<p>Cambio: $${(venta.pagoCon - venta.total).toLocaleString("es-CO")}</p>` : ''}
+                <div class="resumen-fila">
+                    <span>Método:</span>
+                    <span>${venta.metodoPago}</span>
+                </div>
+                ${cambio !== null ? `
+                <div class="resumen-fila">
+                    <span>Cambio:</span>
+                    <span>$${cambio}</span>
+                </div>` : ""}
             </div>
         </div>
-        
         <div class="ticket-acciones">
-             <button class="btn btn--success" onclick="navegarA('ventas')">
-                <i class="fa-solid fa-cart-plus"></i> Iniciar Nueva Venta
-             </button>
+            <button class="btn btn--success" onclick="navegarA('venta')">
+                <i class="fa-solid fa-cash-register"></i> Nueva venta
+            </button>
+            <button class="btn btn--outline" onclick="navegarA('historial')">
+                <i class="fa-solid fa-clock-rotate-left"></i> Historial
+            </button>
         </div>
     `;
 }
-
-
-
 
 
 

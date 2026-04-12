@@ -1,195 +1,198 @@
-const CLAVE_STOCK = "papelyluna_stock";
+// ── Estado de la venta activa ─────────────────────────────────
+let ventaActiva = {
+    id: generarId(),
+    items: []
+};
 
-let carrito = [];
+// Ventas guardadas (en espera) — se guardan en localStorage hasta migrar a API
+let ventasGuardadas = JSON.parse(localStorage.getItem("pos_ventas_guardadas") || "[]");
 
-// ── Persistencia de stock ─────────────────────────────────────
-
-function guardarStock() {
-  const stockData = productos.map((p) => ({ id: p.id, stock: p.stock }));
-  localStorage.setItem(CLAVE_STOCK, JSON.stringify(stockData));
+function generarId() {
+    return "V-" + Date.now().toString().slice(-6);
 }
 
-function cargarStock() {
-  const datos = localStorage.getItem(CLAVE_STOCK);
-  if (!datos) return;
-  const stockGuardado = JSON.parse(datos);
-  stockGuardado.forEach((item) => {
-    const prod = productos.find((p) => p.id === item.id);
-    if (prod) prod.stock = item.stock;
-  });
-}
-
-// ── Inicialización ────────────────────────────────────────────
-
-cargarStock();
-
-document.addEventListener("DOMContentLoaded", () => {
-  actualizarCarrito();
-  actualizarStockVisual();
-});
-
-// ── Funciones del carrito ─────────────────────────────────────
-
-function obtenerCarrito() {
-  return carrito;
-}
-
-// Cancelar compra — SÍ devuelve stock
-function vaciarCarrito() {
-  carrito.forEach((item) => {
-    const prodOriginal = productos.find((p) => p.id === item.id);
-    if (prodOriginal) prodOriginal.stock += item.cantidad;
-  });
-  carrito = [];
-  guardarStock();
-  actualizarStockVisual();
-  actualizarCarrito();
-}
-
-// Confirmar compra — NO devuelve stock (la venta se realizó)
-function confirmarCompra() {
-  carrito = [];
-  guardarStock();
-  actualizarStockVisual();
-  actualizarCarrito();
-}
+// ── Carrito: operaciones ──────────────────────────────────────
 
 function agregarAlCarrito(producto) {
-  if (producto.stock <= 0) {
-    alert("No hay stock disponible");
-    return;
-  }
+    if (producto.seguimientoInventario === "si" && producto.stock <= 0) {
+        alert("Sin stock disponible");
+        return;
+    }
 
-  const productoExistente = carrito.find((item) => item.id === producto.id);
-  if (productoExistente) {
-    productoExistente.cantidad += 1;
-  } else {
-    carrito.push({ ...producto, cantidad: 1 });
-  }
-
-  producto.stock -= 1;
-  guardarStock();
-  actualizarStockVisual();
-  actualizarCarrito();
-}
-
-function eliminarDelCarrito(productoId) {
-  const item = carrito.find((i) => i.id === productoId);
-  if (item) {
-    const prodOriginal = productos.find((p) => p.id === productoId);
-    if (prodOriginal) prodOriginal.stock += item.cantidad;
-  }
-  carrito = carrito.filter((item) => item.id !== productoId);
-  guardarStock();
-  actualizarStockVisual();
-  actualizarCarrito();
+    const existente = ventaActiva.items.find(i => i.id === producto.id);
+    if (existente) {
+        existente.cantidad += 1;
+    } else {
+        ventaActiva.items.push({
+            id: producto.id,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            cantidad: 1
+        });
+    }
+    renderCarrito();
 }
 
 function cambiarCantidad(productoId, operacion) {
-  const productoCarrito = carrito.find((item) => item.id === productoId);
-  const productoOriginal = productos.find((p) => p.id === productoId);
-  if (!productoCarrito || !productoOriginal) return;
+    const item = ventaActiva.items.find(i => i.id === productoId);
+    if (!item) return;
 
-  if (operacion === "aumentar") {
-    if (productoOriginal.stock > 0) {
-      productoCarrito.cantidad += 1;
-      productoOriginal.stock -= 1;
+    if (operacion === "aumentar") {
+        item.cantidad += 1;
+    } else if (operacion === "disminuir") {
+        if (item.cantidad > 1) {
+            item.cantidad -= 1;
+        } else {
+            eliminarDelCarrito(productoId);
+            return;
+        }
     }
-  } else if (operacion === "disminuir") {
-    if (productoCarrito.cantidad > 1) {
-      productoCarrito.cantidad -= 1;
-      productoOriginal.stock += 1;
-    }
-  }
-
-  guardarStock();
-  actualizarStockVisual();
-  actualizarCarrito();
+    renderCarrito();
 }
 
-// ── Render visual ─────────────────────────────────────────────
-
-function actualizarStockVisual() {
-  productos.forEach((producto) => {
-    const card = document.querySelector(`[data-id="${producto.id}"]`);
-    const stockSpan = card ? card.querySelector(".stock-value") : null;
-    if (stockSpan) stockSpan.textContent = producto.stock;
-  });
+function eliminarDelCarrito(productoId) {
+    ventaActiva.items = ventaActiva.items.filter(i => i.id !== productoId);
+    renderCarrito();
 }
 
-function actualizarCarrito() {
-  const carritoContenedor = document.getElementById("cart-container");
-  const mensajeVacio = document.getElementById("empty-cart-message");
-  const subtotalEl = document.getElementById("subtotal");
-  const envioEl = document.getElementById("shipping");
-  const totalEl = document.getElementById("total");
+function vaciarCarrito() {
+    ventaActiva.items = [];
+    renderCarrito();
+}
 
-  if (!carritoContenedor) return;
+function obtenerCarrito() {
+    return ventaActiva.items;
+}
 
-  if (carrito.length === 0) {
-    if (mensajeVacio) mensajeVacio.style.display = "";
-    carritoContenedor
-      .querySelectorAll(".carrito__item")
-      .forEach((item) => item.remove());
-    if (subtotalEl) subtotalEl.textContent = "$0";
-    if (envioEl) envioEl.textContent = "$0";
-    if (totalEl) totalEl.textContent = "$0";
-    return;
-  }
+function calcularTotal() {
+    return ventaActiva.items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+}
 
-  if (mensajeVacio) mensajeVacio.style.display = "none";
-  carritoContenedor
-    .querySelectorAll(".carrito__item")
-    .forEach((item) => item.remove());
+// ── Ventas guardadas ──────────────────────────────────────────
 
-  carrito.forEach((item) => {
-    const subtotalItem = item.precio * item.cantidad;
+function guardarVentaActiva() {
+    if (ventaActiva.items.length === 0) {
+        alert("La venta no tiene productos para guardar.");
+        return;
+    }
+    const copia = JSON.parse(JSON.stringify(ventaActiva));
+    ventasGuardadas.push(copia);
+    localStorage.setItem("pos_ventas_guardadas", JSON.stringify(ventasGuardadas));
+    // Iniciar venta nueva vacía
+    ventaActiva = { id: generarId(), items: [] };
+    renderCarrito();
+    renderVentasGuardadas();
+}
 
-    const divItem = document.createElement("div");
-    divItem.classList.add("carrito__item");
+function retomarVentaGuardada(ventaId) {
+    const idx = ventasGuardadas.findIndex(v => v.id === ventaId);
+    if (idx === -1) return;
 
-    divItem.innerHTML = `
-            <div class="carrito__item-info">
-                <p class="carrito__item-nombre">${item.nombre}</p>
-                <p class="carrito__item-precio-unitario">$${item.precio.toLocaleString("es-CO")} c/u</p>
+    // Si hay items en la venta activa, la guardamos primero
+    if (ventaActiva.items.length > 0) {
+        ventasGuardadas.push(JSON.parse(JSON.stringify(ventaActiva)));
+    }
+
+    ventaActiva = ventasGuardadas.splice(idx, 1)[0];
+    localStorage.setItem("pos_ventas_guardadas", JSON.stringify(ventasGuardadas));
+    renderCarrito();
+    renderVentasGuardadas();
+}
+
+function nuevaVenta() {
+    if (ventaActiva.items.length > 0) {
+        if (!confirm("¿Descartar la venta en curso?")) return;
+    }
+    ventaActiva = { id: generarId(), items: [] };
+    renderCarrito();
+}
+
+// ── Render ─────────────────────────────────────────────────────
+
+function renderCarrito() {
+    const contenedor = document.getElementById("pos-carrito");
+    const emptyMsg   = document.getElementById("pos-carrito-empty");
+    const totalEl    = document.getElementById("pos-total");
+    const btnCobrar  = document.getElementById("btn-cobrar");
+    const idDisplay  = document.getElementById("venta-id-display");
+
+    if (!contenedor) return;
+
+    if (idDisplay) idDisplay.textContent = ventaActiva.id;
+
+    // Limpiar ítems previos (dejar el mensaje vacío)
+    contenedor.querySelectorAll(".pos__item").forEach(el => el.remove());
+
+    const total = calcularTotal();
+    if (totalEl) totalEl.textContent = "$" + total.toLocaleString("es-CO");
+    if (btnCobrar) btnCobrar.disabled = ventaActiva.items.length === 0;
+
+    if (ventaActiva.items.length === 0) {
+        if (emptyMsg) emptyMsg.style.display = "flex";
+        return;
+    }
+
+    if (emptyMsg) emptyMsg.style.display = "none";
+
+    ventaActiva.items.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        const div = document.createElement("div");
+        div.classList.add("pos__item");
+        div.innerHTML = `
+            <div class="pos__item-info">
+                <p class="pos__item-nombre">${item.nombre}</p>
+                <p class="pos__item-precio">$${item.precio.toLocaleString("es-CO")} c/u</p>
             </div>
-            <div class="carrito__item-controles">
-                <button class="btn-cantidad" data-id="${item.id}" data-operacion="disminuir">−</button>
-                <span class="carrito__item-cantidad">${item.cantidad}</span>
-                <button class="btn-cantidad" data-id="${item.id}" data-operacion="aumentar">+</button>
+            <div class="pos__item-controles">
+                <button class="pos__item-btn" data-id="${item.id}" data-op="disminuir">−</button>
+                <span class="pos__item-cantidad">${item.cantidad}</span>
+                <button class="pos__item-btn" data-id="${item.id}" data-op="aumentar">+</button>
             </div>
-            <div class="carrito__item-subtotal">
-                <p>$${subtotalItem.toLocaleString("es-CO")}</p>
-                <button class="btn-eliminar" data-id="${item.id}">✕</button>
-            </div>
+            <span class="pos__item-subtotal">$${subtotal.toLocaleString("es-CO")}</span>
+            <button class="pos__item-delete" data-id="${item.id}" title="Quitar">✕</button>
         `;
-    carritoContenedor.appendChild(divItem);
-  });
-
-  carritoContenedor.querySelectorAll(".btn-cantidad").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = parseInt(btn.dataset.id);
-      const operacion = btn.dataset.operacion;
-      cambiarCantidad(id, operacion);
+        contenedor.appendChild(div);
     });
-  });
 
-  carritoContenedor.querySelectorAll(".btn-eliminar").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = parseInt(btn.dataset.id);
-      eliminarDelCarrito(id);
+    contenedor.querySelectorAll(".pos__item-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            cambiarCantidad(parseInt(btn.dataset.id), btn.dataset.op);
+        });
     });
-  });
 
-  const subtotal = carrito.reduce(
-    (acc, item) => acc + item.precio * item.cantidad,
-    0,
-  );
-  const envio = subtotal > 0 ? 5000 : 0;
-  const total = subtotal + envio;
-
-  if (subtotalEl)
-    subtotalEl.textContent = `$${subtotal.toLocaleString("es-CO")}`;
-  if (envioEl) envioEl.textContent = `$${envio.toLocaleString("es-CO")}`;
-  if (totalEl) totalEl.textContent = `$${total.toLocaleString("es-CO")}`;
+    contenedor.querySelectorAll(".pos__item-delete").forEach(btn => {
+        btn.addEventListener("click", () => {
+            eliminarDelCarrito(parseInt(btn.dataset.id));
+        });
+    });
 }
+
+function renderVentasGuardadas() {
+    const banda = document.getElementById("pos-ventas-abiertas");
+    const lista = document.getElementById("pos-abiertas-lista");
+    if (!banda || !lista) return;
+
+    if (ventasGuardadas.length === 0) {
+        banda.style.display = "none";
+        return;
+    }
+
+    banda.style.display = "flex";
+    lista.innerHTML = "";
+    ventasGuardadas.forEach(v => {
+        const chip = document.createElement("button");
+        chip.classList.add("pos__venta-guardada-chip");
+        chip.textContent = `${v.id} · ${v.items.length} ítem(s)`;
+        chip.addEventListener("click", () => retomarVentaGuardada(v.id));
+        lista.appendChild(chip);
+    });
+}
+
+// ── Init ──────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+    renderCarrito();
+    renderVentasGuardadas();
+
+    document.getElementById("btn-nueva-venta")?.addEventListener("click", nuevaVenta);
+    document.getElementById("btn-guardar-venta")?.addEventListener("click", guardarVentaActiva);
+});

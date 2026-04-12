@@ -1,100 +1,36 @@
 const CLAVE_HISTORIAL = "papelyluna_historial";
 
-
-
 function cargarHistorial() {
-    const datos = localStorage.getItem(CLAVE_HISTORIAL);
-    return datos ? JSON.parse(datos) : [];
+    return JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]");
 }
 
 function guardarHistorial(historial) {
     localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(historial));
 }
 
-
-
-function registrarVenta(carrito) {
+// Recibe el objeto venta ya armado desde ventas.js
+function registrarVenta(venta) {
     const historial = cargarHistorial();
-
-    const subtotal = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
-    const envio    = subtotal > 0 ? 5000 : 0;
-    const total    = subtotal + envio;
-
-    const venta = {
-        id:        `VTA-${Date.now()}`,
-        numero:    historial.length + 1,
-        fecha:     new Date().toLocaleDateString("es-CO", { year:"numeric", month:"long", day:"numeric" }),
-        hora:      new Date().toLocaleTimeString("es-CO", { hour:"2-digit", minute:"2-digit" }),
-        productos: carrito.map(item => ({
-            id:       item.id,
-            nombre:   item.nombre,
-            precio:   item.precio,
-            cantidad: item.cantidad,
-            subtotal: item.precio * item.cantidad
-        })),
-        subtotal,
-        envio,
-        total
+    const entrada = {
+        id:         venta.id,
+        numero:     historial.length + 1,
+        fecha:      new Date().toLocaleDateString("es-CO", { year:"numeric", month:"long", day:"numeric" }),
+        hora:       new Date().toLocaleTimeString("es-CO", { hour:"2-digit", minute:"2-digit" }),
+        productos:  venta.productos,
+        total:      venta.total,
+        metodoPago: venta.metodoPago,
+        clienteId:  venta.clienteId || ""
     };
-
-    historial.unshift(venta); // más reciente primero
+    historial.unshift(entrada);
     guardarHistorial(historial);
-    return venta;
 }
-
-
 
 function eliminarVenta(ventaId) {
     const historial = cargarHistorial();
-    const venta = historial.find(v => v.id === ventaId);
-
-    // Restaurar stock de los productos de esa venta
-    if (venta) {
-        const stockGuardado = JSON.parse(localStorage.getItem("papelyluna_stock") || "[]");
-
-        venta.productos.forEach(p => {
-            // En el array de productos (data.js)
-            const prodOriginal = productos.find(prod => prod.id === p.id);
-            if (prodOriginal) prodOriginal.stock += p.cantidad;
-
-            // En el localStorage de stock
-            const stockItem = stockGuardado.find(s => s.id === p.id);
-            if (stockItem) stockItem.stock += p.cantidad;
-        });
-
-        localStorage.setItem("papelyluna_stock", JSON.stringify(stockGuardado));
-        actualizarStockVisual();
-    }
-
     const nuevoHistorial = historial.filter(v => v.id !== ventaId);
     guardarHistorial(nuevoHistorial);
     renderHistorial();
 }
-
-function limpiarHistorial() {
-    if (!confirm("¿Seguro que quieres borrar todo el historial?")) return;
-
-    const historial = cargarHistorial();
-    const stockGuardado = JSON.parse(localStorage.getItem("papelyluna_stock") || "[]");
-
-    historial.forEach(venta => {
-        venta.productos.forEach(p => {
-            // En el array de productos (data.js)
-            const prodOriginal = productos.find(prod => prod.id === p.id);
-            if (prodOriginal) prodOriginal.stock += p.cantidad;
-
-            // En el localStorage de stock
-            const stockItem = stockGuardado.find(s => s.id === p.id);
-            if (stockItem) stockItem.stock += p.cantidad;
-        });
-    });
-
-    localStorage.setItem("papelyluna_stock", JSON.stringify(stockGuardado));
-    actualizarStockVisual();
-    guardarHistorial([]);
-    renderHistorial();
-}
-
 
 function renderHistorial() {
     const contenedor = document.getElementById("historial-lista");
@@ -103,12 +39,10 @@ function renderHistorial() {
     const historial = cargarHistorial();
     contenedor.innerHTML = "";
 
-
     const header = document.createElement("div");
     header.classList.add("historial__topbar");
     header.innerHTML = `
         <p class="historial__count">${historial.length} venta${historial.length !== 1 ? "s" : ""} registrada${historial.length !== 1 ? "s" : ""}</p>
-        ${historial.length > 0 ? `<button class="btn btn--danger btn--sm" id="btn-limpiar-historial">Limpiar todo</button>` : ""}
     `;
     contenedor.appendChild(header);
 
@@ -126,6 +60,13 @@ function renderHistorial() {
     historial.forEach(venta => {
         const card = document.createElement("div");
         card.classList.add("historial__card");
+
+        const badgeMetodo = {
+            "Efectivo": "btn--success",
+            "Nequi":    "btn--outline",
+            "Debe":     "btn--danger"
+        }[venta.metodoPago] || "btn--outline";
+
         card.innerHTML = `
             <div class="historial__card-left">
                 <span class="historial__numero">#${String(venta.numero).padStart(3, "0")}</span>
@@ -135,9 +76,10 @@ function renderHistorial() {
                 </div>
             </div>
             <div class="historial__card-right">
+                <span class="btn btn--sm ${badgeMetodo}" style="pointer-events:none;font-size:0.7rem">${venta.metodoPago}</span>
                 <span class="historial__total">$${venta.total.toLocaleString("es-CO")}</span>
                 <div class="historial__acciones">
-                    <button class="btn btn--outline btn--sm btn-ver-factura" data-id="${venta.id}" title="Ver factura">
+                    <button class="btn btn--outline btn--sm btn-ver-factura" data-id="${venta.id}" title="Ver comprobante">
                         <i class="fa-solid fa-receipt"></i>
                     </button>
                     <button class="btn btn--danger btn--sm btn-eliminar-venta" data-id="${venta.id}" title="Eliminar">
@@ -149,28 +91,28 @@ function renderHistorial() {
         contenedor.appendChild(card);
     });
 
-    
     contenedor.querySelectorAll(".btn-ver-factura").forEach(btn => {
-        btn.addEventListener("click", () => renderFactura(btn.dataset.id));
+        btn.addEventListener("click", () => renderFacturaDesdeHistorial(btn.dataset.id));
     });
 
     contenedor.querySelectorAll(".btn-eliminar-venta").forEach(btn => {
-        btn.addEventListener("click", () => eliminarVenta(btn.dataset.id));
+        btn.addEventListener("click", () => {
+            if (confirm("¿Eliminar esta venta del historial?")) eliminarVenta(btn.dataset.id);
+        });
     });
-
-    const btnLimpiar = document.getElementById("btn-limpiar-historial");
-    if (btnLimpiar) btnLimpiar.addEventListener("click", limpiarHistorial);
 }
 
-
-
-function renderFactura(ventaId) {
+function renderFacturaDesdeHistorial(ventaId) {
     const historial = cargarHistorial();
-    const venta     = historial.find(v => v.id === ventaId);
+    const venta = historial.find(v => v.id === ventaId);
     if (!venta) return;
 
     const contenedor = document.getElementById("factura-contenido");
     if (!contenedor) return;
+
+    const cambio = venta.metodoPago === "Efectivo" && venta.pagoCon
+        ? (venta.pagoCon - venta.total).toLocaleString("es-CO")
+        : null;
 
     contenedor.innerHTML = `
         <div class="factura">
@@ -180,19 +122,13 @@ function renderFactura(ventaId) {
                     <span class="factura__logo-nombre">Papel y Luna</span>
                 </div>
                 <div class="factura__meta">
-                    <p class="factura__numero">Factura #${String(venta.numero).padStart(3, "0")}</p>
+                    <p class="factura__numero">Venta #${String(venta.numero).padStart(3, "0")}</p>
                     <p class="factura__fecha">${venta.fecha} · ${venta.hora}</p>
                 </div>
             </div>
-
             <table class="factura__tabla">
                 <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Precio u.</th>
-                        <th>Cant.</th>
-                        <th>Subtotal</th>
-                    </tr>
+                    <tr><th>Producto</th><th>Precio u.</th><th>Cant.</th><th>Subtotal</th></tr>
                 </thead>
                 <tbody>
                     ${venta.productos.map(p => `
@@ -200,35 +136,23 @@ function renderFactura(ventaId) {
                             <td>${p.nombre}</td>
                             <td>$${p.precio.toLocaleString("es-CO")}</td>
                             <td>${p.cantidad}</td>
-                            <td>$${p.subtotal.toLocaleString("es-CO")}</td>
+                            <td>$${(p.precio * p.cantidad).toLocaleString("es-CO")}</td>
                         </tr>
                     `).join("")}
                 </tbody>
             </table>
-
             <div class="factura__totales">
-                <div class="factura__fila">
-                    <span>Subtotal</span>
-                    <span>$${venta.subtotal.toLocaleString("es-CO")}</span>
-                </div>
-                <div class="factura__fila">
-                    <span>Envío</span>
-                    <span>$${venta.envio.toLocaleString("es-CO")}</span>
-                </div>
                 <div class="factura__fila factura__fila--total">
                     <span>Total</span>
                     <span>$${venta.total.toLocaleString("es-CO")}</span>
                 </div>
-            </div>
-
-            <div class="factura__footer">
-                <button class="btn btn--outline" onclick="window.print()">
-                    <i class="fa-solid fa-print"></i> Imprimir
-                </button>
+                <div class="factura__fila">
+                    <span>Método de pago</span>
+                    <span>${venta.metodoPago}</span>
+                </div>
+                ${cambio !== null ? `<div class="factura__fila"><span>Cambio</span><span>$${cambio}</span></div>` : ""}
             </div>
         </div>
     `;
-
-    
     navegarA("factura");
 }

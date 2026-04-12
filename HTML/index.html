@@ -3,310 +3,398 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Papelería Papelyluna</title>
+    <title>Papelería Papel y Luna — POS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Dancing+Script&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/styles.css">
 </head>
 <body>
 
-    <!-- SIDEBAR DE NAVEGACIÓN -->  
+    <!-- SIDEBAR DE NAVEGACIÓN -->
     <nav class="sidebar-nav">
         <div class="sidebar-nav__logo">
             <img src="../img/Logo.png" alt="Logo" class="sidebar-nav__logo-img">
         </div>
-
         <div class="sidebar-nav__links">
-            <button class="nav-btn activa" data-vista="inicio" title="Inicio">
-                <i class="fa-solid fa-house"></i>
-            </button>
-            <button class="nav-btn" data-vista="ventas" title="Catalogo">
+            <button class="nav-btn activa" data-vista="venta" title="Nueva Venta">
                 <i class="fa-solid fa-cash-register"></i>
             </button>
-            <button class="nav-btn" data-vista="productos" title="Nuevos productos">
-                <i class="fa-solid fa-box-open"></i>
-            </button>
-            <button class="nav-btn" data-vista="historial"title="Historial">
+            <button class="nav-btn" data-vista="historial" title="Historial de Ventas">
                 <i class="fa-solid fa-clock-rotate-left"></i>
             </button>
+            <button class="nav-btn" data-vista="productos" title="Productos">
+                <i class="fa-solid fa-box-open"></i>
+            </button>
+            <button class="nav-btn" data-vista="compras" title="Compras">
+                <i class="fa-solid fa-truck"></i>
+            </button>
         </div>
-
         <div class="sidebar-nav__bottom">
-            <button class="nav-btn" id="btn-buscador" title="Buscar">
-                <i class="fa-solid fa-magnifying-glass"></i>
+            <button class="nav-btn" data-vista="clientes" title="Clientes">
+                <i class="fa-solid fa-users"></i>
+            </button>
+            <button class="nav-btn" data-vista="proveedores" title="Proveedores">
+                <i class="fa-solid fa-store"></i>
+            </button>
+            <button class="nav-btn" data-vista="categorias" title="Categorías">
+                <i class="fa-solid fa-tags"></i>
             </button>
         </div>
     </nav>
 
-    <div id="search-overlay" class="search-overlay">
-        <div class="search-overlay__box">
-            <input type="text" id="search-input" placeholder="Buscar productos..." class="search-overlay__input" autocomplete="off"> 
-            <button id="btn-cerrar-buscador" class="search-overlay__close">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-    </div>
-    
-    <!-- CONTENEDOR PRINCIPAL -->
     <main class="main-container">
-        <section id="vista-inicio" class="vista activa">
 
-            <div class="tickers">
-                <div class="ticker__track">
-                   <span>CUADERNOS PREMIUM</span>
-                    <span class="ticker__dot">✦</span>
-                    <span>BOLÍGRAFOS GEL</span>
-                    <span class="ticker__dot">✦</span>
-                    <span>MATERIALES DE ARTE</span>
-                    <span class="ticker__dot">✦</span>
-                    <span>PAPEL BOND A4</span>
-                    <span class="ticker__dot">✦</span>
-                    <span>NOTAS ADHESIVAS</span>
-                    <span class="ticker__dot">✦</span>
-                    <span>OFICINA</span>
-                    <span class="ticker__dot">✦</span>
-                    <span>ESCOLAR</span>
-                    <span class="ticker__dot">✦</span>
-                    <span>ESCRITURA</span>
-                    <span class="ticker__dot">✦</span>
-                </div>
-            </div>
-            <div class="hero">
-                <div class="hero__content">
-                    <p class="hero__eyebrow">2026-Papeleria Moderna</p>
-                    <h1 class="hero__title">El ARTE<br>DE <br>LA <em>LECTURA</em></h1>
-                    <p class="hero__desc">Herramientas de calidad para cada trazo de tu historia. Cuadernos, bolígrafos y materiales de arte seleccionados.</p>
-                    <div class="hero__actions">
-                        <button class="hero__btn hero__btn--primary" id="btn-ver-catalogo">
-                            Ver Catálogo <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                        <button class="hero__btn hero__btn--secondary" id="btn-ver-historial">
-                            Historial
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="hero__visual">
-                    <div class="hero__img-container">
-                        <img src="../img/Cuaderno5Materias.png" alt="Producto destacado" class="hero__img hero__img--main">
-                        <img src="../img/SetAcuarelasPinceles.png" alt="Producto" class="hero__img hero__img--secondary">
-                    </div>
-                    <div class="hero__badge">
-                        <span class="hero__badge-text">STOCK</span>
-                        <span class="hero__badge-sub">EN VIVO</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCTOS DESTACADOS -->   
-        <div class="featured">
-            <div class="featured__header">
-                <h2 class="featured__title">Productos destacados</h2>
-                <p class="featured__sub">Productos seleccionados</p>
-                <button class="featured__ver-todo" id="btn-ver-todo">Ver todo</button>
-            </div>
-            <div class="featured__grid" id="featured-container"></div>
-        </div>
-        </section>
-
-        <!-- VISTA VENTAS -->
-        <section id="vista-ventas" class="vista">
-            <div class="vista-ventas__layout">
-             <div class="catalogo">
-                    <div class="catalogo__header">
-                        <h2 class="catalogo__title">Catálogo</h2>
-                        <select id="category-filter" class="filter-select">
+        <!-- VISTA: VENTA ACTIVA -->
+        <section id="vista-venta" class="vista activa">
+            <div class="pos__layout">
+                <div class="pos__catalogo">
+                    <div class="pos__busqueda">
+                        <div class="pos__busqueda-input-wrap">
+                            <i class="fa-solid fa-magnifying-glass pos__busqueda-icon"></i>
+                            <input type="text" id="pos-search" class="pos__busqueda-input"
+                                placeholder="Buscar producto por nombre o código..." autocomplete="off" autofocus>
+                            <button class="pos__busqueda-clear" id="pos-search-clear" title="Limpiar">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <select id="pos-category-filter" class="filter-select pos__categoria-select">
                             <option value="">Todas las categorías</option>
-                            <option value="cuadernos">Cuadernos</option>
-                            <option value="bolígrafos">Bolígrafos</option>
-                            <option value="papel">Papel</option>
-                            <option value="materiales de arte">Materiales de arte</option>
-                            <option value="organizacion">Organización</option>
-                            <option value="oficina">Oficina</option>
-                            <option value="escolar">Escolar</option>
-                            <option value="escritura">Escritura</option>
                         </select>
                     </div>
-                    <div class="products-grid" id="products-container"></div>
-                </div>
-        <!-- SIDEBAR - CARRITO DE COMPRAS -->
-        <aside class="sidebar">
-            <section class="shopping-cart">
-
-                <!-- TÍTULO DEL CARRITO -->
-                <div class="cart__header">
-                    <h2 class="cart__title">Carrito de Compras</h2>
-                </div>
-
-                <!-- CONTENEDOR DINÁMICO DEL CARRITO -->
-                <div class="cart__items" id="cart-container">
-                    <div class="cart__empty" id="empty-cart-message">
-                        <span class="cart__empty-icon"><i class="fa-solid fa-shopping-cart"></i></span>
-                        <p class="cart__empty-title">Tu carrito está vacío</p>
-                        <p class="cart__empty-subtitle">¡Agrega productos desde el catálogo!</p>
+                    <div id="pos-results" class="pos__results">
+                        <div class="pos__results-empty">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <p>Busca un producto para agregarlo a la venta</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- RESUMEN DEL CARRITO -->
-                <div class="cart__summary">
-                    <div class="summary__row">
-                        <span>Subtotal:</span>
-                        <span class="summary__value" id="subtotal">$0.00</span>
+                <aside class="pos__venta">
+                    <div class="pos__venta-header">
+                        <div class="pos__venta-titulo">
+                            <span class="pos__venta-label">Venta activa</span>
+                            <span class="pos__venta-id" id="venta-id-display">#—</span>
+                        </div>
+                        <button class="btn btn--ghost btn--sm" id="btn-nueva-venta">
+                            <i class="fa-solid fa-plus"></i> Nueva
+                        </button>
                     </div>
-                    <div class="summary__row">
-                        <span>Envío:</span>
-                        <span class="summary__value" id="shipping">$0.00</span>
+                    <div class="pos__items" id="pos-carrito">
+                        <div class="pos__carrito-empty" id="pos-carrito-empty">
+                            <i class="fa-solid fa-receipt"></i>
+                            <p>Sin productos</p>
+                        </div>
                     </div>
-                    <div class="summary__row summary__row--total">
-                        <span>Total:</span>
-                        <span class="summary__value summary__value--total" id="total">$0.00</span>
+                    <div class="pos__venta-footer">
+                        <div class="pos__total-row">
+                            <span class="pos__total-label">TOTAL</span>
+                            <span class="pos__total-valor" id="pos-total">$0</span>
+                        </div>
+                        <div class="pos__acciones">
+                            <button class="btn btn--outline btn--sm" id="btn-guardar-venta">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar
+                            </button>
+                            <button class="btn btn--success" id="btn-cobrar" disabled>
+                                <i class="fa-solid fa-dollar-sign"></i> Cobrar
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <!-- BOTONES DE ACCIÓN -->
-                <div class="cart__actions">
-                    <button class="btn btn--danger" id="vaciar-btn">Vaciar Carrito</button>
-                    <button class="btn btn--success" id="checkout-btn">Finalizar Compra </button>
-                </div>
-
-            </section>
-        </aside>
-    </div> <!-- Cierre de .vista-ventas__layout -->
-</section> <!-- Cierre de #vista-ventas -->
-<section id="vista-productos" class="vista">
-        <div class="productos__layout">
-
-            <div class="productos__lista">
-                <div class="productos__lista-header">
-                    <h2 class="vista-title">Gestión de Productos</h2>
-                    <button class="btn btn--success" id="btn-nuevo-producto">
-                        <i class="fa-solid fa-plus"></i> Nuevo
-                    </button>
-                </div>
-                <div id="productos-container"></div>
-            </div>    
-            
-            <div class="productos__form" id="productos-form">
-                <div class="Form__header">
-                <h3 class="productos__form--title" id="form-title">Nuevo Producto</h3>
-                </div>
-                <div class="form__group">
-                    <label>Nombre</label>
-                    <input type="text" id="prod-nombre" placeholder="Nombre del producto" required>
-                </div>
-
-                <div class="form__group">
-                    <label>Categoria</label>
-                    <select id="prod-categoria" required>
-                        <option value="cuadernos">Cuadernos</option>
-                        <option value="bolígrafos">Bolígrafos</option>
-                        <option value="papel">Papel</option>
-                        <option value="materiales de arte">Materiales de arte</option>
-                        <option value="organizacion">Organización</option>
-                        <option value="oficina">Oficina</option>
-                        <option value="escolar">Escolar</option>
-                        <option value="escritura">Escritura</option>
-                    </select>
-                </div>
-                <div class="form__group">
-                    <label>Precio del venta</label>
-                    <input type="number" id="prod-precio" placeholder="0" required>
-                </div>
-
-                <div class="form__group">
-                    <label>costo de compra</label>
-                    <input type="number" id="prod-costo" placeholder="0" required>
-                </div>
-
-                <div class="form__group">
-                    <label>codigo interno</label>
-                    <input type="text" id="prod-codigo" required>
-                </div>
-
-                <div class="form__group">
-                    <label>Seguimiento de inventario</label>
-                    <select id="prod-seguimiento">
-                        <option value="si">Si</option>
-                        <option value="no">No</option>
-                    </select>
-                </div>
-
-                <div class="form__group">
-                    <label>Stock</label>
-                    <input type="number" id="prod-stock" placeholder="0" required>
-                </div>
-
-                <div class="form__actions">
-                    <button class="btn btn--secondary" id="btn-cancelar-prod">Cancelar</button>
-                    <button class="btn btn--success" id="btn-guardar-prod">Guardar</button>
-                </div>
+                </aside>
             </div>
-        </div>
 
-    </section>
-        
+            <div class="pos__ventas-abiertas" id="pos-ventas-abiertas" style="display:none">
+                <span class="pos__abiertas-label"><i class="fa-solid fa-pause"></i> Ventas guardadas:</span>
+                <div class="pos__abiertas-lista" id="pos-abiertas-lista"></div>
+            </div>
+        </section>
+
+        <!-- VISTA: HISTORIAL -->
         <section id="vista-historial" class="vista">
             <div class="vista-header">
-                <h2 class="vista-title">Historial de Ventas</h2>
+                <h2 class="vista-title">Historial de ventas</h2>
             </div>
             <div id="historial-lista"></div>
         </section>
 
+        <!-- VISTA: FACTURA -->
         <section id="vista-factura" class="vista">
             <div class="vista-header">
-                <h2 class="vista-title">factura</h2>
-                <button class ="btn btn--secondary" id ="btn-volver-historial">
-                    <i class="fa-solid fa-arrow-left"></i>volver
+                <h2 class="vista-title">Comprobante</h2>
+                <button class="btn btn--ghost" id="btn-volver-historial">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
-            </div>  
+            </div>
             <div id="factura-contenido"></div>
         </section>
 
+        <!-- VISTA: PRODUCTOS -->
+        <section id="vista-productos" class="vista">
+            <div class="productos__layout">
+                <div class="productos__lista">
+                    <div class="productos__lista-header">
+                        <h2 class="vista-title">Productos</h2>
+                        <button class="btn btn--success" id="btn-nuevo-producto">
+                            <i class="fa-solid fa-plus"></i> Nuevo
+                        </button>
+                    </div>
+                    <div class="productos__search-bar">
+                        <input type="text" id="prod-search" class="filter-input" placeholder="Buscar producto...">
+                    </div>
+                    <div id="productos-container"></div>
+                </div>
+                <div class="productos__form" id="productos-form">
+                    <div class="Form__header">
+                        <h3 class="productos__form--title" id="form-title">Nuevo Producto</h3>
+                    </div>
+                    <div class="form__group">
+                        <label>Nombre</label>
+                        <input type="text" id="prod-nombre" placeholder="Nombre del producto" required>
+                    </div>
+                    <div class="form__group">
+                        <label>Categoría</label>
+                        <select id="prod-categoria" required>
+                            <option value="">Selecciona una categoría</option>
+                        </select>
+                    </div>
+                    <div class="form__group form__group--row">
+                        <div>
+                            <label>Precio de venta</label>
+                            <input type="number" id="prod-precio" placeholder="0" min="0">
+                        </div>
+                        <div>
+                            <label>Costo de compra</label>
+                            <input type="number" id="prod-costo" placeholder="0" min="0">
+                        </div>
+                    </div>
+                    <div class="form__group">
+                        <label>Código interno</label>
+                        <input type="text" id="prod-codigo">
+                    </div>
+                    <div class="form__group">
+                        <label>Seguimiento de inventario</label>
+                        <select id="prod-seguimiento">
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form__group">
+                        <label>Stock</label>
+                        <input type="number" id="prod-stock" placeholder="0" min="0">
+                    </div>
+                    <div class="form__actions">
+                        <button class="btn btn--secondary" id="btn-cancelar-prod">Cancelar</button>
+                        <button class="btn btn--success" id="btn-guardar-prod">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: COMPRAS -->
+        <section id="vista-compras" class="vista">
+            <div class="productos__layout">
+                <div class="productos__lista">
+                    <div class="productos__lista-header">
+                        <h2 class="vista-title">Compras</h2>
+                        <button class="btn btn--success" id="btn-nueva-compra">
+                            <i class="fa-solid fa-plus"></i> Nueva compra
+                        </button>
+                    </div>
+                    <div id="compras-lista"></div>
+                </div>
+                <div class="productos__form" id="compras-form" style="display:none">
+                    <div class="Form__header">
+                        <h3 class="productos__form--title">Registrar compra</h3>
+                    </div>
+                    <div class="form__group">
+                        <label>Proveedor</label>
+                        <select id="compra-proveedor" required>
+                            <option value="">Selecciona un proveedor</option>
+                        </select>
+                    </div>
+                    <div class="form__group">
+                        <label>Método de pago</label>
+                        <select id="compra-metodo-pago">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Nequi">Nequi</option>
+                            <option value="Consignación">En Consignación</option>
+                        </select>
+                    </div>
+                    <div class="form__group">
+                        <label>Agregar producto</label>
+                        <input type="text" id="compra-prod-search" class="filter-input" placeholder="Buscar producto del catálogo...">
+                        <div id="compra-prod-resultados" class="compra__prod-resultados"></div>
+                    </div>
+                    <div id="compra-items" class="compra__items">
+                        <p class="compra__items-empty">Agrega productos a la compra</p>
+                    </div>
+                    <div class="pos__total-row" style="margin-top:0.5rem">
+                        <span class="pos__total-label">TOTAL COMPRA</span>
+                        <span class="pos__total-valor" id="compra-total">$0</span>
+                    </div>
+                    <div class="form__actions">
+                        <button class="btn btn--secondary" id="btn-cancelar-compra">Cancelar</button>
+                        <button class="btn btn--success" id="btn-guardar-compra">Registrar compra</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: CLIENTES -->
+        <section id="vista-clientes" class="vista">
+            <div class="productos__layout">
+                <div class="productos__lista">
+                    <div class="productos__lista-header">
+                        <h2 class="vista-title">Clientes</h2>
+                        <button class="btn btn--success" id="btn-nuevo-cliente">
+                            <i class="fa-solid fa-plus"></i> Nuevo
+                        </button>
+                    </div>
+                    <div id="clientes-container"></div>
+                </div>
+                <div class="productos__form" id="clientes-form">
+                    <div class="Form__header">
+                        <h3 class="productos__form--title" id="cliente-form-title">Nuevo Cliente</h3>
+                    </div>
+                    <div class="form__group">
+                        <label>Nombre</label>
+                        <input type="text" id="cliente-nombre" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="form__group">
+                        <label>Teléfono</label>
+                        <input type="text" id="cliente-telefono" placeholder="Número de contacto">
+                    </div>
+                    <div class="form__group">
+                        <label>Correo</label>
+                        <input type="email" id="cliente-correo" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form__actions">
+                        <button class="btn btn--secondary" id="btn-cancelar-cliente">Cancelar</button>
+                        <button class="btn btn--success" id="btn-guardar-cliente">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: PROVEEDORES -->
+        <section id="vista-proveedores" class="vista">
+            <div class="productos__layout">
+                <div class="productos__lista">
+                    <div class="productos__lista-header">
+                        <h2 class="vista-title">Proveedores</h2>
+                        <button class="btn btn--success" id="btn-nuevo-proveedor">
+                            <i class="fa-solid fa-plus"></i> Nuevo
+                        </button>
+                    </div>
+                    <div id="proveedores-container"></div>
+                </div>
+                <div class="productos__form" id="proveedores-form">
+                    <div class="Form__header">
+                        <h3 class="productos__form--title" id="prov-form-title">Nuevo Proveedor</h3>
+                    </div>
+                    <div class="form__group">
+                        <label>Nombre</label>
+                        <input type="text" id="prov-nombre" placeholder="Nombre o razón social" required>
+                    </div>
+                    <div class="form__group">
+                        <label>NIT</label>
+                        <input type="text" id="prov-nit" placeholder="NIT del proveedor" required>
+                    </div>
+                    <div class="form__group">
+                        <label>Teléfono de contacto</label>
+                        <input type="text" id="prov-telefono" placeholder="Número de contacto">
+                    </div>
+                    <div class="form__actions">
+                        <button class="btn btn--secondary" id="btn-cancelar-prov">Cancelar</button>
+                        <button class="btn btn--success" id="btn-guardar-prov">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: CATEGORÍAS -->
+        <section id="vista-categorias" class="vista">
+            <div class="productos__layout">
+                <div class="productos__lista">
+                    <div class="productos__lista-header">
+                        <h2 class="vista-title">Categorías</h2>
+                        <button class="btn btn--success" id="btn-nueva-categoria">
+                            <i class="fa-solid fa-plus"></i> Nueva
+                        </button>
+                    </div>
+                    <div id="categorias-container"></div>
+                </div>
+                <div class="productos__form" id="categorias-form">
+                    <div class="Form__header">
+                        <h3 class="productos__form--title" id="cat-form-title">Nueva Categoría</h3>
+                    </div>
+                    <div class="form__group">
+                        <label>Nombre</label>
+                        <input type="text" id="cat-nombre" placeholder="Nombre de la categoría" required>
+                    </div>
+                    <div class="form__group">
+                        <label>Color</label>
+                        <input type="color" id="cat-color" value="#6d28d9">
+                    </div>
+                    <div class="form__group">
+                        <label>Ícono (clase Font Awesome, opcional)</label>
+                        <input type="text" id="cat-icono" placeholder="fa-solid fa-tag">
+                    </div>
+                    <div class="form__actions">
+                        <button class="btn btn--secondary" id="btn-cancelar-cat">Cancelar</button>
+                        <button class="btn btn--success" id="btn-guardar-cat">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
-    
-    <!-- ORDEN IMPORTANTE: data → carrito → main → app -->
-   <script src="../JAVASCRIPT/data.js"></script>
-    <script src="../JAVASCRIPT/carrito.js"></script>
-    <script src="../JAVASCRIPT/main.js"></script>
-    <script src="../JAVASCRIPT/historial.js"></script> 
-    <script src="../JAVASCRIPT/productos.js"></script>
-    <script src="../JAVASCRIPT/ventas.js"></script>
-    <script src="../JAVASCRIPT/router.js"></script>
-    <script src="../JAVASCRIPT/app.js"></script>
 
-    <div id="modal-cobro" class="search-overlay"> 
-    <div class="modal-content modal-pos">
-        <h3>Finalizar Venta</h3>
-        
-        <div class="total-display">
-            <span style="color: var(--texto-suave);">Total a cobrar:</span>
-            <span id="modal-total-valor" class="monto">$0</span>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
-            <label style="color: var(--texto-suave);">Método de Pago</label>
-            <select id="metodo-pago" class="filter-select" style="height: 50px; font-size: 1rem; width: 100%;">
-                <option value="Efectivo">Efectivo</option>
-                <option value="Nequi">Nequi</option>
-                <option value="Debe">Debe (Cuenta por cobrar)</option>
-            </select>
-        </div>
-
-        <div id="seccion-efectivo" class="efectivo-box">
-            <label style="color: var(--texto-suave); display: block; margin-bottom: 1rem; font-size: 0.9rem;">Efectivo recibido</label>
-            <input type="number" id="efectivo-recibido" class="filter-input" placeholder="0" style="font-size: 1.5rem; color: var(--amarillo); background: transparent; border: none; outline: none; width: 100%;">
-            
-            <div style="margin-top: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--texto-suave);">Cambio:</span>
-                <span id="cambio-valor" style="color: var(--verde); font-weight: 700; font-size: 1.3rem;">$0</span>
+    <!-- MODAL COBRO -->
+    <div id="modal-cobro" class="modal-overlay">
+        <div class="modal-content modal-pos">
+            <div class="modal-header">
+                <h3>Cobrar venta</h3>
+                <button class="btn btn--ghost btn--sm" id="btn-cancelar-cobro">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="total-display">
+                <span class="total-display__label">Total a cobrar</span>
+                <span id="modal-total-valor" class="total-display__monto">$0</span>
+            </div>
+            <div class="form__group">
+                <label>Método de pago</label>
+                <select id="metodo-pago" class="filter-select">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Nequi">Nequi</option>
+                    <option value="Debe">Debe (Cuenta por cobrar)</option>
+                </select>
+            </div>
+            <div id="seccion-efectivo" class="efectivo-box">
+                <label>Efectivo recibido</label>
+                <input type="number" id="efectivo-recibido" class="efectivo-input" placeholder="0">
+                <div class="cambio-row">
+                    <span>Cambio:</span>
+                    <span id="cambio-valor" class="cambio-valor">$0</span>
+                </div>
+            </div>
+            <div id="seccion-debe" class="debe-box" style="display:none">
+                <label>Asociar a cliente</label>
+                <select id="cobro-cliente" class="filter-select">
+                    <option value="">Selecciona un cliente</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn--danger" id="btn-cancelar-cobro-2">Cancelar</button>
+                <button class="btn btn--success" id="btn-confirmar-venta">Confirmar venta</button>
             </div>
         </div>
-
-        <div class="cart__actions" style="padding: 0; gap: 1.5rem; display: flex;">
-            <button class="btn btn--danger" id="btn-cancelar-cobro" style="height: 50px; flex: 1;">Cancelar</button>
-            <button class="btn btn--success" id="btn-confirmar-venta" style="height: 50px; flex: 1;">Confirmar Venta</button>
-        </div>
     </div>
-</div>
+
+    <script src="../JAVASCRIPT/router.js"></script>
+    <script src="../JAVASCRIPT/carrito.js"></script>
+    <script src="../JAVASCRIPT/ventas.js"></script>
+    <script src="../JAVASCRIPT/historial.js"></script>
+    <script src="../JAVASCRIPT/productos.js"></script>
+    <script src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>
