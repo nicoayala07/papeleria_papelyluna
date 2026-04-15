@@ -1,9 +1,27 @@
-// ── Estado global de productos (temporal hasta API) ───────────
-// En MVP2 esto vendrá de Google Sheets. Por ahora se inicializa vacío
-// y se puede poblar desde productos.js cuando se creen productos.
-let catalogoProductos = JSON.parse(localStorage.getItem("pos_catalogo") || "[]");
+let catalogoProductos = [];
 
-// ── Búsqueda POS en tiempo real ───────────────────────────────
+async function cargarProductosDesdeAPI() {
+    try {
+        const datos = await getProductos();
+        if (Array.isArray(datos)) {
+            catalogoProductos = datos.map(p => ({
+                ...p,
+                id: p.id || Date.now(),
+                precio: parseFloat(p.precio) || 0,
+                costo: parseFloat(p.costo) || 0,
+                stock: parseInt(p.stock) || 0
+            }));
+            actualizarCatalogo(catalogoProductos);
+            ListarProductos();
+            filtrarYRenderizar();
+        }
+    } catch (err) {
+        console.error("Error cargando productos:", err);
+        catalogoProductos = JSON.parse(localStorage.getItem("pos_catalogo") || "[]");
+    }
+}
+
+// ── Búsqueda POS 
 const posSearch    = document.getElementById("pos-search");
 const posCatFilter = document.getElementById("pos-category-filter");
 const posResults   = document.getElementById("pos-results");
@@ -43,7 +61,6 @@ function renderResultados(lista) {
             e.stopPropagation();
             agregarAlCarrito(producto);
         });
-        // Clic en la fila también agrega
         div.addEventListener("click", () => {
             if (!agotado) agregarAlCarrito(producto);
         });
@@ -101,11 +118,14 @@ function poblarSelectCategorias() {
     });
 }
 
-poblarSelectCategorias();
-
-// ── Guardar catálogo en localStorage cuando cambie (temporal) ──
+// ── Guardar catálogo en localStorage como un posible respaldo
 function actualizarCatalogo(productos) {
     catalogoProductos = productos;
     localStorage.setItem("pos_catalogo", JSON.stringify(productos));
     poblarSelectCategorias();
 }
+
+// ── Init ──────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+    cargarProductosDesdeAPI();
+});
