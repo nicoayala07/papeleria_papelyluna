@@ -94,6 +94,17 @@ document.addEventListener("DOMContentLoaded", () => {
         // Registrar en historial (localStorage por ahora — en MVP2 se hace POST)
         if (typeof registrarVenta === "function") registrarVenta(venta);
 
+        // Enviar a Google Sheets
+        postVenta({
+            id: venta.id,
+            fecha: venta.fecha,
+            productos: JSON.stringify(venta.productos),
+            total: venta.total,
+            metodoPago: venta.metodoPago,
+            pagoCon: venta.pagoCon,
+            clienteId: venta.clienteId
+        }).catch(err => console.error("Error guardando venta en Sheets:", err));
+
         cerrarModal();
         // Limpiar la venta activa
         ventaActiva = { id: generarId(), items: [] };
