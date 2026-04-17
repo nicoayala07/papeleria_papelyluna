@@ -1,6 +1,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyN1CGGOQd6srGtQl-aLawrZoLe5-BKkDvSHCTkvKG8zkPFOHqloh1pVsbq0PAz6UBG/exec";
 
-// ──  Funciones con el GET
+// ──  Funciones GET
 async function getProductos() {
     const res = await fetch(`${API_URL}?hoja=productos`);
     const data = await res.json();
@@ -25,7 +25,7 @@ async function getProveedores() {
     return data;
 }
 
-// ──  Funciones con el POST
+// ──  Funciones POST
 async function postVenta(venta) {
     const res = await fetch(API_URL, {
         method: "POST",

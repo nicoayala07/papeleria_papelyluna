@@ -2176,3 +2176,116 @@ body {
     flex-shrink: 0;
 }
 
+
+/* ── Módulo de Compras ───────────────────────────────────────── */
+
+/* Resultados del buscador de productos */
+.compra__prod-resultados {
+    background: var(--negro-2);
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    position: relative;
+}
+
+.compra__prod-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--gris-borde);
+    transition: background 0.15s;
+}
+
+.compra__prod-item:last-child { border-bottom: none; }
+.compra__prod-item:hover { background: var(--negro-3); }
+
+.compra__prod-meta {
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+}
+
+.compra__sin-resultados {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+}
+
+/* Tabla de ítems de la compra */
+.compra__items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.compra__items-empty {
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0.75rem 0;
+}
+
+.compra__item-fila {
+    background: var(--negro-3);
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.compra__item-nombre {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--texto);
+}
+
+.compra__item-campos {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.compra__campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.compra__campo-grupo label {
+    font-size: 0.7rem;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.compra__input-cant,
+.compra__input-costo {
+    width: 72px;
+    padding: 4px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--gris-borde);
+    background: var(--negro-2);
+    color: var(--texto);
+    font-size: 0.85rem;
+}
+
+.compra__item-subtotal {
+    margin-left: auto;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--verde);
+}
+
+.compra__item-eliminar {
+    padding: 4px 8px;
+    flex-shrink: 0;
+}
