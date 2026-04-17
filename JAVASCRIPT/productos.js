@@ -53,6 +53,7 @@ function eliminarProducto(id) {
     const nuevos = catalogoProductos.filter(p => p.id !== id);
     actualizarCatalogo(nuevos);
     ListarProductos();
+    showToast("Producto eliminado del catálogo local.", { type: "info" });
 }
 
 function editarProducto(id) {
@@ -94,7 +95,7 @@ document.getElementById("btn-guardar-prod")?.addEventListener("click", () => {
     const seguimiento = document.getElementById("prod-seguimiento").value;
 
     if (!nombre || isNaN(precio) || precio <= 0) {
-        alert("Nombre y precio son obligatorios y deben ser válidos.");
+        showToast("Nombre y precio son obligatorios y deben ser válidos.", { type: "warning" });
         return;
     }
 
@@ -118,6 +119,7 @@ document.getElementById("btn-guardar-prod")?.addEventListener("click", () => {
     actualizarCatalogo(catalogoProductos);
     limpiarFormProducto();
     ListarProductos();
+    showToast("¡Producto guardado con éxito!", { type: "success" });
 });
 
 document.getElementById("btn-cancelar-prod")?.addEventListener("click", limpiarFormProducto);

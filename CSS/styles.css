@@ -4,32 +4,34 @@
 :root {
     --principal: #6d28d9;
     --principal-brillo: #a855f7;
-    --principal-oscuro: #3b0764;
+    --principal-oscuro: #2a0a57;
+    --secundario: #22d3ee;
+    --terciario: #22c55e;
 
-    --negro-profundo: #0f0f14;
-    --negro-secundario: #1a1a22;
-    --negro: #0a0a0a;
-    --negro-2: #111111;
-    --negro-3: #1a1a1a;
-    --negro-4: #222222;
+    --negro-profundo: #090312;
+    --negro-secundario: #14071f;
+    --negro: #07020d;
+    --negro-2: #10051a;
+    --negro-3: #180826;
+    --negro-4: #24103a;
 
-    --amarillo: #facc15;
-    --amarillo-oscuro: #eab308;
-    --amarillo-2: #e6b800;
+    --amarillo: var(--secundario);
+    --amarillo-oscuro: #06b6d4;
+    --amarillo-2: #0891b2;
 
-    --texto: #f5f5f5;
-    --texto-suave: #9ca3af;
+    --texto: #f8f7ff;
+    --texto-suave: #b6b0d0;
     --blanco: #ffffff;
     --blanco-2: #e0d8cc;
 
-    --rojo: #ef4444;
-    --verde: #10b981;
+    --rojo: #fb7185;
+    --verde: var(--terciario);
 
-    --gris: #666666;
-    --gris-2: #444444;
-    --gris-borde: #2a2a35;
+    --gris: #756a8f;
+    --gris-2: #3d2f55;
+    --gris-borde: #3a2458;
 
-    --sombra: 0 8px 25px rgba(109, 40, 217, 0.35);
+    --sombra: 0 10px 30px rgba(109, 40, 217, 0.4);
     --radio: 14px;
     --sidebar-w: 64px;
 }
@@ -42,7 +44,10 @@
 
 body {
     font-family: 'Segoe UI', 'DM Sans', Arial, sans-serif;
-    background: linear-gradient(135deg, var(--negro-profundo), var(--negro-secundario));
+    background:
+        radial-gradient(circle at top left, rgba(34, 211, 238, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.14), transparent 30%),
+        linear-gradient(135deg, #06111b 0%, #0b1d2d 22%, #130a24 58%, #1f0b33 100%);
     color: var(--texto);
     display: flex;
     min-height: 100vh;
@@ -61,6 +66,9 @@ body {
     position: relative;
     overflow-x: hidden;
     min-width: 0;
+    background:
+        radial-gradient(circle at 15% 0%, rgba(34, 211, 238, 0.08), transparent 22%),
+        radial-gradient(circle at 100% 20%, rgba(109, 40, 217, 0.14), transparent 30%);
 }
 
 
@@ -84,8 +92,9 @@ body {
     top: 0;
     width: var(--sidebar-w);
     height: 100vh;
-    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
-    border-right: 1px solid var(--gris-borde);
+    background: linear-gradient(180deg, #071722 0%, #0a2433 22%, #10203e 52%, #23103d 100%);
+    border-right: 1px solid rgba(34, 211, 238, 0.35);
+    box-shadow: 8px 0 30px rgba(34, 211, 238, 0.14);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -102,7 +111,8 @@ body {
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--amarillo);
+    border: 2px solid var(--secundario);
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
 }
 
 .sidebar-nav__links {
@@ -120,8 +130,8 @@ body {
 .nav-btn {
     width: 44px;
     height: 44px;
-    background: none;
-    border: none;
+    background: rgba(34, 211, 238, 0.05);
+    border: 1px solid transparent;
     border-radius: var(--radio);
     color: var(--texto-suave);
     font-size: 1.1rem;
@@ -134,26 +144,30 @@ body {
 }
 
 .nav-btn:hover {
-    background: var(--negro-secundario);
-    color: var(--blanco);
+    background: rgba(34, 211, 238, 0.16);
+    border-color: rgba(34, 211, 238, 0.45);
+    color: var(--secundario);
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.18);
 }
 
 .nav-btn.activa {
-    background: var(--amarillo);
-    color: var(--negro-profundo);
+    background: linear-gradient(135deg, var(--secundario), #67e8f9);
+    color: #06202d;
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.35);
 }
 
 .nav-btn[title]:hover::after {
     content: attr(title);
     position: absolute;
     left: 52px;
-    background: var(--negro-secundario);
+    background: #112133;
     color: var(--blanco);
     padding: 0.3rem 0.6rem;
     border-radius: 6px;
     font-size: 0.75rem;
     white-space: nowrap;
-    border: 1px solid var(--gris-borde);
+    border: 1px solid rgba(34, 211, 238, 0.35);
     z-index: 10;
     font-family: 'Segoe UI', Arial, sans-serif;
 }
@@ -203,12 +217,13 @@ body {
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--gris-borde);
     border-radius: 8px;
-    background: var(--negro-secundario);
+    background: rgba(11, 25, 39, 0.88);
     font-size: 0.9rem;
     color: var(--texto);
     outline: none;
     cursor: pointer;
     font-family: 'Segoe UI', Arial, sans-serif;
+    box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.04);
 }
 
 
@@ -222,7 +237,7 @@ body {
 }
 
 .product-card {
-    background: #242433;
+    background: linear-gradient(180deg, rgba(14, 32, 48, 0.95), rgba(34, 16, 58, 0.92));
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 0.75rem;
@@ -237,7 +252,8 @@ body {
 
 .product-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(250, 204, 21, 0.25);
+    border-color: rgba(34, 211, 238, 0.4);
+    box-shadow: 0 10px 24px rgba(34, 211, 238, 0.14);
 }
 
 .product-card img {
@@ -308,7 +324,7 @@ body {
    11. VISTA VENTAS - CARRITO (SIDEBAR)
 ============================================================ */
 .sidebar {
-    background: #1c1c26;
+    background: linear-gradient(180deg, rgba(10, 30, 44, 0.96), rgba(31, 11, 51, 0.96));
     position: sticky;
     top: 0;
     width: 340px;
@@ -326,7 +342,7 @@ body {
 }
 
 .cart__header {
-    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    background: linear-gradient(135deg, #0f2f45, #1e3a8a 32%, var(--principal) 100%);
     padding: 1rem 1.25rem;
     display: flex;
     justify-content: space-between;
@@ -526,12 +542,12 @@ body {
 }
 
 .btn--success {
-    background: linear-gradient(135deg, var(--principal), var(--principal-brillo));
-    color: var(--blanco);
+    background: linear-gradient(135deg, #14b8a6, var(--secundario) 45%, var(--principal) 100%);
+    color: #071520;
 }
 
 .btn--secondary {
-    background: var(--negro-secundario);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.92), rgba(32, 16, 50, 0.92));
     color: var(--texto);
     border: 1px solid var(--gris-borde);
 }
@@ -546,14 +562,14 @@ body {
 }
 
 .btn--outline {
-    background: transparent;
-    color: var(--principal-brillo);
-    border: 1px solid var(--principal);
+    background: rgba(34, 211, 238, 0.06);
+    color: var(--secundario);
+    border: 1px solid rgba(34, 211, 238, 0.42);
     transition: background 0.2s, color 0.2s;
 }
 
 .btn--outline:hover {
-    background: var(--principal);
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(109, 40, 217, 0.28));
     color: var(--blanco);
     opacity: 1;
 }
@@ -579,7 +595,7 @@ body {
 
 .productos__form {
     width: 340px;
-    background: #1c1c26;
+    background: linear-gradient(180deg, rgba(10, 30, 44, 0.96), rgba(31, 11, 51, 0.96));
     border-left: 1px solid var(--gris-borde);
     display: flex;
     flex-direction: column;
@@ -597,13 +613,13 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    background: linear-gradient(135deg, #0f2f45, #1f4f82 36%, var(--principal) 100%);
     padding: 1rem 1.25rem;
     border-radius: var(--radio);
 }
 
 .productos__form-title {
-    background: linear-gradient(135deg, var(--principal-oscuro), var(--principal));
+    background: linear-gradient(135deg, #0f2f45, #1f4f82 36%, var(--principal) 100%);
     padding: 1rem 1.25rem;
     font-size: 1.2rem;
     font-weight: 700;
@@ -629,7 +645,7 @@ body {
 
 .form__group input,
 .form__group select {
-    background: var(--negro-profundo);
+    background: rgba(8, 19, 31, 0.92);
     border: 1px solid var(--gris-borde);
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
@@ -671,7 +687,7 @@ body {
     align-items: center;
     gap: 1rem;
     padding: 0.85rem 1rem;
-    background: var(--negro-secundario);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.94), rgba(31, 15, 49, 0.92));
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     margin-bottom: 0.4rem;
@@ -679,8 +695,8 @@ body {
 }
 
 .producto-item:hover {
-    border-color: var(--principal);
-    background: #1f1f2e;
+    border-color: rgba(34, 211, 238, 0.4);
+    background: linear-gradient(180deg, rgba(14, 32, 48, 0.97), rgba(40, 18, 66, 0.95));
 }
 
 .producto__item-nombre {
@@ -721,14 +737,14 @@ body {
 }
 
 .btn-editar {
-    background: rgba(109, 40, 217, 0.2);
-    color: var(--principal-brillo);
-    border: 1px solid var(--principal);
+    background: rgba(34, 211, 238, 0.12);
+    color: var(--secundario);
+    border: 1px solid rgba(34, 211, 238, 0.42);
 }
 
 .btn-editar:hover {
-    background: var(--principal);
-    color: var(--blanco);
+    background: linear-gradient(135deg, var(--secundario), var(--principal));
+    color: #071520;
 }
 
 .btn-eliminar-prod {
@@ -824,7 +840,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1e1e2a;
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.94), rgba(31, 15, 49, 0.92));
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 1rem 1.25rem;
@@ -834,9 +850,9 @@ body {
 }
 
 .historial__card:hover {
-    border-color: var(--principal);
+    border-color: rgba(34, 211, 238, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(109, 40, 217, 0.2);
+    box-shadow: 0 10px 24px rgba(34, 211, 238, 0.12);
 }
 
 .historial__card-left {
@@ -923,7 +939,7 @@ body {
 }
 
 .factura {
-    background: #1e1e2a;
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.95), rgba(31, 15, 49, 0.94));
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 2rem;
@@ -1507,14 +1523,14 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    background: var(--negro-3);
+    background: linear-gradient(180deg, rgba(10, 30, 44, 0.96), rgba(24, 8, 38, 0.96));
 }
 
 .pos__busqueda-input-wrap {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    background: var(--negro-4);
+    background: rgba(8, 19, 31, 0.92);
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 0 0.9rem;
@@ -1594,7 +1610,7 @@ body {
 }
 
 .pos__result-item:hover {
-    background: var(--negro-3);
+    background: rgba(34, 211, 238, 0.08);
 }
 
 .pos__result-item:last-child {
@@ -1670,7 +1686,7 @@ body {
 .pos__venta {
     display: flex;
     flex-direction: column;
-    background: var(--negro-3);
+    background: linear-gradient(180deg, rgba(10, 30, 44, 0.96), rgba(31, 11, 51, 0.96));
     overflow: hidden;
 }
 
@@ -1848,7 +1864,7 @@ body {
     bottom: 0;
     left: var(--sidebar-w);
     right: 0;
-    background: var(--negro-4);
+    background: linear-gradient(180deg, rgba(9, 22, 35, 0.98), rgba(24, 8, 38, 0.98));
     border-top: 1px solid var(--gris-borde);
     padding: 0.5rem 1.25rem;
     display: flex;
@@ -1870,7 +1886,7 @@ body {
 }
 
 .pos__venta-guardada-chip {
-    background: var(--negro-3);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.94), rgba(24, 8, 38, 0.92));
     border: 1px solid var(--gris-borde);
     border-radius: 8px;
     padding: 4px 10px;
@@ -1904,7 +1920,7 @@ body {
 }
 
 .modal-content {
-    background: var(--negro-2);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.97), rgba(31, 11, 51, 0.97));
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 1.5rem;
@@ -1940,7 +1956,7 @@ body {
 }
 
 .total-display {
-    background: var(--negro-3);
+    background: linear-gradient(180deg, rgba(12, 29, 43, 0.94), rgba(36, 16, 58, 0.92));
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 1rem 1.25rem;
@@ -1975,7 +1991,7 @@ body {
 
 .efectivo-input {
     width: 100%;
-    background: var(--negro-3);
+    background: rgba(9, 22, 35, 0.94);
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 0.75rem 1rem;
@@ -2025,14 +2041,14 @@ body {
    BOTONES ADICIONALES
 ============================================================ */
 .btn--ghost {
-    background: transparent;
-    border: 1px solid var(--gris-borde);
+    background: rgba(34, 211, 238, 0.05);
+    border: 1px solid rgba(34, 211, 238, 0.24);
     color: var(--texto-suave);
 }
 
 .btn--ghost:hover {
-    border-color: var(--texto-suave);
-    color: var(--texto);
+    border-color: rgba(34, 211, 238, 0.45);
+    color: var(--secundario);
 }
 
 
@@ -2041,6 +2057,40 @@ body {
 ============================================================ */
 .productos__search-bar {
     padding: 0.75rem 0 0.5rem;
+}
+
+.filter-input {
+    width: 100%;
+    height: 44px;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(180deg, rgba(8, 19, 31, 0.94), rgba(24, 8, 38, 0.92));
+    border: 1px solid rgba(34, 211, 238, 0.18);
+    border-radius: 12px;
+    color: var(--texto);
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    box-shadow:
+        inset 0 0 0 1px rgba(34, 211, 238, 0.04),
+        0 8px 18px rgba(4, 10, 18, 0.2);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.filter-input::placeholder {
+    color: var(--texto-suave);
+}
+
+.filter-input:hover {
+    border-color: rgba(34, 211, 238, 0.3);
+}
+
+.filter-input:focus {
+    border-color: var(--secundario);
+    box-shadow:
+        inset 0 0 0 1px rgba(34, 211, 238, 0.08),
+        0 0 0 3px rgba(34, 211, 238, 0.14),
+        0 10px 24px rgba(34, 211, 238, 0.12);
+    background: linear-gradient(180deg, rgba(10, 26, 40, 0.98), rgba(31, 11, 51, 0.95));
 }
 
 .form__group--row {
@@ -2055,7 +2105,7 @@ body {
     border: 1px solid var(--gris-borde);
     border-radius: 8px;
     margin-top: 0.5rem;
-    background: var(--negro-3);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.95), rgba(24, 8, 38, 0.94));
 }
 
 .compra__prod-result {
@@ -2068,14 +2118,14 @@ body {
 }
 
 .compra__prod-result:last-child { border-bottom: none; }
-.compra__prod-result:hover { background: var(--negro-4); }
+.compra__prod-result:hover { background: rgba(34, 211, 238, 0.08); }
 
 .compra__items {
     border: 1px solid var(--gris-borde);
     border-radius: 8px;
     min-height: 60px;
     padding: 0.5rem;
-    background: var(--negro-3);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.94), rgba(24, 8, 38, 0.92));
 }
 
 .compra__items-empty {
@@ -2106,7 +2156,7 @@ body {
 
 .compra__item-input {
     width: 65px;
-    background: var(--negro-4);
+    background: rgba(8, 19, 31, 0.94);
     border: 1px solid var(--gris-borde);
     border-radius: 6px;
     color: var(--texto);
@@ -2144,7 +2194,7 @@ body {
     transition: background 0.15s;
 }
 
-.entidad__item:hover { background: var(--negro-3); }
+.entidad__item:hover { background: rgba(34, 211, 238, 0.08); }
 
 .entidad__item-info {
     flex: 1;
@@ -2176,3 +2226,171 @@ body {
     flex-shrink: 0;
 }
 
+
+/* ── Módulo de Compras ───────────────────────────────────────── */
+
+/* Resultados del buscador de productos */
+.compra__prod-resultados {
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.97), rgba(16, 5, 26, 0.97));
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    position: relative;
+}
+
+.compra__prod-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--gris-borde);
+    transition: background 0.15s;
+}
+
+.compra__prod-item:last-child { border-bottom: none; }
+.compra__prod-item:hover { background: rgba(34, 211, 238, 0.08); }
+
+.compra__prod-meta {
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+}
+
+.compra__sin-resultados {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+}
+
+/* Tabla de ítems de la compra */
+.compra__items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.compra__items-empty {
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0.75rem 0;
+}
+
+.compra__item-fila {
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.95), rgba(24, 8, 38, 0.93));
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.compra__item-nombre {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--texto);
+}
+
+.compra__item-campos {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.compra__campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.compra__campo-grupo label {
+    font-size: 0.7rem;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.compra__input-cant,
+.compra__input-costo {
+    width: 72px;
+    padding: 4px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--gris-borde);
+    background: var(--negro-2);
+    color: var(--texto);
+    font-size: 0.85rem;
+}
+
+.compra__item-subtotal {
+    margin-left: auto;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--verde);
+}
+
+.compra__item-eliminar {
+    padding: 4px 8px;
+    flex-shrink: 0;
+}
+
+.toast-region {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 500;
+    pointer-events: none;
+}
+
+.toast {
+    min-width: 260px;
+    max-width: 360px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(34, 211, 238, 0.2);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.98), rgba(31, 11, 51, 0.96));
+    color: var(--texto);
+    box-shadow: 0 16px 34px rgba(4, 10, 18, 0.3);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.toast.activa {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast i {
+    font-size: 1rem;
+}
+
+.toast--success i {
+    color: var(--terciario);
+}
+
+.toast--warning i {
+    color: #fbbf24;
+}
+
+.toast--error i {
+    color: var(--rojo);
+}
+
+.toast--info i {
+    color: var(--secundario);
+}

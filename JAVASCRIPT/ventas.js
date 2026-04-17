@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (metodo === "Efectivo") {
             const recibido = parseFloat(inputEfectivo.value) || 0;
             if (recibido < total) {
-                alert("El monto recibido no es suficiente.");
+                showToast("El monto recibido no es suficiente.", { type: "warning" });
                 return;
             }
         }
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (metodo === "Debe") {
             const clienteSelect = document.getElementById("cobro-cliente");
             if (clienteSelect && !clienteSelect.value) {
-                alert("Selecciona un cliente para registrar la cuenta por cobrar.");
+                showToast("Selecciona un cliente para registrar la cuenta por cobrar.", { type: "warning" });
                 return;
             }
         }
@@ -103,7 +103,12 @@ document.addEventListener("DOMContentLoaded", () => {
             metodoPago: venta.metodoPago,
             pagoCon: venta.pagoCon,
             clienteId: venta.clienteId
-        }).catch(err => console.error("Error guardando venta en Sheets:", err));
+        })
+        .then(() => showToast(`Venta ${venta.id} guardada en la nube.`, { type: "success" }))
+        .catch(err => {
+            console.error("Error guardando venta en Sheets:", err);
+            showToast("Venta registrada localmente, pero falló la sincronización con la nube.", { type: "error" });
+        });
 
         cerrarModal();
         // Limpiar la venta activa
@@ -113,6 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Mostrar factura
         mostrarVistaFactura(venta);
+
+        showToast("Venta registrada con éxito.", { type: "success" });
     });
 });
 
@@ -176,26 +183,3 @@ function mostrarVistaFactura(venta) {
         </div>
     `;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

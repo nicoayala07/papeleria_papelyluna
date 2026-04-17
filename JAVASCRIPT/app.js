@@ -1,5 +1,23 @@
 let catalogoProductos = [];
 
+function mostrarCargaProductos() {
+    if (typeof posResults !== "undefined" && posResults) {
+        posResults.innerHTML = `
+            <div class="pos__results-empty">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Cargando productos...</p>
+            </div>
+        `;
+    }
+
+    const contenedorProductos = document.getElementById("productos-container");
+    if (contenedorProductos) {
+        contenedorProductos.innerHTML = `
+            <p style="color:var(--texto-suave);padding:1rem">Cargando productos...</p>
+        `;
+    }
+}
+
 async function cargarProductosDesdeAPI() {
     try {
         const datos = await getProductos();
@@ -17,7 +35,22 @@ async function cargarProductosDesdeAPI() {
         }
     } catch (err) {
         console.error("Error cargando productos:", err);
-        catalogoProductos = JSON.parse(localStorage.getItem("pos_catalogo") || "[]");
+        showToast("Error al conectar con el servidor de productos.", { type: "error" });
+        if (typeof posResults !== "undefined" && posResults) {
+            posResults.innerHTML = `
+                <div class="pos__results-empty">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>No se pudieron cargar los productos</p>
+                </div>
+            `;
+        }
+
+        const contenedorProductos = document.getElementById("productos-container");
+        if (contenedorProductos) {
+            contenedorProductos.innerHTML = `
+                <p style="color:var(--rojo);padding:1rem">No se pudieron cargar los productos.</p>
+            `;
+        }
     }
 }
 
@@ -73,12 +106,7 @@ function filtrarYRenderizar() {
     const cat   = (posCatFilter?.value || "").toLowerCase();
 
     if (!texto && !cat) {
-        posResults.innerHTML = `
-            <div class="pos__results-empty">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <p>Busca un producto para agregarlo a la venta</p>
-            </div>
-        `;
+        renderResultados(catalogoProductos);
         return;
     }
 
@@ -127,5 +155,6 @@ function actualizarCatalogo(productos) {
 
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
+    mostrarCargaProductos();
     cargarProductosDesdeAPI();
 });
