@@ -1,63 +1,47 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyN1CGGOQd6srGtQl-aLawrZoLe5-BKkDvSHCTkvKG8zkPFOHqloh1pVsbq0PAz6UBG/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbymPuedWchrgu4_ARaKXkNvLxCZYICSj3u6Ha7mTkZSF6U7ICHA3PT8PamqnLRchBP1/exec";
 
-// ──  Funciones con el GET
-async function getProductos() {
-    const res = await fetch(`${API_URL}?hoja=productos`);
-    const data = await res.json();
-    return data;
+// --- LECTURA ---
+async function getData(hoja) {
+    try {
+        // Añadimos un timestamp para evitar que el navegador use una respuesta vieja (cache)
+        const cacheBuster = `&t=${new Date().getTime()}`;
+        const res = await fetch(`${API_URL}?hoja=${hoja}${cacheBuster}`, {
+            method: 'GET',
+            mode: 'cors', // Forzamos modo cors para evitar el error de la imagen
+            redirect: 'follow'
+        });
+
+        if (!res.ok) throw new Error("Error en la respuesta de red");
+
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error(`Error cargando la hoja ${hoja}:`, error);
+        return [];
+    }
 }
 
-async function getClientes() {
-    const res = await fetch(`${API_URL}?hoja=clientes`);
-    const data = await res.json();
-    return data;
+// Funciones de acceso directo
+const getClientes = () => getData("clientes");
+const getProveedores = () => getData("proveedores");
+const getProductos = () => getData("productos");
+const getCategorias = () => getData("categorias");
+
+// --- ESCRITURA ---
+async function ejecutarAccion(payload) {
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            mode: "no-cors", // Google Scripts requiere no-cors para POST
+            body: JSON.stringify(payload)
+        });
+        return true;
+    } catch (error) {
+        console.error("Error en la operación:", error);
+        return false;
+    }
 }
 
-async function getCategorias() {
-    const res = await fetch(`${API_URL}?hoja=categorias`);
-    const data = await res.json();
-    return data;
-}
-
-async function getProveedores() {
-    const res = await fetch(`${API_URL}?hoja=proveedores`);
-    const data = await res.json();
-    return data;
-}
-
-// ──  Funciones con el POST
-async function postVenta(venta) {
-    const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ hoja: "ventas", datos: venta })
-    });
-    const data = await res.json();
-    return data;
-}
-
-async function postCompra(compra) {
-    const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ hoja: "compras", datos: compra })
-    });
-    const data = await res.json();
-    return data;
-}
-
-async function postProducto(producto) {
-    const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ hoja: "productos", datos: producto })
-    });
-    const data = await res.json();
-    return data;
-}
-
-async function postCliente(cliente) {
-    const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ hoja: "clientes", datos: cliente })
-    });
-    const data = await res.json();
-    return data;
-}
+const postCliente = (datos) => ejecutarAccion({ hoja: "clientes", datos });
+const postProveedor = (datos) => ejecutarAccion({ hoja: "proveedores", datos });
+const eliminarEntidad = (id, hoja) => ejecutarAccion({ accion: "eliminar", hoja, id });

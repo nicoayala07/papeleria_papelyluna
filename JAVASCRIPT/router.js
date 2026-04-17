@@ -1,5 +1,6 @@
 // ── Router SPA ────────────────────────────────────────────────
 function navegarA(nombreVista) {
+    console.log("Intentando navegar a:", nombreVista);
     document.querySelectorAll(".vista").forEach(v => v.classList.remove("activa"));
     const vistaEl = document.getElementById("vista-" + nombreVista);
     if (vistaEl) vistaEl.classList.add("activa");
@@ -11,8 +12,13 @@ function navegarA(nombreVista) {
     // Callbacks al entrar a cada vista
     if (nombreVista === "productos" && typeof ListarProductos === "function") ListarProductos();
     if (nombreVista === "historial" && typeof renderHistorial === "function") renderHistorial();
-    if (nombreVista === "clientes" && typeof listarClientes === "function") listarClientes();
-    if (nombreVista === "proveedores" && typeof listarProveedores === "function") listarProveedores();
+    if (nombreVista === "clientes" && typeof cargarYListarClientes === "function") {
+        cargarYListarClientes();
+    }
+
+    if (nombreVista === "proveedores" && typeof cargarYListarProveedores === "function") {
+        cargarYListarProveedores();
+    }
     if (nombreVista === "categorias" && typeof listarCategorias === "function") listarCategorias();
     if (nombreVista === "compras" && typeof listarCompras === "function") listarCompras();
 }
