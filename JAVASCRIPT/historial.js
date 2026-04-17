@@ -8,18 +8,17 @@ function guardarHistorial(historial) {
     localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(historial));
 }
 
-// Recibe el objeto venta ya armado desde ventas.js
 function registrarVenta(venta) {
     const historial = cargarHistorial();
     const entrada = {
-        id:         venta.id,
-        numero:     historial.length + 1,
-        fecha:      new Date().toLocaleDateString("es-CO", { year:"numeric", month:"long", day:"numeric" }),
-        hora:       new Date().toLocaleTimeString("es-CO", { hour:"2-digit", minute:"2-digit" }),
-        productos:  venta.productos,
-        total:      venta.total,
+        id: venta.id,
+        numero: historial.length + 1,
+        fecha: new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" }),
+        hora: new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
+        productos: venta.productos,
+        total: venta.total,
         metodoPago: venta.metodoPago,
-        clienteId:  venta.clienteId || ""
+        clienteId: venta.clienteId || ""
     };
     historial.unshift(entrada);
     guardarHistorial(historial);
@@ -52,7 +51,7 @@ function renderHistorial() {
             <div class="historial__empty">
                 <i class="fa-solid fa-clock-rotate-left historial__empty-icon"></i>
                 <p class="historial__empty-title">Sin ventas registradas</p>
-                <p class="historial__empty-sub">Las ventas completadas aparecerán aquí</p>
+                <p class="historial__empty-sub">Las ventas completadas apareceran aqui</p>
             </div>
         `;
         return;
@@ -63,9 +62,9 @@ function renderHistorial() {
         card.classList.add("historial__card");
 
         const badgeMetodo = {
-            "Efectivo": "btn--success",
-            "Nequi":    "btn--outline",
-            "Debe":     "btn--danger"
+            Efectivo: "btn--success",
+            Nequi: "btn--outline",
+            Debe: "btn--danger"
         }[venta.metodoPago] || "btn--outline";
 
         card.innerHTML = `
@@ -97,8 +96,12 @@ function renderHistorial() {
     });
 
     contenedor.querySelectorAll(".btn-eliminar-venta").forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (confirm("¿Eliminar esta venta del historial?")) eliminarVenta(btn.dataset.id);
+        btn.addEventListener("click", async () => {
+            const ok = await showConfirmDialog("Se eliminara esta venta del historial.", {
+                title: "Eliminar venta",
+                confirmText: "Eliminar"
+            });
+            if (ok) eliminarVenta(btn.dataset.id);
         });
     });
 }
@@ -148,7 +151,7 @@ function renderFacturaDesdeHistorial(ventaId) {
                     <span>$${venta.total.toLocaleString("es-CO")}</span>
                 </div>
                 <div class="factura__fila">
-                    <span>Método de pago</span>
+                    <span>Metodo de pago</span>
                     <span>${venta.metodoPago}</span>
                 </div>
                 ${cambio !== null ? `<div class="factura__fila"><span>Cambio</span><span>$${cambio}</span></div>` : ""}

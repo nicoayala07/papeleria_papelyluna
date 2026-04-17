@@ -1,17 +1,49 @@
-// ── Estado de la venta activa ─────────────────────────────────
+// Estado de la venta activa
 let ventaActiva = {
     id: generarId(),
     items: []
 };
 
-// Ventas guardadas (en espera) — se guardan en localStorage hasta migrar a API
+// Ventas guardadas (en espera) - se guardan en localStorage hasta migrar a API
 let ventasGuardadas = JSON.parse(localStorage.getItem("pos_ventas_guardadas") || "[]");
 
 function generarId() {
     return "V-" + Date.now().toString().slice(-6);
 }
 
-// ── Carrito: operaciones ──────────────────────────────────────
+function obtenerProductoCatalogo(productoId) {
+    if (typeof catalogoProductos === "undefined" || !Array.isArray(catalogoProductos)) return null;
+    return catalogoProductos.find(p => String(p.id) === String(productoId)) || null;
+}
+
+function sincronizarItemsConCatalogo(items = []) {
+    return items.map(item => {
+        const productoActual = obtenerProductoCatalogo(item.id);
+        if (!productoActual) return item;
+
+        return {
+            ...item,
+            nombre: productoActual.nombre,
+            precio: Number(productoActual.precio) || 0
+        };
+    });
+}
+
+function persistirVentasGuardadas() {
+    localStorage.setItem("pos_ventas_guardadas", JSON.stringify(ventasGuardadas));
+}
+
+function sincronizarVentaActivaConCatalogo() {
+    ventaActiva.items = sincronizarItemsConCatalogo(ventaActiva.items);
+}
+
+function sincronizarVentasGuardadasConCatalogo() {
+    ventasGuardadas = ventasGuardadas.map(venta => ({
+        ...venta,
+        items: sincronizarItemsConCatalogo(venta.items || [])
+    }));
+    persistirVentasGuardadas();
+}
 
 function agregarAlCarrito(producto) {
     if (producto.seguimientoInventario === "si" && producto.stock <= 0) {
@@ -68,8 +100,6 @@ function calcularTotal() {
     return ventaActiva.items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 }
 
-// ── Ventas guardadas ──────────────────────────────────────────
-
 function guardarVentaActiva() {
     if (ventaActiva.items.length === 0) {
         showToast("La venta no tiene productos para guardar.", { type: "warning" });
@@ -77,8 +107,7 @@ function guardarVentaActiva() {
     }
     const copia = JSON.parse(JSON.stringify(ventaActiva));
     ventasGuardadas.push(copia);
-    localStorage.setItem("pos_ventas_guardadas", JSON.stringify(ventasGuardadas));
-    // Iniciar venta nueva vacía
+    persistirVentasGuardadas();
     ventaActiva = { id: generarId(), items: [] };
     renderCarrito();
     renderVentasGuardadas();
@@ -89,39 +118,43 @@ function retomarVentaGuardada(ventaId) {
     const idx = ventasGuardadas.findIndex(v => v.id === ventaId);
     if (idx === -1) return;
 
-    // Si hay items en la venta activa, la guardamos primero
     if (ventaActiva.items.length > 0) {
         ventasGuardadas.push(JSON.parse(JSON.stringify(ventaActiva)));
     }
 
     ventaActiva = ventasGuardadas.splice(idx, 1)[0];
-    localStorage.setItem("pos_ventas_guardadas", JSON.stringify(ventasGuardadas));
+    sincronizarVentaActivaConCatalogo();
+    persistirVentasGuardadas();
     renderCarrito();
     renderVentasGuardadas();
 }
 
-function nuevaVenta() {
+async function nuevaVenta() {
     if (ventaActiva.items.length > 0) {
-        if (!confirm("¿Descartar la venta en curso?")) return;
+        const ok = await showConfirmDialog("Se descartara la venta en curso.", {
+            title: "Nueva venta",
+            confirmText: "Descartar"
+        });
+        if (!ok) return;
     }
+
     ventaActiva = { id: generarId(), items: [] };
     renderCarrito();
 }
 
-// ── Render ─────────────────────────────────────────────────────
-
 function renderCarrito() {
     const contenedor = document.getElementById("pos-carrito");
-    const emptyMsg   = document.getElementById("pos-carrito-empty");
-    const totalEl    = document.getElementById("pos-total");
-    const btnCobrar  = document.getElementById("btn-cobrar");
-    const idDisplay  = document.getElementById("venta-id-display");
+    const emptyMsg = document.getElementById("pos-carrito-empty");
+    const totalEl = document.getElementById("pos-total");
+    const btnCobrar = document.getElementById("btn-cobrar");
+    const idDisplay = document.getElementById("venta-id-display");
 
     if (!contenedor) return;
 
+    sincronizarVentaActivaConCatalogo();
+
     if (idDisplay) idDisplay.textContent = ventaActiva.id;
 
-    // Limpiar ítems previos (dejar el mensaje vacío)
     contenedor.querySelectorAll(".pos__item").forEach(el => el.remove());
 
     const total = calcularTotal();
@@ -145,12 +178,12 @@ function renderCarrito() {
                 <p class="pos__item-precio">$${item.precio.toLocaleString("es-CO")} c/u</p>
             </div>
             <div class="pos__item-controles">
-                <button class="pos__item-btn" data-id="${item.id}" data-op="disminuir">−</button>
+                <button class="pos__item-btn" data-id="${item.id}" data-op="disminuir">-</button>
                 <span class="pos__item-cantidad">${item.cantidad}</span>
                 <button class="pos__item-btn" data-id="${item.id}" data-op="aumentar">+</button>
             </div>
             <span class="pos__item-subtotal">$${subtotal.toLocaleString("es-CO")}</span>
-            <button class="pos__item-delete" data-id="${item.id}" title="Quitar">✕</button>
+            <button class="pos__item-delete" data-id="${item.id}" title="Quitar">x</button>
         `;
         contenedor.appendChild(div);
     });
@@ -173,6 +206,8 @@ function renderVentasGuardadas() {
     const lista = document.getElementById("pos-abiertas-lista");
     if (!banda || !lista) return;
 
+    sincronizarVentasGuardadasConCatalogo();
+
     if (ventasGuardadas.length === 0) {
         banda.style.display = "none";
         return;
@@ -183,13 +218,12 @@ function renderVentasGuardadas() {
     ventasGuardadas.forEach(v => {
         const chip = document.createElement("button");
         chip.classList.add("pos__venta-guardada-chip");
-        chip.textContent = `${v.id} · ${v.items.length} ítem(s)`;
+        chip.textContent = `${v.id} · ${v.items.length} item(s)`;
         chip.addEventListener("click", () => retomarVentaGuardada(v.id));
         lista.appendChild(chip);
     });
 }
 
-// ── Init ──────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
     renderCarrito();
     renderVentasGuardadas();

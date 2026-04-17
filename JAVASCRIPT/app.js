@@ -132,6 +132,11 @@ posClearBtn?.addEventListener("click", () => {
 
 // ── Poblar select de categorías ───────────────────────────────
 function poblarSelectCategorias() {
+    if (typeof sincronizarSelectsCategorias === "function") {
+        sincronizarSelectsCategorias();
+        return;
+    }
+
     const categorias = [...new Set(catalogoProductos.map(p => p.categoria).filter(Boolean))];
     [posCatFilter, document.getElementById("prod-categoria")].forEach(sel => {
         if (!sel) return;

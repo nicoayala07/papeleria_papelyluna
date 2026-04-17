@@ -1,5 +1,4 @@
-// productos.js — Gestión del catálogo de productos
-// En MVP2: los datos vendrán de API. Por ahora usa localStorage.
+// productos.js - Gestion del catalogo de productos
 
 let productoEditandoId = null;
 
@@ -41,31 +40,70 @@ function ListarProductos() {
     });
 
     contenedor.querySelectorAll(".btn-eliminar-prod").forEach(btn => {
-        btn.addEventListener("click", () => eliminarProducto(parseInt(btn.dataset.id)));
+        btn.addEventListener("click", () => eliminarProducto(btn.dataset.id));
     });
     contenedor.querySelectorAll(".btn-editar").forEach(btn => {
-        btn.addEventListener("click", () => editarProducto(parseInt(btn.dataset.id)));
+        btn.addEventListener("click", () => editarProducto(btn.dataset.id));
     });
 }
 
-function eliminarProducto(id) {
-    if (!confirm("¿Seguro que quieres eliminar este producto?")) return;
-    const nuevos = catalogoProductos.filter(p => p.id !== id);
-    actualizarCatalogo(nuevos);
+function obtenerDatosFormularioProducto() {
+    return {
+        nombre: document.getElementById("prod-nombre").value.trim(),
+        precio: parseFloat(document.getElementById("prod-precio").value),
+        costo: parseFloat(document.getElementById("prod-costo").value) || 0,
+        codigo: document.getElementById("prod-codigo").value.trim(),
+        categoria: document.getElementById("prod-categoria").value,
+        stock: parseInt(document.getElementById("prod-stock").value) || 0,
+        seguimientoInventario: document.getElementById("prod-seguimiento").value
+    };
+}
+
+function aplicarProductoEnCatalogo(producto) {
+    const idx = catalogoProductos.findIndex(p => String(p.id) === String(producto.id));
+    if (idx !== -1) {
+        catalogoProductos[idx] = { ...catalogoProductos[idx], ...producto };
+    } else {
+        catalogoProductos.push(producto);
+    }
+    actualizarCatalogo(catalogoProductos);
+}
+
+async function recargarProductosDesdeSheets() {
+    await cargarProductosDesdeAPI();
     ListarProductos();
-    showToast("Producto eliminado del catálogo local.", { type: "info" });
+}
+
+async function eliminarProducto(id) {
+    const ok = await showConfirmDialog("Se eliminara este producto de Google Sheets y del catalogo local.", {
+        title: "Eliminar producto",
+        confirmText: "Eliminar"
+    });
+    if (!ok) return;
+
+    try {
+        await eliminarEntidad(String(id), "productos");
+        catalogoProductos = catalogoProductos.filter(p => String(p.id) !== String(id));
+        actualizarCatalogo(catalogoProductos);
+        ListarProductos();
+        showToast("Producto eliminado correctamente.", { type: "success" });
+        await recargarProductosDesdeSheets();
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo eliminar el producto.", { type: "error" });
+    }
 }
 
 function editarProducto(id) {
-    const producto = catalogoProductos.find(p => p.id === id);
+    const producto = catalogoProductos.find(p => String(p.id) === String(id));
     if (!producto) return;
-    productoEditandoId = id;
+    productoEditandoId = String(id);
 
-    document.getElementById("prod-nombre").value      = producto.nombre;
-    document.getElementById("prod-precio").value      = producto.precio;
-    document.getElementById("prod-costo").value       = producto.costo || "";
-    document.getElementById("prod-codigo").value      = producto.codigo || "";
-    document.getElementById("prod-stock").value       = producto.stock ?? "";
+    document.getElementById("prod-nombre").value = producto.nombre;
+    document.getElementById("prod-precio").value = producto.precio;
+    document.getElementById("prod-costo").value = producto.costo || "";
+    document.getElementById("prod-codigo").value = producto.codigo || "";
+    document.getElementById("prod-stock").value = producto.stock ?? "";
     document.getElementById("prod-seguimiento").value = producto.seguimientoInventario || "si";
 
     const catSelect = document.getElementById("prod-categoria");
@@ -76,54 +114,63 @@ function editarProducto(id) {
 
 function limpiarFormProducto() {
     productoEditandoId = null;
-    ["prod-nombre","prod-precio","prod-costo","prod-codigo","prod-stock"].forEach(id => {
+    ["prod-nombre", "prod-precio", "prod-costo", "prod-codigo", "prod-stock"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = "";
     });
     document.getElementById("prod-seguimiento").value = "si";
-    document.getElementById("prod-categoria").value   = "";
+    document.getElementById("prod-categoria").value = "";
     document.getElementById("form-title").textContent = "Nuevo Producto";
 }
 
-document.getElementById("btn-guardar-prod")?.addEventListener("click", () => {
-    const nombre      = document.getElementById("prod-nombre").value.trim();
-    const precio      = parseFloat(document.getElementById("prod-precio").value);
-    const costo       = parseFloat(document.getElementById("prod-costo").value) || 0;
-    const codigo      = document.getElementById("prod-codigo").value.trim();
-    const categoria   = document.getElementById("prod-categoria").value;
-    const stock       = parseInt(document.getElementById("prod-stock").value) || 0;
-    const seguimiento = document.getElementById("prod-seguimiento").value;
+async function guardarProducto() {
+    const btn = document.getElementById("btn-guardar-prod");
+    const editandoId = productoEditandoId;
+    const datos = obtenerDatosFormularioProducto();
 
-    if (!nombre || isNaN(precio) || precio <= 0) {
-        showToast("Nombre y precio son obligatorios y deben ser válidos.", { type: "warning" });
+    if (!datos.nombre || isNaN(datos.precio) || datos.precio <= 0) {
+        showToast("Nombre y precio son obligatorios y deben ser validos.", { type: "warning" });
         return;
     }
 
-    if (productoEditandoId) {
-        const idx = catalogoProductos.findIndex(p => p.id === productoEditandoId);
-        if (idx !== -1) {
-            catalogoProductos[idx] = {
-                ...catalogoProductos[idx],
-                nombre, precio, costo, codigo, categoria,
-                stock, seguimientoInventario: seguimiento
-            };
-        }
-    } else {
-        catalogoProductos.push({
-            id: Date.now(),
-            nombre, precio, costo, codigo, categoria,
-            stock, seguimientoInventario: seguimiento
-        });
+    const payload = {
+        id: String(editandoId || Date.now()),
+        ...datos
+    };
+
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Guardando...";
     }
 
-    actualizarCatalogo(catalogoProductos);
-    limpiarFormProducto();
-    ListarProductos();
-    showToast("¡Producto guardado con éxito!", { type: "success" });
-});
+    try {
+        aplicarProductoEnCatalogo(payload);
+        ListarProductos();
 
+        if (editandoId) {
+            await eliminarEntidad(String(editandoId), "productos");
+        }
+
+        await postProducto(payload);
+        showToast(editandoId ? "Producto actualizado en Google Sheets." : "Producto guardado en Google Sheets.", {
+            type: "success"
+        });
+        limpiarFormProducto();
+        await recargarProductosDesdeSheets();
+        if (typeof renderCarrito === "function") renderCarrito();
+        if (typeof renderVentasGuardadas === "function") renderVentasGuardadas();
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo sincronizar el producto con Google Sheets.", { type: "error" });
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Guardar";
+        }
+    }
+}
+
+document.getElementById("btn-guardar-prod")?.addEventListener("click", guardarProducto);
 document.getElementById("btn-cancelar-prod")?.addEventListener("click", limpiarFormProducto);
-
 document.getElementById("btn-nuevo-producto")?.addEventListener("click", limpiarFormProducto);
-
 document.getElementById("prod-search")?.addEventListener("input", ListarProductos);

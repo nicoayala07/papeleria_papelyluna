@@ -582,7 +582,11 @@ body {
 /* ============================================================
    14. VISTA PRODUCTOS - CRUD
 ============================================================ */
-#vista-productos.activa {
+#vista-productos.activa,
+#vista-compras.activa,
+#vista-clientes.activa,
+#vista-proveedores.activa,
+#vista-categorias.activa {
     display: flex;
     flex: 1;
     min-height: 100vh;
@@ -591,6 +595,7 @@ body {
 .productos__layout {
     display: flex;
     flex: 1;
+    min-height: 100vh;
 }
 
 .productos__form {
@@ -606,6 +611,13 @@ body {
     box-shadow: var(--sombra);
     padding: 1.5rem;
     gap: 1.5rem;
+}
+
+#compras-form,
+#clientes-form,
+#proveedores-form,
+#categorias-form {
+    display: none;
 }
 
 .Form__header {
@@ -672,6 +684,29 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
+    min-width: 0;
+}
+
+#productos-container,
+#compras-lista,
+#clientes-container,
+#proveedores-container,
+#categorias-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+#clientes-container > p,
+#proveedores-container > p,
+#categorias-container > p,
+#productos-container > p,
+#compras-lista > p {
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.9), rgba(31, 15, 49, 0.88));
+    border: 1px dashed rgba(34, 211, 238, 0.24);
+    border-radius: var(--radio);
+    padding: 1rem 1.1rem;
+    color: var(--texto-suave);
 }
 
 .productos__lista-header {
@@ -679,6 +714,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    gap: 1rem;
 }
 
 .producto-item {
@@ -690,40 +726,51 @@ body {
     background: linear-gradient(180deg, rgba(11, 25, 39, 0.94), rgba(31, 15, 49, 0.92));
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
-    margin-bottom: 0.4rem;
     transition: border-color 0.2s, background 0.2s;
+    box-shadow: 0 12px 24px rgba(4, 10, 18, 0.18);
 }
 
 .producto-item:hover {
     border-color: rgba(34, 211, 238, 0.4);
     background: linear-gradient(180deg, rgba(14, 32, 48, 0.97), rgba(40, 18, 66, 0.95));
+    box-shadow: 0 14px 28px rgba(34, 211, 238, 0.1);
+}
+
+.producto__item-info {
+    min-width: 0;
 }
 
 .producto__item-nombre {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--texto);
+    line-height: 1.35;
 }
 
 .producto__item-precio {
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--amarillo);
+    white-space: nowrap;
 }
 
 .producto__item-codigo {
     font-size: 0.75rem;
     color: var(--texto-suave);
     font-family: monospace;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
 }
 
 .producto__item-acciones {
     display: flex;
     gap: 0.4rem;
+    justify-self: end;
 }
 
 .btn-editar,
-.btn-eliminar-prod {
+.btn-eliminar-prod,
+.producto__item-acciones .btn-eliminar {
     width: 32px;
     height: 32px;
     border: none;
@@ -747,15 +794,34 @@ body {
     color: #071520;
 }
 
-.btn-eliminar-prod {
+.btn-eliminar-prod,
+.producto__item-acciones .btn-eliminar {
     background: rgba(239, 68, 68, 0.15);
     color: var(--rojo);
     border: 1px solid var(--rojo);
 }
 
-.btn-eliminar-prod:hover {
+.btn-eliminar-prod:hover,
+.producto__item-acciones .btn-eliminar:hover {
     background: var(--rojo);
     color: var(--blanco);
+}
+
+#vista-clientes .productos__form,
+#vista-proveedores .productos__form,
+#vista-categorias .productos__form,
+#vista-compras .productos__form {
+    background:
+        linear-gradient(180deg, rgba(10, 30, 44, 0.97), rgba(31, 11, 51, 0.96)),
+        radial-gradient(circle at top right, rgba(34, 211, 238, 0.08), transparent 35%);
+}
+
+#vista-clientes .productos__lista-header .vista-title,
+#vista-proveedores .productos__lista-header .vista-title,
+#vista-categorias .productos__lista-header .vista-title,
+#vista-compras .productos__lista-header .vista-title,
+#vista-productos .productos__lista-header .vista-title {
+    font-size: 1.9rem;
 }
 
 
@@ -1395,6 +1461,33 @@ body {
         overflow: visible;
     }
 
+    .producto-item {
+        grid-template-columns: 1fr auto;
+        gap: 0.85rem;
+    }
+
+    .producto__item-precio,
+    .producto__item-codigo {
+        grid-column: 1 / -1;
+    }
+
+    .producto__item-acciones {
+        align-self: start;
+    }
+
+    .pos__results {
+        padding-bottom: 0.5rem;
+    }
+
+    .pos__ventas-abiertas {
+        position: static;
+        left: auto;
+        right: auto;
+        min-height: 0;
+        border-top: none;
+        border-bottom: 1px solid var(--gris-borde);
+    }
+
     /* --- HISTORIAL --- */
     .historial__card {
         flex-direction: column;
@@ -1507,6 +1600,7 @@ body {
     grid-template-columns: 1fr 360px;
     height: 100vh;
     overflow: hidden;
+    position: relative;
 }
 
 /* ── Panel izquierdo: catálogo / búsqueda ── */
@@ -1515,6 +1609,7 @@ body {
     flex-direction: column;
     border-right: 1px solid var(--gris-borde);
     overflow: hidden;
+    min-width: 0;
 }
 
 .pos__busqueda {
@@ -1578,7 +1673,7 @@ body {
 .pos__results {
     flex: 1;
     overflow-y: auto;
-    padding: 0.5rem 0;
+    padding: 0.5rem 0 4.75rem;
 }
 
 .pos__results-empty {
@@ -1860,10 +1955,10 @@ body {
 
 /* Ventas guardadas (banda inferior) */
 .pos__ventas-abiertas {
-    position: fixed;
+    position: absolute;
     bottom: 0;
-    left: var(--sidebar-w);
-    right: 0;
+    left: 0;
+    right: 360px;
     background: linear-gradient(180deg, rgba(9, 22, 35, 0.98), rgba(24, 8, 38, 0.98));
     border-top: 1px solid var(--gris-borde);
     padding: 0.5rem 1.25rem;
@@ -1871,6 +1966,7 @@ body {
     align-items: center;
     gap: 0.75rem;
     z-index: 50;
+    min-height: 50px;
 }
 
 .pos__abiertas-label {
@@ -1899,6 +1995,238 @@ body {
 .pos__venta-guardada-chip:hover {
     border-color: var(--amarillo);
     color: var(--amarillo);
+}
+
+@media (max-width: 1180px) {
+    .pos__layout {
+        grid-template-columns: minmax(0, 1fr) 330px;
+    }
+
+    .pos__ventas-abiertas {
+        right: 330px;
+    }
+
+    .pos__result-item {
+        gap: 0.7rem;
+        padding-inline: 1rem;
+    }
+}
+
+@media (max-width: 980px) {
+    .pos__layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .pos__catalogo {
+        min-height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid var(--gris-borde);
+    }
+
+    .pos__results {
+        padding-bottom: 0.5rem;
+        max-height: 52vh;
+    }
+
+    .pos__venta {
+        min-height: 420px;
+    }
+
+    .pos__venta-header,
+    .pos__venta-footer {
+        padding-inline: 1rem;
+    }
+
+    .pos__ventas-abiertas {
+        position: static;
+        left: auto;
+        right: auto;
+        min-height: 0;
+        border-top: none;
+        border-bottom: 1px solid var(--gris-borde);
+    }
+
+    .pos__abiertas-lista {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.2rem;
+        scrollbar-width: thin;
+    }
+
+    .pos__venta-guardada-chip {
+        white-space: nowrap;
+        flex: 0 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-nav {
+        padding: 0 0.35rem;
+        gap: 0.1rem;
+    }
+
+    .sidebar-nav__links,
+    .sidebar-nav__bottom {
+        gap: 0.1rem;
+        min-width: 0;
+    }
+
+    .nav-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0 0.55rem;
+        font-size: 1rem;
+    }
+
+    .pos__busqueda {
+        padding: 0.85rem 0.85rem 0.7rem;
+    }
+
+    .pos__busqueda-input-wrap {
+        padding: 0 0.75rem;
+    }
+
+    .pos__result-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        align-items: center;
+    }
+
+    .pos__result-info {
+        grid-column: 1 / -1;
+    }
+
+    .pos__venta-header {
+        gap: 0.75rem;
+    }
+
+    .pos__acciones {
+        flex-direction: column;
+    }
+
+    .pos__acciones .btn,
+    .pos__acciones .btn--success {
+        width: 100%;
+    }
+
+    .pos__item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+    }
+
+    .pos__item-info {
+        grid-column: 1 / -1;
+    }
+
+    .pos__item-subtotal {
+        min-width: 0;
+        text-align: left;
+    }
+
+    .pos__item-delete {
+        justify-self: end;
+    }
+
+    .modal-content,
+    .ticket-container {
+        width: min(92vw, 440px);
+    }
+
+    .modal-actions,
+    .ticket-acciones {
+        flex-direction: column;
+    }
+
+    .ticket-acciones .btn,
+    .modal-actions .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 560px) {
+    .main-container {
+        padding-bottom: 74px;
+    }
+
+    .sidebar-nav {
+        height: 64px;
+    }
+
+    .nav-btn {
+        padding: 0 0.35rem;
+        font-size: 0.95rem;
+    }
+
+    .vista-title {
+        font-size: 1.5rem;
+    }
+
+    .productos__form,
+    .productos__lista,
+    .vista-header,
+    .productos__lista-header {
+        padding-inline: 0.85rem;
+    }
+
+    .form__group--row {
+        grid-template-columns: 1fr;
+    }
+
+    .producto-item {
+        padding: 0.8rem 0.85rem;
+    }
+
+    .pos__venta-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pos__venta-titulo {
+        gap: 0.15rem;
+    }
+
+    .pos__results {
+        max-height: none;
+    }
+
+    .pos__result-item {
+        grid-template-columns: 1fr auto;
+    }
+
+    .pos__result-precio,
+    .pos__result-stock {
+        justify-self: start;
+    }
+
+    .pos__result-add {
+        justify-self: end;
+        grid-row: span 2;
+    }
+
+    .pos__ventas-abiertas {
+        padding: 0.55rem 0.85rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pos__abiertas-label {
+        white-space: normal;
+    }
+
+    .compra__item-campos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .compra__item-subtotal,
+    .compra__item-eliminar {
+        grid-column: 1 / -1;
+    }
 }
 
 
@@ -2393,4 +2721,555 @@ body {
 
 .toast--info i {
     color: var(--secundario);
+}
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(3, 8, 14, 0.78);
+    backdrop-filter: blur(4px);
+    z-index: 600;
+}
+
+.confirm-overlay.activa {
+    display: flex;
+}
+
+.confirm-dialog {
+    width: min(100%, 420px);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.99), rgba(31, 11, 51, 0.97));
+    border: 1px solid rgba(34, 211, 238, 0.22);
+    border-radius: 20px;
+    box-shadow: 0 22px 50px rgba(4, 10, 18, 0.45);
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.confirm-dialog__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(251, 113, 133, 0.12);
+    border: 1px solid rgba(251, 113, 133, 0.25);
+    color: var(--rojo);
+    font-size: 1.1rem;
+}
+
+.confirm-dialog__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.confirm-dialog__title {
+    font-size: 1.05rem;
+    color: var(--texto);
+    font-weight: 700;
+}
+
+.confirm-dialog__message {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--texto-suave);
+}
+
+.confirm-dialog__actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+}
+
+/* ============================================================
+   MOBILE APP TARGET
+============================================================ */
+@media (max-width: 900px) {
+    :root {
+        --sidebar-w: 0px;
+    }
+
+    body {
+        min-height: 100dvh;
+        overflow-x: hidden;
+    }
+
+    .main-container {
+        margin-left: 0;
+        min-height: 100dvh;
+        padding-bottom: 84px;
+    }
+
+    .vista,
+    .vista.activa {
+        min-height: calc(100dvh - 84px);
+    }
+
+    .sidebar-nav {
+        position: fixed;
+        inset: auto 0 0 0;
+        width: 100%;
+        height: 72px;
+        padding: 0.35rem 0.45rem calc(0.35rem + env(safe-area-inset-bottom));
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 0.25rem;
+        border-right: none;
+        border-top: 1px solid rgba(34, 211, 238, 0.22);
+        background: linear-gradient(180deg, rgba(7, 23, 34, 0.96), rgba(16, 32, 62, 0.98));
+        box-shadow: 0 -10px 30px rgba(4, 10, 18, 0.3);
+        backdrop-filter: blur(12px);
+    }
+
+    .sidebar-nav__logo {
+        display: none;
+    }
+
+    .sidebar-nav__links,
+    .sidebar-nav__bottom {
+        display: flex;
+        flex: 1 1 0;
+        justify-content: space-evenly;
+        align-items: center;
+        gap: 0.2rem;
+        min-width: 0;
+    }
+
+    .sidebar-nav__bottom {
+        margin-top: 0;
+        padding-bottom: 0;
+    }
+
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border-radius: 12px;
+        font-size: 1rem;
+        flex: 0 0 auto;
+    }
+
+    .nav-btn:hover {
+        box-shadow: none;
+    }
+
+    .nav-btn.activa {
+        transform: translateY(-2px);
+    }
+
+    .nav-btn[title]:hover::after {
+        display: none;
+    }
+
+    .vista-header,
+    .productos__lista-header {
+        padding: 1rem 1rem 0.85rem;
+        gap: 0.85rem;
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .vista-title {
+        font-size: 1.45rem;
+        letter-spacing: 0.02em;
+    }
+
+    #historial-lista,
+    #factura-contenido,
+    #productos-lista {
+        padding: 1rem;
+    }
+
+    .productos__layout {
+        flex-direction: column-reverse;
+        min-height: calc(100dvh - 84px);
+    }
+
+    .productos__lista {
+        padding: 0.95rem;
+        overflow: visible;
+    }
+
+    .productos__form {
+        width: 100%;
+        height: auto;
+        max-height: none;
+        position: static;
+        border-left: none;
+        border-bottom: 1px solid var(--gris-borde);
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .Form__header {
+        margin-bottom: 0.75rem;
+        padding: 0.85rem 1rem;
+    }
+
+    .productos__form-title {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        font-size: 1rem;
+    }
+
+    .form__group input,
+    .form__group select,
+    .filter-input,
+    .filter-select,
+    .efectivo-input {
+        min-height: 46px;
+        font-size: 0.95rem;
+    }
+
+    .form__actions,
+    .modal-actions,
+    .ticket-acciones,
+    .pos__acciones {
+        flex-direction: column;
+    }
+
+    .form__actions .btn,
+    .modal-actions .btn,
+    .ticket-acciones .btn,
+    .pos__acciones .btn {
+        width: 100%;
+    }
+
+    .form__group--row {
+        grid-template-columns: 1fr;
+    }
+
+    .producto-item {
+        grid-template-columns: 1fr auto;
+        gap: 0.8rem;
+        padding: 0.85rem 0.9rem;
+    }
+
+    .producto__item-info,
+    .producto__item-precio,
+    .producto__item-codigo {
+        grid-column: 1 / -1;
+    }
+
+    .producto__item-acciones {
+        grid-column: 1 / -1;
+        justify-self: end;
+    }
+
+    .historial__card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 0.95rem 1rem;
+    }
+
+    .historial__card-left,
+    .historial__card-right {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .historial__card-right {
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed var(--gris-borde);
+    }
+
+    .historial__acciones {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .factura,
+    .ticket-container {
+        padding: 1rem;
+        margin: 1rem auto;
+        border-radius: 18px;
+    }
+
+    .factura__header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 1rem;
+    }
+
+    .factura__meta {
+        width: 100%;
+        text-align: left;
+    }
+
+    .factura__tabla,
+    .ticket-tabla {
+        font-size: 0.82rem;
+    }
+
+    .factura__tabla thead tr th,
+    .factura__tabla tbody td,
+    .ticket-tabla th,
+    .ticket-tabla td {
+        padding: 0.6rem 0.45rem;
+    }
+
+    .factura__totales {
+        align-items: stretch;
+    }
+
+    .factura__fila {
+        min-width: 0;
+        gap: 1rem;
+    }
+
+    .pos__layout {
+        grid-template-columns: 1fr;
+        min-height: calc(100dvh - 84px);
+        height: auto;
+        overflow: visible;
+    }
+
+    .pos__catalogo {
+        border-right: none;
+        border-bottom: 1px solid var(--gris-borde);
+        min-height: 0;
+    }
+
+    .pos__busqueda {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding: 0.9rem;
+    }
+
+    .pos__busqueda-input-wrap {
+        padding: 0 0.8rem;
+    }
+
+    .pos__busqueda-input {
+        font-size: 0.98rem;
+    }
+
+    .pos__results {
+        padding: 0.4rem 0 0.6rem;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .pos__result-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.55rem 0.75rem;
+        align-items: start;
+        padding: 0.8rem 0.95rem;
+    }
+
+    .pos__result-info {
+        grid-column: 1 / -1;
+    }
+
+    .pos__result-precio,
+    .pos__result-stock {
+        justify-self: start;
+    }
+
+    .pos__result-add {
+        width: 36px;
+        height: 36px;
+        justify-self: end;
+        grid-row: span 2;
+    }
+
+    .pos__venta {
+        order: -1;
+        min-height: 44dvh;
+    }
+
+    .pos__catalogo {
+        order: 0;
+    }
+
+    .pos__venta-header {
+        padding: 0.9rem 1rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .pos__items {
+        max-height: none;
+        padding: 0.25rem 0;
+    }
+
+    .pos__item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.55rem 0.75rem;
+        align-items: start;
+        padding: 0.75rem 1rem;
+    }
+
+    .pos__item-info {
+        grid-column: 1 / -1;
+    }
+
+    .pos__item-controles,
+    .pos__item-subtotal {
+        align-self: center;
+    }
+
+    .pos__item-subtotal {
+        min-width: 0;
+        text-align: left;
+    }
+
+    .pos__item-delete {
+        justify-self: end;
+    }
+
+    .pos__venta-footer {
+        padding: 0.95rem 1rem calc(0.95rem + env(safe-area-inset-bottom));
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(10, 30, 44, 0.98), rgba(31, 11, 51, 0.99));
+        backdrop-filter: blur(8px);
+    }
+
+    .pos__ventas-abiertas {
+        position: static;
+        left: auto;
+        right: auto;
+        min-height: 0;
+        padding: 0.7rem 0.95rem;
+        flex-direction: column;
+        align-items: stretch;
+        border-top: none;
+        border-bottom: 1px solid var(--gris-borde);
+    }
+
+    .pos__abiertas-label {
+        white-space: normal;
+    }
+
+    .pos__abiertas-lista {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.2rem;
+        scrollbar-width: thin;
+    }
+
+    .pos__venta-guardada-chip {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .modal-overlay {
+        align-items: end;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: none;
+        border-radius: 22px 22px 0 0;
+        padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    }
+
+    .modal-header {
+        gap: 0.75rem;
+    }
+
+    .modal-header .btn {
+        flex: 0 0 auto;
+    }
+
+    .confirm-overlay {
+        padding: 1rem;
+    }
+
+    .confirm-dialog {
+        width: min(100%, 420px);
+    }
+
+    .compra__item-campos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .compra__item-subtotal,
+    .compra__item-eliminar {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 420px) {
+    .main-container {
+        padding-bottom: 88px;
+    }
+
+    .sidebar-nav {
+        height: 76px;
+        padding-inline: 0.25rem;
+    }
+
+    .nav-btn {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        font-size: 0.92rem;
+    }
+
+    .vista-title {
+        font-size: 1.28rem;
+    }
+
+    .productos__lista,
+    .productos__form,
+    #historial-lista,
+    #factura-contenido {
+        padding-inline: 0.8rem;
+    }
+
+    .pos__busqueda,
+    .pos__venta-header,
+    .pos__venta-footer,
+    .pos__ventas-abiertas {
+        padding-inline: 0.8rem;
+    }
+
+    .pos__item,
+    .pos__result-item,
+    .producto-item,
+    .historial__card {
+        padding-inline: 0.8rem;
+    }
+
+    .ticket-header h2 {
+        font-size: 1.45rem;
+        letter-spacing: 1px;
+    }
+
+    .ticket-info-secundaria {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .factura__logo {
+        gap: 0.55rem;
+    }
+
+    .factura__logo-nombre {
+        font-size: 1.15rem;
+    }
+
+    .factura__tabla {
+        display: block;
+        overflow-x: auto;
+    }
 }

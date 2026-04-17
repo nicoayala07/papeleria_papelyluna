@@ -1,12 +1,9 @@
-// ── Estado de la compra en curso ──────────────────────────────
-let itemsCompra = [];   // [{ id, nombre, cantidad, costo, seguimientoInventario }]
+let itemsCompra = [];
 
-// ── Utilidad: generar ID de compra ────────────────────────────
 function generarIdCompra() {
     return "C-" + Date.now().toString().slice(-6);
 }
 
-// ── Calcular y mostrar total de la compra ─────────────────────
 function actualizarTotalCompra() {
     const total = itemsCompra.reduce((acc, item) => acc + item.costo * item.cantidad, 0);
     const el = document.getElementById("compra-total");
@@ -14,7 +11,6 @@ function actualizarTotalCompra() {
     return total;
 }
 
-// ── Renderizar tabla de ítems de la compra ─────────────────────
 function renderItemsCompra() {
     const contenedor = document.getElementById("compra-items");
     if (!contenedor) return;
@@ -34,28 +30,13 @@ function renderItemsCompra() {
             <div class="compra__item-campos">
                 <div class="compra__campo-grupo">
                     <label>Cant.</label>
-                    <input
-                        type="number"
-                        class="compra__input-cant"
-                        data-idx="${idx}"
-                        value="${item.cantidad}"
-                        min="1"
-                    >
+                    <input type="number" class="compra__input-cant" data-idx="${idx}" value="${item.cantidad}" min="1">
                 </div>
                 <div class="compra__campo-grupo">
                     <label>Costo u.</label>
-                    <input
-                        type="number"
-                        class="compra__input-costo"
-                        data-idx="${idx}"
-                        value="${item.costo}"
-                        min="0"
-                        placeholder="0"
-                    >
+                    <input type="number" class="compra__input-costo" data-idx="${idx}" value="${item.costo}" min="0" placeholder="0">
                 </div>
-                <span class="compra__item-subtotal">
-                    $${(item.costo * item.cantidad).toLocaleString("es-CO")}
-                </span>
+                <span class="compra__item-subtotal">$${(item.costo * item.cantidad).toLocaleString("es-CO")}</span>
                 <button class="btn btn--danger btn--sm compra__item-eliminar" data-idx="${idx}" title="Quitar">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -64,29 +45,26 @@ function renderItemsCompra() {
         contenedor.appendChild(fila);
     });
 
-    // Listeners cantidad
     contenedor.querySelectorAll(".compra__input-cant").forEach(input => {
         input.addEventListener("input", () => {
-            const idx = parseInt(input.dataset.idx);
-            const val = parseInt(input.value) || 1;
+            const idx = parseInt(input.dataset.idx, 10);
+            const val = parseInt(input.value, 10) || 1;
             itemsCompra[idx].cantidad = val < 1 ? 1 : val;
             renderItemsCompra();
         });
     });
 
-    // Listeners costo
     contenedor.querySelectorAll(".compra__input-costo").forEach(input => {
         input.addEventListener("input", () => {
-            const idx = parseInt(input.dataset.idx);
+            const idx = parseInt(input.dataset.idx, 10);
             itemsCompra[idx].costo = parseFloat(input.value) || 0;
             renderItemsCompra();
         });
     });
 
-    // Listeners eliminar
     contenedor.querySelectorAll(".compra__item-eliminar").forEach(btn => {
         btn.addEventListener("click", () => {
-            const idx = parseInt(btn.dataset.idx);
+            const idx = parseInt(btn.dataset.idx, 10);
             itemsCompra.splice(idx, 1);
             renderItemsCompra();
         });
@@ -95,17 +73,14 @@ function renderItemsCompra() {
     actualizarTotalCompra();
 }
 
-// ── Buscador de productos del catálogo para la compra ─────────
 function iniciarBuscadorCompra() {
-    const inputBuscar   = document.getElementById("compra-prod-search");
+    const inputBuscar = document.getElementById("compra-prod-search");
     const divResultados = document.getElementById("compra-prod-resultados");
-
     if (!inputBuscar || !divResultados) return;
 
     inputBuscar.addEventListener("input", () => {
         const texto = inputBuscar.value.toLowerCase().trim();
         divResultados.innerHTML = "";
-
         if (!texto) return;
 
         const coincidencias = catalogoProductos.filter(p =>
@@ -134,7 +109,6 @@ function iniciarBuscadorCompra() {
         });
     });
 
-    // Cerrar resultados al hacer clic fuera
     document.addEventListener("click", (e) => {
         if (!divResultados.contains(e.target) && e.target !== inputBuscar) {
             divResultados.innerHTML = "";
@@ -143,7 +117,7 @@ function iniciarBuscadorCompra() {
 }
 
 function agregarProductoACompra(producto) {
-    const existente = itemsCompra.find(i => i.id === producto.id);
+    const existente = itemsCompra.find(i => String(i.id) === String(producto.id));
     if (existente) {
         existente.cantidad += 1;
     } else {
@@ -158,7 +132,6 @@ function agregarProductoACompra(producto) {
     renderItemsCompra();
 }
 
-// ── Cargar proveedores en el select ───────────────────────────
 async function cargarProveedoresEnSelect() {
     const select = document.getElementById("compra-proveedor");
     if (!select) return;
@@ -180,7 +153,6 @@ async function cargarProveedoresEnSelect() {
     }
 }
 
-// ── Abrir / cerrar formulario de nueva compra ─────────────────
 function abrirFormularioCompra() {
     itemsCompra = [];
     renderItemsCompra();
@@ -190,12 +162,11 @@ function abrirFormularioCompra() {
 
     cargarProveedoresEnSelect();
 
-    // Resetear campos
-    const selectProv  = document.getElementById("compra-proveedor");
-    const selectPago  = document.getElementById("compra-metodo-pago");
+    const selectProv = document.getElementById("compra-proveedor");
+    const selectPago = document.getElementById("compra-metodo-pago");
     const inputSearch = document.getElementById("compra-prod-search");
-    if (selectProv)  selectProv.value  = "";
-    if (selectPago)  selectPago.value  = "Efectivo";
+    if (selectProv) selectProv.value = "";
+    if (selectPago) selectPago.value = "Efectivo";
     if (inputSearch) inputSearch.value = "";
 }
 
@@ -205,20 +176,18 @@ function cerrarFormularioCompra() {
     itemsCompra = [];
 }
 
-// ── Registrar compra: POST + actualizar stock ─────────────────
 async function registrarCompra() {
-    const selectProv     = document.getElementById("compra-proveedor");
-    const proveedorId    = selectProv?.value;
+    const selectProv = document.getElementById("compra-proveedor");
+    const proveedorId = selectProv?.value;
     const proveedorNombre = selectProv?.options[selectProv.selectedIndex]?.text || proveedorId;
-    const metodoPago     = document.getElementById("compra-metodo-pago")?.value;
+    const metodoPago = document.getElementById("compra-metodo-pago")?.value;
 
-    // Validaciones
     if (!proveedorId) {
         showToast("Selecciona un proveedor.", { type: "warning" });
         return;
     }
     if (!metodoPago) {
-        showToast("Selecciona un método de pago.", { type: "warning" });
+        showToast("Selecciona un metodo de pago.", { type: "warning" });
         return;
     }
     if (itemsCompra.length === 0) {
@@ -227,34 +196,52 @@ async function registrarCompra() {
     }
 
     const total = actualizarTotalCompra();
-
     const compra = {
-        id:              generarIdCompra(),
-        fecha:           new Date().toLocaleString("es-CO"),
-        proveedorId:     proveedorId,
-        proveedorNombre: proveedorNombre,
-        metodoPago:      metodoPago,
-        total:           total,
-        itemsJson:       JSON.stringify(itemsCompra)
+        id: generarIdCompra(),
+        fecha: new Date().toLocaleString("es-CO"),
+        proveedorId,
+        proveedorNombre,
+        metodoPago,
+        total,
+        itemsJson: JSON.stringify(itemsCompra)
     };
-    // Guardar en localStorage como historial local
+
+    const productosActualizados = [];
+    itemsCompra.forEach(itemComprado => {
+        const prod = catalogoProductos.find(p => String(p.id) === String(itemComprado.id));
+        if (prod && prod.seguimientoInventario === "si") {
+            productosActualizados.push({
+                ...prod,
+                stock: (parseInt(prod.stock, 10) || 0) + itemComprado.cantidad
+            });
+        }
+    });
+
+    try {
+        if (productosActualizados.length > 0) {
+            productosActualizados.forEach(actualizado => {
+                const idx = catalogoProductos.findIndex(p => String(p.id) === String(actualizado.id));
+                if (idx !== -1) catalogoProductos[idx] = actualizado;
+            });
+            actualizarCatalogo(catalogoProductos);
+            if (typeof ListarProductos === "function") ListarProductos();
+            if (typeof filtrarYRenderizar === "function") filtrarYRenderizar();
+            await sincronizarProductosEnSheets(productosActualizados);
+        }
+    } catch (error) {
+        console.error("Error sincronizando stock de compra:", error);
+        showToast("No se pudo sincronizar el stock de la compra en Google Sheets.", { type: "error" });
+        await cargarProductosDesdeAPI();
+        return;
+    }
+
     const historialCompras = JSON.parse(localStorage.getItem("pos_compras") || "[]");
     historialCompras.unshift({
         ...compra,
-        itemsObj: itemsCompra   // guardamos el objeto para poder renderizarlo
+        itemsObj: itemsCompra
     });
     localStorage.setItem("pos_compras", JSON.stringify(historialCompras));
 
-    // Actualizar stock en catálogo local (solo productos con seguimientoInventario = "si")
-    itemsCompra.forEach(itemComprado => {
-        const prod = catalogoProductos.find(p => p.id === itemComprado.id);
-        if (prod && prod.seguimientoInventario === "si") {
-            prod.stock = (parseInt(prod.stock) || 0) + itemComprado.cantidad;
-        }
-    });
-    actualizarCatalogo(catalogoProductos);
-
-    // Enviar a Google Sheets (POST asíncrono — no bloquea el flujo)
     try {
         await postCompra(compra);
     } catch (err) {
@@ -266,7 +253,6 @@ async function registrarCompra() {
     showToast(`Compra ${compra.id} registrada correctamente.`, { type: "success" });
 }
 
-// ── Historial de compras ──────────────────────────────────────
 function listarCompras() {
     const contenedor = document.getElementById("compras-lista");
     if (!contenedor) return;
@@ -279,7 +265,7 @@ function listarCompras() {
             <div class="historial__empty">
                 <i class="fa-solid fa-truck historial__empty-icon"></i>
                 <p class="historial__empty-title">Sin compras registradas</p>
-                <p class="historial__empty-sub">Las compras aparecerán aquí</p>
+                <p class="historial__empty-sub">Las compras apareceran aqui</p>
             </div>
         `;
         return;
@@ -294,10 +280,10 @@ function listarCompras() {
 
     historial.forEach(compra => {
         const items = compra.itemsObj || [];
-
         const badgeMetodo = {
-            "Efectivo":     "btn--success",
-            "Nequi":        "btn--outline",
+            Efectivo: "btn--success",
+            Nequi: "btn--outline",
+            Consignacion: "btn--danger",
             "Consignación": "btn--danger"
         }[compra.metodoPago] || "btn--outline";
 
@@ -327,20 +313,10 @@ function listarCompras() {
     });
 }
 
-// ── Init ──────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-    // Botón "Nueva compra"
     document.getElementById("btn-nueva-compra")?.addEventListener("click", abrirFormularioCompra);
-
-    // Botón "Cancelar"
     document.getElementById("btn-cancelar-compra")?.addEventListener("click", cerrarFormularioCompra);
-
-    // Botón "Registrar compra"
     document.getElementById("btn-guardar-compra")?.addEventListener("click", registrarCompra);
-
-    // Buscador de productos dentro del formulario
     iniciarBuscadorCompra();
-
-    // Cargar historial al inicio
     listarCompras();
 });

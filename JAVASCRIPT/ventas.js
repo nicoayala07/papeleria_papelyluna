@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btn-cancelar-cobro-2")?.addEventListener("click", cerrarModal);
 
     // Confirmar venta
-    document.getElementById("btn-confirmar-venta")?.addEventListener("click", () => {
+    document.getElementById("btn-confirmar-venta")?.addEventListener("click", async () => {
         const total   = parseFloat(spanTotal.dataset.totalNum) || 0;
         const metodo  = selectMetodo.value;
         const items   = obtenerCarrito();
@@ -79,6 +79,42 @@ document.addEventListener("DOMContentLoaded", () => {
                 showToast("Selecciona un cliente para registrar la cuenta por cobrar.", { type: "warning" });
                 return;
             }
+        }
+
+        const productosActualizados = [];
+        for (const item of items) {
+            const producto = catalogoProductos.find(p => String(p.id) === String(item.id));
+            if (!producto || producto.seguimientoInventario !== "si") continue;
+
+            const stockActual = parseInt(producto.stock, 10) || 0;
+            if (stockActual < item.cantidad) {
+                showToast(`Stock insuficiente para ${producto.nombre}.`, { type: "warning" });
+                return;
+            }
+
+            productosActualizados.push({
+                ...producto,
+                stock: stockActual - item.cantidad
+            });
+        }
+
+        try {
+            if (productosActualizados.length > 0) {
+                productosActualizados.forEach(actualizado => {
+                    const idx = catalogoProductos.findIndex(p => String(p.id) === String(actualizado.id));
+                    if (idx !== -1) catalogoProductos[idx] = actualizado;
+                });
+                actualizarCatalogo(catalogoProductos);
+                if (typeof ListarProductos === "function") ListarProductos();
+                if (typeof filtrarYRenderizar === "function") filtrarYRenderizar();
+                await sincronizarProductosEnSheets(productosActualizados);
+            }
+        } catch (error) {
+            console.error("Error actualizando stock en productos:", error);
+            showToast("No se pudo sincronizar el stock en Google Sheets.", { type: "error" });
+            await cargarProductosDesdeAPI();
+            renderCarrito();
+            return;
         }
 
         const venta = {
