@@ -3,11 +3,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbymPuedWchrgu4_ARaKXkNv
 // --- LECTURA ---
 async function getData(hoja) {
     try {
-        // Añadimos un timestamp para evitar que el navegador use una respuesta vieja (cache)
         const cacheBuster = `&t=${new Date().getTime()}`;
         const res = await fetch(`${API_URL}?hoja=${hoja}${cacheBuster}`, {
             method: 'GET',
-            mode: 'cors', // Forzamos modo cors para evitar el error de la imagen
+            mode: 'cors',
             redirect: 'follow'
         });
 
@@ -21,7 +20,6 @@ async function getData(hoja) {
     }
 }
 
-// Funciones de acceso directo
 const getClientes = () => getData("clientes");
 const getProveedores = () => getData("proveedores");
 const getProductos = () => getData("productos");
@@ -32,7 +30,7 @@ async function ejecutarAccion(payload) {
     try {
         const res = await fetch(API_URL, {
             method: "POST",
-            mode: "no-cors", // Google Scripts requiere no-cors para POST
+            mode: "no-cors",
             body: JSON.stringify(payload)
         });
         return true;
@@ -45,3 +43,4 @@ async function ejecutarAccion(payload) {
 const postCliente = (datos) => ejecutarAccion({ hoja: "clientes", datos });
 const postProveedor = (datos) => ejecutarAccion({ hoja: "proveedores", datos });
 const eliminarEntidad = (id, hoja) => ejecutarAccion({ accion: "eliminar", hoja, id });
+const postCategoria = (datos) => ejecutarAccion({ hoja: "categorias", datos });

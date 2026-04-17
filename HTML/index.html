@@ -9,7 +9,6 @@
 </head>
 <body>
 
-    <!-- SIDEBAR DE NAVEGACIÓN -->
     <nav class="sidebar-nav">
         <div class="sidebar-nav__logo">
             <img src="../img/Logo.png" alt="Logo" class="sidebar-nav__logo-img">
@@ -30,7 +29,7 @@
         </div>
         <div class="sidebar-nav__bottom">
            <button class="nav-btn" data-vista="clientes" title="Clientes">
-               <i class="fa-solid fa-users"></i>
+                <i class="fa-solid fa-users"></i>
             </button>
             <button class="nav-btn" data-vista="proveedores" title="Proveedores">
                 <i class="fa-solid fa-store"></i>
@@ -43,7 +42,6 @@
 
     <main class="main-container">
 
-        <!-- VISTA: VENTA ACTIVA -->
         <section id="vista-venta" class="vista activa">
             <div class="pos__layout">
                 <div class="pos__catalogo">
@@ -107,7 +105,6 @@
             </div>
         </section>
 
-        <!-- VISTA: HISTORIAL -->
         <section id="vista-historial" class="vista">
             <div class="vista-header">
                 <h2 class="vista-title">Historial de ventas</h2>
@@ -115,7 +112,6 @@
             <div id="historial-lista"></div>
         </section>
 
-        <!-- VISTA: FACTURA -->
         <section id="vista-factura" class="vista">
             <div class="vista-header">
                 <h2 class="vista-title">Comprobante</h2>
@@ -126,7 +122,6 @@
             <div id="factura-contenido"></div>
         </section>
 
-        <!-- VISTA: PRODUCTOS -->
         <section id="vista-productos" class="vista">
             <div class="productos__layout">
                 <div class="productos__lista">
@@ -188,7 +183,6 @@
             </div>
         </section>
 
-        <!-- VISTA: COMPRAS -->
         <section id="vista-compras" class="vista">
             <div class="productos__layout">
                 <div class="productos__lista">
@@ -238,7 +232,6 @@
             </div>
         </section>
 
-        <!-- VISTA: CLIENTES -->
         <section id="vista-clientes" class="vista">
             <div class="productos__layout">
                 <div class="productos__lista">
@@ -274,7 +267,6 @@
             </div>
         </section>
 
-        <!-- VISTA: PROVEEDORES -->
         <section id="vista-proveedores" class="vista">
             <div class="productos__layout">
                 <div class="productos__lista">
@@ -310,7 +302,6 @@
             </div>
         </section>
 
-        <!-- VISTA: CATEGORÍAS -->
         <section id="vista-categorias" class="vista">
             <div class="productos__layout">
                 <div class="productos__lista">
@@ -334,10 +325,6 @@
                         <label>Color</label>
                         <input type="color" id="cat-color" value="#6d28d9">
                     </div>
-                    <div class="form__group">
-                        <label>Ícono (clase Font Awesome, opcional)</label>
-                        <input type="text" id="cat-icono" placeholder="fa-solid fa-tag">
-                    </div>
                     <div class="form__actions">
                         <button class="btn btn--secondary" id="btn-cancelar-cat">Cancelar</button>
                         <button class="btn btn--success" id="btn-guardar-cat">Guardar</button>
@@ -348,7 +335,6 @@
 
     </main>
 
-    <!-- MODAL COBRO -->
     <div id="modal-cobro" class="modal-overlay">
         <div class="modal-content modal-pos">
             <div class="modal-header">
@@ -398,6 +384,7 @@
     <script src="../JAVASCRIPT/historial.js"></script>
     <script src="../JAVASCRIPT/productos.js"></script>
     <script src="../JAVASCRIPT/entidades.js"></script> 
+    <script src="../JAVASCRIPT/categorias.js"></script>
     <script src="../JAVASCRIPT/app.js"></script>
 </body>
 </html>
