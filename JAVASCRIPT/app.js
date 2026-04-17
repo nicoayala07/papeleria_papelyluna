@@ -73,12 +73,7 @@ function filtrarYRenderizar() {
     const cat   = (posCatFilter?.value || "").toLowerCase();
 
     if (!texto && !cat) {
-        posResults.innerHTML = `
-            <div class="pos__results-empty">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <p>Busca un producto para agregarlo a la venta</p>
-            </div>
-        `;
+        renderResultados(catalogoProductos);
         return;
     }
 
