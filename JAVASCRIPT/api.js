@@ -42,5 +42,20 @@ async function ejecutarAccion(payload) {
 
 const postCliente = (datos) => ejecutarAccion({ hoja: "clientes", datos });
 const postProveedor = (datos) => ejecutarAccion({ hoja: "proveedores", datos });
-const eliminarEntidad = (id, hoja) => ejecutarAccion({ accion: "eliminar", hoja, id });
 const postCategoria = (datos) => ejecutarAccion({ hoja: "categorias", datos });
+
+// CORRECCIÓN: Función global para eliminar que el HTML pueda ver
+window.confirmarEliminacion = async function (id, hoja) {
+    if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+        const exito = await ejecutarAccion({ accion: "eliminar", hoja, id });
+        if (exito) {
+            alert("Eliminado correctamente");
+            // Recargar la vista actual
+            if (hoja === 'clientes') cargarYListarClientes();
+            if (hoja === 'proveedores') cargarYListarProveedores();
+            if (hoja === 'categorias') cargarYListarCategorias();
+        } else {
+            alert("Error al intentar eliminar");
+        }
+    }
+};

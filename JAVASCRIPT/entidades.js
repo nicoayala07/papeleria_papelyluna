@@ -27,7 +27,7 @@ async function cargarYListarClientes() {
                 <button class="btn-editar" onclick="prepararEdicion('clientes', '${cli.id}')" style="color: #4db8ff; background:none; border:none; cursor:pointer; margin-right:10px;">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
-                <button class="btn-eliminar" onclick="confirmarEliminacion('${cli.id}', 'clientes')">
+                <button class="btn-eliminar" onclick="window.confirmarEliminacion('${cli.id}', 'clientes')">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>`;
@@ -56,7 +56,7 @@ async function cargarYListarProveedores() {
                 <button class="btn-editar" onclick="prepararEdicion('proveedores', '${prov.id}')" style="color: #4db8ff; background:none; border:none; cursor:pointer; margin-right:10px;">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
-                <button class="btn-eliminar" onclick="confirmarEliminacion('${prov.id}', 'proveedores')">
+                <button class="btn-eliminar" onclick="window.confirmarEliminacion('${prov.id}', 'proveedores')">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>`;
@@ -64,7 +64,7 @@ async function cargarYListarProveedores() {
     });
 }
 
-// --- LÓGICA DE EDICIÓN (Sube datos al formulario) ---
+// --- LÓGICA DE EDICIÓN ---
 function prepararEdicion(entidad, id) {
     const lista = (entidad === 'clientes') ? listaClientes : listaProveedores;
     const item = lista.find(i => i.id == id);
@@ -88,7 +88,7 @@ function prepararEdicion(entidad, id) {
     }
 }
 
-// --- GUARDAR CLIENTE (Con soporte para Editar) ---
+// --- GUARDAR CLIENTE ---
 document.getElementById("btn-guardar-cliente")?.addEventListener("click", async () => {
     const btn = document.getElementById("btn-guardar-cliente");
     const editId = btn.dataset.editId;
@@ -108,14 +108,12 @@ document.getElementById("btn-guardar-cliente")?.addEventListener("click", async 
 });
 
 function resetFormulariosEntidades() {
-    // Clientes
     document.getElementById("cliente-nombre").value = "";
     document.getElementById("cliente-telefono").value = "";
     document.getElementById("cliente-correo").value = "";
     document.getElementById("btn-guardar-cliente").innerText = "Guardar";
     delete document.getElementById("btn-guardar-cliente").dataset.editId;
 
-    // Proveedores
     document.getElementById("prov-nombre").value = "";
     document.getElementById("prov-nit").value = "";
     document.getElementById("prov-telefono").value = "";
