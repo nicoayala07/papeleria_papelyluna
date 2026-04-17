@@ -30,6 +30,7 @@ function eliminarVenta(ventaId) {
     const nuevoHistorial = historial.filter(v => v.id !== ventaId);
     guardarHistorial(nuevoHistorial);
     renderHistorial();
+    showToast("Venta eliminada del historial.", { type: "info" });
 }
 
 function renderHistorial() {

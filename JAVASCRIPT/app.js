@@ -35,6 +35,7 @@ async function cargarProductosDesdeAPI() {
         }
     } catch (err) {
         console.error("Error cargando productos:", err);
+        showToast("Error al conectar con el servidor de productos.", { type: "error" });
         if (typeof posResults !== "undefined" && posResults) {
             posResults.innerHTML = `
                 <div class="pos__results-empty">

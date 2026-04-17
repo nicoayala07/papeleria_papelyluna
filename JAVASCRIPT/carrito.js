@@ -82,6 +82,7 @@ function guardarVentaActiva() {
     ventaActiva = { id: generarId(), items: [] };
     renderCarrito();
     renderVentasGuardadas();
+    showToast("Venta guardada en espera.", { type: "info" });
 }
 
 function retomarVentaGuardada(ventaId) {
