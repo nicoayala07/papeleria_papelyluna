@@ -2339,3 +2339,58 @@ body {
     padding: 4px 8px;
     flex-shrink: 0;
 }
+
+.toast-region {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 500;
+    pointer-events: none;
+}
+
+.toast {
+    min-width: 260px;
+    max-width: 360px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(34, 211, 238, 0.2);
+    background: linear-gradient(180deg, rgba(11, 25, 39, 0.98), rgba(31, 11, 51, 0.96));
+    color: var(--texto);
+    box-shadow: 0 16px 34px rgba(4, 10, 18, 0.3);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.toast.activa {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast i {
+    font-size: 1rem;
+}
+
+.toast--success i {
+    color: var(--terciario);
+}
+
+.toast--warning i {
+    color: #fbbf24;
+}
+
+.toast--error i {
+    color: var(--rojo);
+}
+
+.toast--info i {
+    color: var(--secundario);
+}

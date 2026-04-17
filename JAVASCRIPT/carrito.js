@@ -15,7 +15,7 @@ function generarId() {
 
 function agregarAlCarrito(producto) {
     if (producto.seguimientoInventario === "si" && producto.stock <= 0) {
-        alert("Sin stock disponible");
+        showToast("Sin stock disponible.", { type: "warning" });
         return;
     }
 
@@ -72,7 +72,7 @@ function calcularTotal() {
 
 function guardarVentaActiva() {
     if (ventaActiva.items.length === 0) {
-        alert("La venta no tiene productos para guardar.");
+        showToast("La venta no tiene productos para guardar.", { type: "warning" });
         return;
     }
     const copia = JSON.parse(JSON.stringify(ventaActiva));

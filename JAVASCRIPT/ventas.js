@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (metodo === "Efectivo") {
             const recibido = parseFloat(inputEfectivo.value) || 0;
             if (recibido < total) {
-                alert("El monto recibido no es suficiente.");
+                showToast("El monto recibido no es suficiente.", { type: "warning" });
                 return;
             }
         }
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (metodo === "Debe") {
             const clienteSelect = document.getElementById("cobro-cliente");
             if (clienteSelect && !clienteSelect.value) {
-                alert("Selecciona un cliente para registrar la cuenta por cobrar.");
+                showToast("Selecciona un cliente para registrar la cuenta por cobrar.", { type: "warning" });
                 return;
             }
         }

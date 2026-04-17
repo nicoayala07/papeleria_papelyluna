@@ -94,7 +94,7 @@ document.getElementById("btn-guardar-prod")?.addEventListener("click", () => {
     const seguimiento = document.getElementById("prod-seguimiento").value;
 
     if (!nombre || isNaN(precio) || precio <= 0) {
-        alert("Nombre y precio son obligatorios y deben ser válidos.");
+        showToast("Nombre y precio son obligatorios y deben ser válidos.", { type: "warning" });
         return;
     }
 

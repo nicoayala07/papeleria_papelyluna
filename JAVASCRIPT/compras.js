@@ -214,15 +214,15 @@ async function registrarCompra() {
 
     // Validaciones
     if (!proveedorId) {
-        alert("Selecciona un proveedor.");
+        showToast("Selecciona un proveedor.", { type: "warning" });
         return;
     }
     if (!metodoPago) {
-        alert("Selecciona un método de pago.");
+        showToast("Selecciona un método de pago.", { type: "warning" });
         return;
     }
     if (itemsCompra.length === 0) {
-        alert("Agrega al menos un producto a la compra.");
+        showToast("Agrega al menos un producto a la compra.", { type: "warning" });
         return;
     }
 
@@ -263,7 +263,7 @@ async function registrarCompra() {
 
     cerrarFormularioCompra();
     listarCompras();
-    alert(`Compra ${compra.id} registrada correctamente.`);
+    showToast(`Compra ${compra.id} registrada correctamente.`, { type: "success" });
 }
 
 // ── Historial de compras ──────────────────────────────────────
