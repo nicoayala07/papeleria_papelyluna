@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const prodCtrl = require('../controllers/productos.controller');
 const { createRules, handleValidationErrors } = require('../validators/producto.validator');
+const { createRules, updateRules, handleValidationErrors } = require('../validators/producto.validator');
 
 // GET - listar productos
 router.get('/', prodCtrl.getProductos);
@@ -14,6 +15,6 @@ router.post('/', createRules, handleValidationErrors, prodCtrl.saveProducto);
 router.delete('/:id', prodCtrl.deleteProducto);
 
 // PUT - actualizar producto (con validación antes del controlador)
-router.put('/:id', createRules, handleValidationErrors, prodCtrl.saveProducto);
+router.put('/:id', updateRules, handleValidationErrors, prodCtrl.updateProducto);
 
 module.exports = router;

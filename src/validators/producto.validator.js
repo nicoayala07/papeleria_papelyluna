@@ -7,6 +7,12 @@ exports.createRules = [
     body('stock').isInt({ min: 0 }).withMessage('El stock no puede ser negativo'),
     body('categoria').notEmpty().withMessage('Debes seleccionar una categoría')
 ];
+exports.updateRules = [
+    body('nombre').optional().isString().notEmpty().withMessage('El nombre no puede estar vacío'),
+    body('precio').optional().isFloat({ min: 1 }).withMessage('El precio debe ser mayor a 0'),
+    body('stock').optional().isInt({ min: 0 }).withMessage('El stock no puede ser negativo'),
+    body('categoria').optional().notEmpty().withMessage('La categoría no puede estar vacía')
+];
 
 // Este middleware revisa si hubo errores en las reglas de arriba
 exports.handleValidationErrors = (req, res, next) => {
