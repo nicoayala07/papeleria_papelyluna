@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const prodCtrl = require('../controllers/productos.controller');
-const { createRules, handleValidationErrors } = require('../validators/producto.validator');
 const { createRules, updateRules, handleValidationErrors } = require('../validators/producto.validator');
 
 // GET - listar productos
