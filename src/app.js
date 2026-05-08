@@ -9,13 +9,17 @@ const productosRoutes = require('./routes/productos.routes');
 
 // Importar middlewares
 const requestLogger = require('./middlewares/requestLogger');
+const sanitizeIds = require('./middlewares/sanitizeIds');
 
 // Middlewares básicos
 app.use(cors());
 app.use(express.json());
 
 // Ejercicio 3 — Pre-filter: registra cada solicitud
-app.use(requestLogger); // ← antes de las rutas
+app.use(requestLogger);
+
+// Ejercicio 4 — Post-filter: elimina campos _id de las respuestas
+app.use(sanitizeIds);
 
 // Configuración de rutas
 app.use('/api/productos', productosRoutes);
