@@ -1,0 +1,14 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/productos",
+    "ip": "::1",
+    "timestamp": "2026-05-08T00:19:55.580Z"
+  },
+  {
+    "method": "POST",
+    "path": "/api/productos",
+    "ip": "::1",
+    "timestamp": "2026-05-08T00:21:08.855Z"
+  }
+]
