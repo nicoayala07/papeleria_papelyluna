@@ -1,38 +1,43 @@
-// src/controllers/productos.controller.js
+const { Producto } = require('../models');
 
 exports.getProductos = async (req, res, next) => {
-    try {
-        res.json({ mensaje: "Lista de productos desde el controlador" });
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const productos = await Producto.findAll();
+    res.json(productos);
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.saveProducto = async (req, res, next) => {
-    try {
-        const datos = req.body;
-        console.log("Guardando producto:", datos.nombre);
-        res.status(201).json({ mensaje: "Producto procesado por el controlador", data: datos });
-    } catch (error) {
-        next(error);
-    }
-};
-
-exports.deleteProducto = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        res.json({ mensaje: `Producto ${id} eliminado` });
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const nuevo = await Producto.create(req.body);
+    res.status(201).json(nuevo);
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.updateProducto = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const datos = req.body;
-        res.json({ mensaje: `Producto ${id} actualizado`, data: datos });
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const { id } = req.params;
+    const producto = await Producto.findByPk(id);
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+    await producto.update(req.body);
+    res.json(producto);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteProducto = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const producto = await Producto.findByPk(id);
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+    await producto.destroy();
+    res.json({ mensaje: `Producto ${id} eliminado` });
+  } catch (error) {
+    next(error);
+  }
 };

@@ -1,29 +1,14 @@
-// src/middlewares/requestLogger.js
+const { RequestLog } = require('../models/requestlog');
 
-const fs = require('fs');
-const path = require('path');
-
-const logFile = path.join(__dirname, '../../request_log.json');
-
-module.exports = (req, res, next) => {
-  const entrada = {
-    method: req.method,
-    path: req.originalUrl,
-    ip: req.ip,
-    timestamp: new Date().toISOString(),
-  };
-
+module.exports = async (req, res, next) => {
   try {
-    let logs = [];
-    if (fs.existsSync(logFile)) {
-      const contenido = fs.readFileSync(logFile, 'utf-8');
-      logs = JSON.parse(contenido);
-    }
-    logs.push(entrada);
-    fs.writeFileSync(logFile, JSON.stringify(logs, null, 2));
+    await RequestLog.create({
+      method: req.method,
+      path: req.originalUrl,
+      ip: req.ip,
+    });
   } catch (err) {
     console.error('Error guardando log:', err.message);
   }
-
   next();
 };
