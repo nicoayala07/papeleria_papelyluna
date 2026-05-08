@@ -22,5 +22,59 @@
     "path": "/api/productos",
     "ip": "::1",
     "timestamp": "2026-05-08T00:27:25.079Z"
+  },
+  {
+    "method": "GET",
+    "path": "/api/productos",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:41:48.987Z"
+  },
+  {
+    "method": "POST",
+    "path": "/api/productos",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:42:41.080Z"
+  },
+  {
+    "method": "POST",
+    "path": "/api/productos",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:42:56.803Z"
+  },
+  {
+    "method": "POST",
+    "path": "/api/productos",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:43:17.403Z"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/productos/42",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:43:41.768Z"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/productos/5",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:45:21.293Z"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/productos/5",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:45:30.740Z"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/productos/5",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:45:34.469Z"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/productos/5",
+    "ip": "::1",
+    "timestamp": "2026-05-08T02:46:30.690Z"
   }
 ]

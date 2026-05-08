@@ -13,4 +13,7 @@ router.post('/', createRules, handleValidationErrors, prodCtrl.saveProducto);
 // DELETE - eliminar producto
 router.delete('/:id', prodCtrl.deleteProducto);
 
+// PUT - actualizar producto (con validación antes del controlador)
+router.put('/:id', createRules, handleValidationErrors, prodCtrl.saveProducto);
+
 module.exports = router;

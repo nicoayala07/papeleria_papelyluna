@@ -26,3 +26,13 @@ exports.deleteProducto = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.updateProducto = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const datos = req.body;
+        res.json({ mensaje: `Producto ${id} actualizado`, data: datos });
+    } catch (error) {
+        next(error);
+    }
+};
