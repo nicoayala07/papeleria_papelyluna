@@ -1,0 +1,39 @@
+const app = require('./app');
+const express = require('express');
+const cors = require('cors');
+const { sequelize } = require('./models');
+const productosRoutes = require('./routes/productos.routes');
+const requestLogger = require('./middlewares/requestLogger');
+const sanitizeIds = require('./middlewares/sanitizeIds');
+
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(requestLogger);
+
+//app.use(sanitizeIds);
+app.use('/api/productos', productosRoutes);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Algo salio mal en el servidor' });
+});
+
+async function startServer() {
+  try {
+    await sequelize.authenticate();
+    console.log('Conexion a SQLite exitosa');
+
+    await sequelize.sync();
+
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('No se pudo conectar a la BD:', err.message);
+    process.exit(1);
+  }
+}
+
+startServer();

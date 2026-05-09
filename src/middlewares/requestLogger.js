@@ -1,4 +1,4 @@
-const { RequestLog } = require('../models/requestlog');
+const { RequestLog } = require('../models');
 
 module.exports = async (req, res, next) => {
   try {
