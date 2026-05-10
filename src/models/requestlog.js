@@ -15,11 +15,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   RequestLog.init({
     method: DataTypes.STRING,
-    path: DataTypes.STRING,
-    ip: DataTypes.STRING
+    url: DataTypes.STRING,
+    status: DataTypes.INTEGER,
+    duration: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'RequestLog',
+    tableName: 'RequestLogs'
   });
   return RequestLog;
 };
