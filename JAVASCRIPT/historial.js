@@ -1,52 +1,61 @@
-const CLAVE_HISTORIAL = "papelyluna_historial";
+let historialVentas = [];
 
-function cargarHistorial() {
-    return JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]");
-}
+function normalizarVenta(venta) {
+    const productos = Array.isArray(venta.productos)
+        ? venta.productos
+        : (() => {
+            try {
+                const parsed = JSON.parse(venta.productos || venta.productosJson || "[]");
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (error) {
+                return [];
+            }
+        })();
 
-function guardarHistorial(historial) {
-    localStorage.setItem(CLAVE_HISTORIAL, JSON.stringify(historial));
-}
-
-function registrarVenta(venta) {
-    const historial = cargarHistorial();
-    const entrada = {
-        id: venta.id,
-        numero: historial.length + 1,
-        fecha: new Date().toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" }),
-        hora: new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
-        productos: venta.productos,
-        total: venta.total,
-        metodoPago: venta.metodoPago,
-        clienteId: venta.clienteId || ""
+    return {
+        ...venta,
+        productos,
+        total: Number(venta.total) || 0,
+        pagoCon: Number(venta.pagoCon) || 0,
+        hora: venta.hora || ""
     };
-    historial.unshift(entrada);
-    guardarHistorial(historial);
 }
 
-function eliminarVenta(ventaId) {
-    const historial = cargarHistorial();
-    const nuevoHistorial = historial.filter(v => v.id !== ventaId);
-    guardarHistorial(nuevoHistorial);
-    renderHistorial();
-    showToast("Venta eliminada del historial.", { type: "info" });
+async function eliminarVenta(ventaId) {
+    try {
+        await deleteVentaApi(ventaId);
+        await renderHistorial();
+        showToast("Venta eliminada del historial.", { type: "info" });
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo eliminar la venta en MySQL.", { type: "error" });
+    }
 }
 
-function renderHistorial() {
+async function renderHistorial() {
     const contenedor = document.getElementById("historial-lista");
     if (!contenedor) return;
 
-    const historial = cargarHistorial();
+    contenedor.innerHTML = "<p class='loading'>Cargando ventas...</p>";
+
+    try {
+        historialVentas = (await getVentas()).map(normalizarVenta);
+    } catch (error) {
+        console.error(error);
+        contenedor.innerHTML = "<p>Error al conectar con la base de datos.</p>";
+        return;
+    }
+
     contenedor.innerHTML = "";
 
     const header = document.createElement("div");
     header.classList.add("historial__topbar");
     header.innerHTML = `
-        <p class="historial__count">${historial.length} venta${historial.length !== 1 ? "s" : ""} registrada${historial.length !== 1 ? "s" : ""}</p>
+        <p class="historial__count">${historialVentas.length} venta${historialVentas.length !== 1 ? "s" : ""} registrada${historialVentas.length !== 1 ? "s" : ""}</p>
     `;
     contenedor.appendChild(header);
 
-    if (historial.length === 0) {
+    if (historialVentas.length === 0) {
         contenedor.innerHTML += `
             <div class="historial__empty">
                 <i class="fa-solid fa-clock-rotate-left historial__empty-icon"></i>
@@ -57,7 +66,7 @@ function renderHistorial() {
         return;
     }
 
-    historial.forEach(venta => {
+    historialVentas.forEach(venta => {
         const card = document.createElement("div");
         card.classList.add("historial__card");
 
@@ -67,11 +76,13 @@ function renderHistorial() {
             Debe: "btn--danger"
         }[venta.metodoPago] || "btn--outline";
 
+        const fechaDisplay = `${venta.fecha || ""}${venta.hora ? " - " + venta.hora : ""}`;
+
         card.innerHTML = `
             <div class="historial__card-left">
-                <span class="historial__numero">#${String(venta.numero).padStart(3, "0")}</span>
+                <span class="historial__numero">#${String(venta.numero || "").padStart(3, "0")}</span>
                 <div class="historial__info">
-                    <p class="historial__fecha">${venta.fecha} · ${venta.hora}</p>
+                    <p class="historial__fecha">${fechaDisplay}</p>
                     <p class="historial__resumen">${venta.productos.length} producto${venta.productos.length !== 1 ? "s" : ""}</p>
                 </div>
             </div>
@@ -101,14 +112,13 @@ function renderHistorial() {
                 title: "Eliminar venta",
                 confirmText: "Eliminar"
             });
-            if (ok) eliminarVenta(btn.dataset.id);
+            if (ok) await eliminarVenta(btn.dataset.id);
         });
     });
 }
 
 function renderFacturaDesdeHistorial(ventaId) {
-    const historial = cargarHistorial();
-    const venta = historial.find(v => v.id === ventaId);
+    const venta = historialVentas.find(v => String(v.id) === String(ventaId));
     if (!venta) return;
 
     const contenedor = document.getElementById("factura-contenido");
@@ -122,12 +132,12 @@ function renderFacturaDesdeHistorial(ventaId) {
         <div class="factura">
             <div class="factura__header">
                 <div class="factura__logo">
-                    <img src="../img/Logo.png" alt="Logo" class="factura__logo-img">
+                    <img src="Logo.png" alt="Logo" class="factura__logo-img">
                     <span class="factura__logo-nombre">Papel y Luna</span>
                 </div>
                 <div class="factura__meta">
-                    <p class="factura__numero">Venta #${String(venta.numero).padStart(3, "0")}</p>
-                    <p class="factura__fecha">${venta.fecha} · ${venta.hora}</p>
+                    <p class="factura__numero">Venta #${String(venta.numero || "").padStart(3, "0")}</p>
+                    <p class="factura__fecha">${venta.fecha || ""}${venta.hora ? " - " + venta.hora : ""}</p>
                 </div>
             </div>
             <table class="factura__tabla">
@@ -138,9 +148,9 @@ function renderFacturaDesdeHistorial(ventaId) {
                     ${venta.productos.map(p => `
                         <tr>
                             <td>${p.nombre}</td>
-                            <td>$${p.precio.toLocaleString("es-CO")}</td>
+                            <td>$${Number(p.precio).toLocaleString("es-CO")}</td>
                             <td>${p.cantidad}</td>
-                            <td>$${(p.precio * p.cantidad).toLocaleString("es-CO")}</td>
+                            <td>$${((Number(p.precio) || 0) * (Number(p.cantidad) || 0)).toLocaleString("es-CO")}</td>
                         </tr>
                     `).join("")}
                 </tbody>

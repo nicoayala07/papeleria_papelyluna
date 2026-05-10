@@ -1,26 +1,23 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Producto extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
+    static associate(models) {}
   }
+
   Producto.init({
-    nombre: DataTypes.STRING,
-    precio: DataTypes.FLOAT,
-    stock: DataTypes.INTEGER,
-    categoria: DataTypes.STRING
+    nombre:                { type: DataTypes.STRING,          allowNull: false },
+    precio:                { type: DataTypes.FLOAT,           allowNull: false, defaultValue: 0 },
+    costo:                 { type: DataTypes.FLOAT,           defaultValue: 0 },
+    stock:                 { type: DataTypes.INTEGER,         defaultValue: 0 },
+    categoria:             { type: DataTypes.STRING },
+    codigo:                { type: DataTypes.STRING },
+    seguimientoInventario: { type: DataTypes.ENUM('si','no'), defaultValue: 'si' }
   }, {
     sequelize,
     modelName: 'Producto',
   });
+
   return Producto;
 };

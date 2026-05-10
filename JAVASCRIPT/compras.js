@@ -226,26 +226,25 @@ async function registrarCompra() {
             actualizarCatalogo(catalogoProductos);
             if (typeof ListarProductos === "function") ListarProductos();
             if (typeof filtrarYRenderizar === "function") filtrarYRenderizar();
-            await sincronizarProductosEnSheets(productosActualizados);
+            await sincronizarProductosEnMySQL(productosActualizados);
         }
     } catch (error) {
         console.error("Error sincronizando stock de compra:", error);
-        showToast("No se pudo sincronizar el stock de la compra en Google Sheets.", { type: "error" });
+        showToast("No se pudo sincronizar el stock de la compra en MySQL.", { type: "error" });
         await cargarProductosDesdeAPI();
         return;
     }
 
-    const historialCompras = JSON.parse(localStorage.getItem("pos_compras") || "[]");
-    historialCompras.unshift({
-        ...compra,
-        itemsObj: itemsCompra
-    });
-    localStorage.setItem("pos_compras", JSON.stringify(historialCompras));
-
     try {
-        await postCompra(compra);
+        await postCompra({
+            ...compra,
+            items: itemsCompra
+        });
     } catch (err) {
-        console.error("Error enviando compra a Sheets:", err);
+        console.error("Error guardando compra en MySQL:", err);
+        showToast("No se pudo guardar la compra en MySQL.", { type: "error" });
+        await cargarProductosDesdeAPI();
+        return;
     }
 
     cerrarFormularioCompra();
@@ -253,12 +252,21 @@ async function registrarCompra() {
     showToast(`Compra ${compra.id} registrada correctamente.`, { type: "success" });
 }
 
-function listarCompras() {
+async function listarCompras() {
     const contenedor = document.getElementById("compras-lista");
     if (!contenedor) return;
-    contenedor.innerHTML = "";
+    contenedor.innerHTML = "<p class='loading'>Cargando compras...</p>";
 
-    const historial = JSON.parse(localStorage.getItem("pos_compras") || "[]");
+    let historial = [];
+    try {
+        historial = await getCompras();
+    } catch (error) {
+        console.error(error);
+        contenedor.innerHTML = "<p>Error al conectar con la base de datos.</p>";
+        return;
+    }
+
+    contenedor.innerHTML = "";
 
     if (historial.length === 0) {
         contenedor.innerHTML = `
@@ -279,7 +287,7 @@ function listarCompras() {
     contenedor.appendChild(header);
 
     historial.forEach(compra => {
-        const items = compra.itemsObj || [];
+        const items = compra.itemsObj || compra.items || [];
         const badgeMetodo = {
             Efectivo: "btn--success",
             Nequi: "btn--outline",

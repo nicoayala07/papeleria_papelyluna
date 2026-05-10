@@ -1,31 +1,124 @@
 'use strict';
-
-const productosPrueba = require('../data/productosPrueba');
-const nombresProductosPrueba = productosPrueba.map((producto) => producto.nombre);
-
-const productosConFechas = () => {
-  const fecha = new Date();
-
-  return productosPrueba.map((producto) => ({
-    ...producto,
-    createdAt: fecha,
-    updatedAt: fecha
-  }));
-};
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Productos', {
-      nombre: { [Sequelize.Op.in]: nombresProductosPrueba }
-    }, {});
+  up: async (queryInterface) => {
+    const now = new Date();
+    await queryInterface.bulkInsert('Productos', [
 
-    await queryInterface.bulkInsert('Productos', productosConFechas(), {});
+      // ─── CUADERNOS (17 productos) ───────────────────────────────────────────
+      { nombre: 'Cuaderno universitario 100 hojas cuadriculado',  precio: 8500,  costo: 5000,  stock: 80,  categoria: 'Cuadernos',    codigo: 'CUA-001', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno universitario 100 hojas rayado',        precio: 8500,  costo: 5000,  stock: 75,  categoria: 'Cuadernos',    codigo: 'CUA-002', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno cosido 50 hojas cuadriculado',          precio: 4500,  costo: 2800,  stock: 120, categoria: 'Cuadernos',    codigo: 'CUA-003', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno cosido 50 hojas rayado',                precio: 4500,  costo: 2800,  stock: 110, categoria: 'Cuadernos',    codigo: 'CUA-004', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno argollado A4 200 hojas',                precio: 18000, costo: 11000, stock: 35,  categoria: 'Cuadernos',    codigo: 'CUA-005', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno argollado carta 150 hojas',             precio: 14000, costo: 8500,  stock: 40,  categoria: 'Cuadernos',    codigo: 'CUA-006', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno pequeño 50 hojas tapa dura',            precio: 6500,  costo: 3800,  stock: 60,  categoria: 'Cuadernos',    codigo: 'CUA-007', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno de dibujo A4 sin líneas',               precio: 9000,  costo: 5500,  stock: 45,  categoria: 'Cuadernos',    codigo: 'CUA-008', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno universitario 200 hojas rayado',        precio: 14000, costo: 8500,  stock: 50,  categoria: 'Cuadernos',    codigo: 'CUA-009', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno scribe 100 hojas cuadriculado',         precio: 7500,  costo: 4500,  stock: 90,  categoria: 'Cuadernos',    codigo: 'CUA-010', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno de música pentagramado 50 hojas',       precio: 7000,  costo: 4000,  stock: 25,  categoria: 'Cuadernos',    codigo: 'CUA-011', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno tapa dura A5 100 hojas',                precio: 12000, costo: 7000,  stock: 30,  categoria: 'Cuadernos',    codigo: 'CUA-012', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno espiral doble A4 100 hojas',            precio: 11000, costo: 6500,  stock: 40,  categoria: 'Cuadernos',    codigo: 'CUA-013', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno de laboratorio cuadriculado',           precio: 10000, costo: 6000,  stock: 20,  categoria: 'Cuadernos',    codigo: 'CUA-014', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Agenda escolar 2025 rayada',                     precio: 16000, costo: 10000, stock: 25,  categoria: 'Cuadernos',    codigo: 'CUA-015', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno universitario Norma 100 hojas',         precio: 9000,  costo: 5500,  stock: 70,  categoria: 'Cuadernos',    codigo: 'CUA-016', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cuaderno cosido 100 hojas tapa dura',            precio: 7000,  costo: 4200,  stock: 55,  categoria: 'Cuadernos',    codigo: 'CUA-017', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+
+      // ─── ESCRITURA (18 productos) ───────────────────────────────────────────
+      { nombre: 'Lápiz HB x12 Faber-Castell',                    precio: 6000,  costo: 3500,  stock: 60,  categoria: 'Escritura',    codigo: 'ESC-001', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Lápiz 2B x6 para dibujo',                       precio: 5000,  costo: 2800,  stock: 40,  categoria: 'Escritura',    codigo: 'ESC-002', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Esfero azul punta fina BIC',                    precio: 1500,  costo: 700,   stock: 200, categoria: 'Escritura',    codigo: 'ESC-003', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Esfero negro punta fina BIC',                   precio: 1500,  costo: 700,   stock: 200, categoria: 'Escritura',    codigo: 'ESC-004', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Esfero rojo punta fina BIC',                    precio: 1500,  costo: 700,   stock: 150, categoria: 'Escritura',    codigo: 'ESC-005', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Esfero punta gruesa azul x3',                   precio: 4000,  costo: 2200,  stock: 80,  categoria: 'Escritura',    codigo: 'ESC-006', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Resaltador amarillo punta biselada',             precio: 3000,  costo: 1500,  stock: 90,  categoria: 'Escritura',    codigo: 'ESC-007', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Resaltador multicolor x4',                      precio: 8000,  costo: 4500,  stock: 45,  categoria: 'Escritura',    codigo: 'ESC-008', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Marcador permanente negro punta fina',           precio: 3500,  costo: 1800,  stock: 70,  categoria: 'Escritura',    codigo: 'ESC-009', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Marcador permanente negro punta gruesa',         precio: 3500,  costo: 1800,  stock: 65,  categoria: 'Escritura',    codigo: 'ESC-010', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Marcador de tablero negro',                      precio: 4000,  costo: 2000,  stock: 50,  categoria: 'Escritura',    codigo: 'ESC-011', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Marcador de tablero x4 colores',                precio: 12000, costo: 7000,  stock: 30,  categoria: 'Escritura',    codigo: 'ESC-012', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Plumón de colores x10',                         precio: 9000,  costo: 5000,  stock: 40,  categoria: 'Escritura',    codigo: 'ESC-013', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Lápiz portaminas 0.5mm',                        precio: 8000,  costo: 4500,  stock: 35,  categoria: 'Escritura',    codigo: 'ESC-014', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Minas portaminas 0.5mm x12',                    precio: 3000,  costo: 1500,  stock: 60,  categoria: 'Escritura',    codigo: 'ESC-015', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Borrador blanco nata x2',                       precio: 2000,  costo: 900,   stock: 120, categoria: 'Escritura',    codigo: 'ESC-016', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Sacapuntas metálico doble hueco',                precio: 2500,  costo: 1200,  stock: 80,  categoria: 'Escritura',    codigo: 'ESC-017', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Bolígrafo gel azul punta 0.7mm',                precio: 3500,  costo: 1800,  stock: 75,  categoria: 'Escritura',    codigo: 'ESC-018', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+
+      // ─── PAPEL (15 productos) ───────────────────────────────────────────────
+      { nombre: 'Resma papel carta 75g 500 hojas',                precio: 18000, costo: 12000, stock: 40,  categoria: 'Papel',        codigo: 'PAP-001', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Resma papel oficio 75g 500 hojas',               precio: 20000, costo: 13500, stock: 30,  categoria: 'Papel',        codigo: 'PAP-002', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Resma papel A4 75g 500 hojas',                   precio: 19000, costo: 13000, stock: 35,  categoria: 'Papel',        codigo: 'PAP-003', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel kraft pliego natural',                     precio: 800,   costo: 400,   stock: 150, categoria: 'Papel',        codigo: 'PAP-004', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel silueta x10 pliegos colores',              precio: 5000,  costo: 2800,  stock: 60,  categoria: 'Papel',        codigo: 'PAP-005', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Block de notas adhesivas amarillas x100',        precio: 5000,  costo: 2800,  stock: 55,  categoria: 'Papel',        codigo: 'PAP-006', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Block de notas adhesivas multicolor x200',       precio: 9000,  costo: 5500,  stock: 35,  categoria: 'Papel',        codigo: 'PAP-007', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel fotográfico brillante A4 x20 hojas',       precio: 15000, costo: 9000,  stock: 20,  categoria: 'Papel',        codigo: 'PAP-008', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel bond blanco carta x100 hojas',             precio: 5000,  costo: 2800,  stock: 50,  categoria: 'Papel',        codigo: 'PAP-009', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel milimetrado carta x50 hojas',              precio: 8000,  costo: 4500,  stock: 25,  categoria: 'Papel',        codigo: 'PAP-010', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel cebolla carta x100 hojas',                 precio: 6000,  costo: 3500,  stock: 30,  categoria: 'Papel',        codigo: 'PAP-011', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cartulina pliego blanca',                        precio: 1200,  costo: 600,   stock: 100, categoria: 'Papel',        codigo: 'PAP-012', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cartulina pliego de colores surtida',            precio: 1500,  costo: 800,   stock: 80,  categoria: 'Papel',        codigo: 'PAP-013', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel lustre x10 pliegos',                       precio: 4000,  costo: 2200,  stock: 70,  categoria: 'Papel',        codigo: 'PAP-014', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Papel craft x5 pliegos',                         precio: 3500,  costo: 1800,  stock: 60,  categoria: 'Papel',        codigo: 'PAP-015', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+
+      // ─── ORGANIZACIÓN (17 productos) ────────────────────────────────────────
+      { nombre: 'Carpeta argollada 2 argollas carta',             precio: 12000, costo: 7000,  stock: 35,  categoria: 'Organización', codigo: 'ORG-001', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Carpeta argollada 3 argollas oficio',            precio: 14000, costo: 8500,  stock: 25,  categoria: 'Organización', codigo: 'ORG-002', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Folder manila carta x25 unidades',               precio: 7500,  costo: 4000,  stock: 50,  categoria: 'Organización', codigo: 'ORG-003', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Folder manila oficio x25 unidades',              precio: 8500,  costo: 4500,  stock: 45,  categoria: 'Organización', codigo: 'ORG-004', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Separadores de colores x10 carta',               precio: 4000,  costo: 2000,  stock: 65,  categoria: 'Organización', codigo: 'ORG-005', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Gancho legajador plástico x50',                  precio: 3500,  costo: 1800,  stock: 80,  categoria: 'Organización', codigo: 'ORG-006', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Gancho legajador metálico x50',                  precio: 4000,  costo: 2200,  stock: 70,  categoria: 'Organización', codigo: 'ORG-007', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'AZ archivador lomo ancho carta',                 precio: 16000, costo: 10000, stock: 20,  categoria: 'Organización', codigo: 'ORG-008', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'AZ archivador lomo angosto carta',               precio: 13000, costo: 8000,  stock: 20,  categoria: 'Organización', codigo: 'ORG-009', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Clips metálicos x100 unidades',                  precio: 3000,  costo: 1500,  stock: 90,  categoria: 'Organización', codigo: 'ORG-010', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Clips mariposa x12 unidades',                    precio: 4500,  costo: 2500,  stock: 60,  categoria: 'Organización', codigo: 'ORG-011', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Sobre manila carta x25 unidades',                precio: 6000,  costo: 3200,  stock: 50,  categoria: 'Organización', codigo: 'ORG-012', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Sobre manila oficio x25 unidades',               precio: 7000,  costo: 3800,  stock: 45,  categoria: 'Organización', codigo: 'ORG-013', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Carpeta plástica transparente carta',            precio: 3500,  costo: 1800,  stock: 80,  categoria: 'Organización', codigo: 'ORG-014', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Bandeja organizadora escritorio 3 niveles',      precio: 35000, costo: 22000, stock: 10,  categoria: 'Organización', codigo: 'ORG-015', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Portadocumentos plástico A4 con cierre',         precio: 9000,  costo: 5000,  stock: 30,  categoria: 'Organización', codigo: 'ORG-016', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Índice plástico alfabético x26 letras',          precio: 5500,  costo: 3000,  stock: 40,  categoria: 'Organización', codigo: 'ORG-017', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+
+      // ─── ARTE (18 productos) ────────────────────────────────────────────────
+      { nombre: 'Colores x12 Faber-Castell largos',               precio: 15000, costo: 9000,  stock: 40,  categoria: 'Arte',         codigo: 'ART-001', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Colores x24 Faber-Castell largos',               precio: 25000, costo: 16000, stock: 25,  categoria: 'Arte',         codigo: 'ART-002', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Colores x12 Norma cortos',                       precio: 8000,  costo: 4500,  stock: 60,  categoria: 'Arte',         codigo: 'ART-003', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Temperas x6 colores 20ml',                       precio: 9000,  costo: 5000,  stock: 30,  categoria: 'Arte',         codigo: 'ART-004', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Temperas x12 colores 20ml',                      precio: 16000, costo: 10000, stock: 20,  categoria: 'Arte',         codigo: 'ART-005', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Tijeras escolar punta roma 13cm',                precio: 5000,  costo: 2500,  stock: 55,  categoria: 'Arte',         codigo: 'ART-006', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Tijeras adulto punta fina 21cm',                 precio: 8000,  costo: 4500,  stock: 35,  categoria: 'Arte',         codigo: 'ART-007', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Pegante en barra Pritt 20g',                     precio: 4000,  costo: 2000,  stock: 100, categoria: 'Arte',         codigo: 'ART-008', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Pegante en barra Pritt 40g',                     precio: 6500,  costo: 3500,  stock: 80,  categoria: 'Arte',         codigo: 'ART-009', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Pegante líquido transparente 125ml',             precio: 5000,  costo: 2500,  stock: 60,  categoria: 'Arte',         codigo: 'ART-010', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Colbón blanco 250g',                             precio: 7000,  costo: 4000,  stock: 45,  categoria: 'Arte',         codigo: 'ART-011', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Plastilina x12 colores 180g',                    precio: 8000,  costo: 4500,  stock: 50,  categoria: 'Arte',         codigo: 'ART-012', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Acuarelas x12 colores con pincel',               precio: 12000, costo: 7000,  stock: 30,  categoria: 'Arte',         codigo: 'ART-013', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Pincel pelo suave redondo N°8',                  precio: 4500,  costo: 2200,  stock: 40,  categoria: 'Arte',         codigo: 'ART-014', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Set pinceles x6 tamaños',                        precio: 12000, costo: 7000,  stock: 20,  categoria: 'Arte',         codigo: 'ART-015', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Regla transparente 30cm',                        precio: 2500,  costo: 1200,  stock: 70,  categoria: 'Arte',         codigo: 'ART-016', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Escuadras plásticas x2 (45° y 60°)',            precio: 5000,  costo: 2800,  stock: 45,  categoria: 'Arte',         codigo: 'ART-017', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Compás metálico con lápiz',                      precio: 9000,  costo: 5000,  stock: 25,  categoria: 'Arte',         codigo: 'ART-018', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+
+      // ─── OFICINA (15 productos) ─────────────────────────────────────────────
+      { nombre: 'Cinta transparente x10m',                        precio: 2500,  costo: 1200,  stock: 90,  categoria: 'Oficina',      codigo: 'OFI-001', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cinta de enmascarar x18m',                       precio: 3500,  costo: 1800,  stock: 70,  categoria: 'Oficina',      codigo: 'OFI-002', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Grapadora de escritorio mediana',                precio: 18000, costo: 10000, stock: 15,  categoria: 'Oficina',      codigo: 'OFI-003', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Grapas estándar 26/6 x1000',                     precio: 3500,  costo: 1800,  stock: 60,  categoria: 'Oficina',      codigo: 'OFI-004', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Perforadora 2 huecos metálica',                  precio: 15000, costo: 8500,  stock: 12,  categoria: 'Oficina',      codigo: 'OFI-005', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Corrector líquido punta fina 20ml',              precio: 4000,  costo: 2000,  stock: 75,  categoria: 'Oficina',      codigo: 'OFI-006', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Corrector cinta seco 5mm x8m',                   precio: 6000,  costo: 3500,  stock: 55,  categoria: 'Oficina',      codigo: 'OFI-007', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Sello fechador automático',                      precio: 28000, costo: 18000, stock: 8,   categoria: 'Oficina',      codigo: 'OFI-008', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Almohadilla para sello azul',                    precio: 5000,  costo: 2500,  stock: 30,  categoria: 'Oficina',      codigo: 'OFI-009', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Cutter pequeño con repuesto',                    precio: 5500,  costo: 3000,  stock: 35,  categoria: 'Oficina',      codigo: 'OFI-010', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Calculadora de escritorio 12 dígitos',           precio: 35000, costo: 22000, stock: 10,  categoria: 'Oficina',      codigo: 'OFI-011', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Dispensador de cinta de escritorio',             precio: 12000, costo: 7000,  stock: 15,  categoria: 'Oficina',      codigo: 'OFI-012', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Porta lápices metálico redondo',                 precio: 10000, costo: 6000,  stock: 20,  categoria: 'Oficina',      codigo: 'OFI-013', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Notas adhesivas de colores x6 blocks',           precio: 14000, costo: 8500,  stock: 25,  categoria: 'Oficina',      codigo: 'OFI-014', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+      { nombre: 'Tablero acrílico con borrador magnético',        precio: 22000, costo: 14000, stock: 8,   categoria: 'Oficina',      codigo: 'OFI-015', seguimientoInventario: 'si', createdAt: now, updatedAt: now },
+
+    ], {});
   },
-
-  async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Productos', {
-      nombre: { [Sequelize.Op.in]: nombresProductosPrueba }
-    }, {});
+  down: async (queryInterface) => {
+    await queryInterface.bulkDelete('Productos', null, {});
   }
 };

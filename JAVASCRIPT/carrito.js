@@ -1,11 +1,9 @@
-// Estado de la venta activa
 let ventaActiva = {
     id: generarId(),
     items: []
 };
 
-// Ventas guardadas (en espera) - se guardan en localStorage hasta migrar a API
-let ventasGuardadas = JSON.parse(localStorage.getItem("pos_ventas_guardadas") || "[]");
+let ventasGuardadas = [];
 
 function generarId() {
     return "V-" + Date.now().toString().slice(-6);
@@ -29,10 +27,6 @@ function sincronizarItemsConCatalogo(items = []) {
     });
 }
 
-function persistirVentasGuardadas() {
-    localStorage.setItem("pos_ventas_guardadas", JSON.stringify(ventasGuardadas));
-}
-
 function sincronizarVentaActivaConCatalogo() {
     ventaActiva.items = sincronizarItemsConCatalogo(ventaActiva.items);
 }
@@ -42,7 +36,20 @@ function sincronizarVentasGuardadasConCatalogo() {
         ...venta,
         items: sincronizarItemsConCatalogo(venta.items || [])
     }));
-    persistirVentasGuardadas();
+}
+
+async function cargarVentasGuardadasDesdeAPI() {
+    try {
+        const ventas = await getVentasPendientes();
+        ventasGuardadas = ventas.map(venta => ({
+            id: venta.id,
+            items: venta.productos || []
+        }));
+        renderVentasGuardadas();
+    } catch (error) {
+        console.error("Error cargando ventas guardadas:", error);
+        showToast("No se pudieron cargar las ventas guardadas desde MySQL.", { type: "error" });
+    }
 }
 
 function agregarAlCarrito(producto) {
@@ -51,7 +58,7 @@ function agregarAlCarrito(producto) {
         return;
     }
 
-    const existente = ventaActiva.items.find(i => i.id === producto.id);
+    const existente = ventaActiva.items.find(i => String(i.id) === String(producto.id));
     if (existente) {
         existente.cantidad += 1;
     } else {
@@ -66,7 +73,7 @@ function agregarAlCarrito(producto) {
 }
 
 function cambiarCantidad(productoId, operacion) {
-    const item = ventaActiva.items.find(i => i.id === productoId);
+    const item = ventaActiva.items.find(i => String(i.id) === String(productoId));
     if (!item) return;
 
     if (operacion === "aumentar") {
@@ -83,12 +90,7 @@ function cambiarCantidad(productoId, operacion) {
 }
 
 function eliminarDelCarrito(productoId) {
-    ventaActiva.items = ventaActiva.items.filter(i => i.id !== productoId);
-    renderCarrito();
-}
-
-function vaciarCarrito() {
-    ventaActiva.items = [];
+    ventaActiva.items = ventaActiva.items.filter(i => String(i.id) !== String(productoId));
     renderCarrito();
 }
 
@@ -100,33 +102,51 @@ function calcularTotal() {
     return ventaActiva.items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 }
 
-function guardarVentaActiva() {
+async function guardarVentaActiva() {
     if (ventaActiva.items.length === 0) {
         showToast("La venta no tiene productos para guardar.", { type: "warning" });
         return;
     }
-    const copia = JSON.parse(JSON.stringify(ventaActiva));
-    ventasGuardadas.push(copia);
-    persistirVentasGuardadas();
-    ventaActiva = { id: generarId(), items: [] };
-    renderCarrito();
-    renderVentasGuardadas();
-    showToast("Venta guardada en espera.", { type: "info" });
+
+    try {
+        await postVentaPendiente({
+            id: ventaActiva.id,
+            items: JSON.parse(JSON.stringify(ventaActiva.items))
+        });
+        ventaActiva = { id: generarId(), items: [] };
+        renderCarrito();
+        await cargarVentasGuardadasDesdeAPI();
+        showToast("Venta guardada en espera en MySQL.", { type: "info" });
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo guardar la venta en espera en MySQL.", { type: "error" });
+    }
 }
 
-function retomarVentaGuardada(ventaId) {
-    const idx = ventasGuardadas.findIndex(v => v.id === ventaId);
-    if (idx === -1) return;
+async function retomarVentaGuardada(ventaId) {
+    const ventaSeleccionada = ventasGuardadas.find(v => String(v.id) === String(ventaId));
+    if (!ventaSeleccionada) return;
 
-    if (ventaActiva.items.length > 0) {
-        ventasGuardadas.push(JSON.parse(JSON.stringify(ventaActiva)));
+    try {
+        if (ventaActiva.items.length > 0) {
+            await postVentaPendiente({
+                id: ventaActiva.id,
+                items: JSON.parse(JSON.stringify(ventaActiva.items))
+            });
+        }
+
+        await deleteVentaPendienteApi(ventaId);
+        ventaActiva = {
+            id: ventaSeleccionada.id,
+            items: sincronizarItemsConCatalogo(ventaSeleccionada.items || [])
+        };
+
+        renderCarrito();
+        await cargarVentasGuardadasDesdeAPI();
+    } catch (error) {
+        console.error(error);
+        showToast("No se pudo retomar la venta guardada.", { type: "error" });
     }
-
-    ventaActiva = ventasGuardadas.splice(idx, 1)[0];
-    sincronizarVentaActivaConCatalogo();
-    persistirVentasGuardadas();
-    renderCarrito();
-    renderVentasGuardadas();
 }
 
 async function nuevaVenta() {
@@ -190,13 +210,13 @@ function renderCarrito() {
 
     contenedor.querySelectorAll(".pos__item-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-            cambiarCantidad(parseInt(btn.dataset.id), btn.dataset.op);
+            cambiarCantidad(btn.dataset.id, btn.dataset.op);
         });
     });
 
     contenedor.querySelectorAll(".pos__item-delete").forEach(btn => {
         btn.addEventListener("click", () => {
-            eliminarDelCarrito(parseInt(btn.dataset.id));
+            eliminarDelCarrito(btn.dataset.id);
         });
     });
 }
@@ -218,7 +238,7 @@ function renderVentasGuardadas() {
     ventasGuardadas.forEach(v => {
         const chip = document.createElement("button");
         chip.classList.add("pos__venta-guardada-chip");
-        chip.textContent = `${v.id} · ${v.items.length} item(s)`;
+        chip.textContent = `${v.id} - ${v.items.length} item(s)`;
         chip.addEventListener("click", () => retomarVentaGuardada(v.id));
         lista.appendChild(chip);
     });
@@ -226,7 +246,7 @@ function renderVentasGuardadas() {
 
 document.addEventListener("DOMContentLoaded", () => {
     renderCarrito();
-    renderVentasGuardadas();
+    cargarVentasGuardadasDesdeAPI();
 
     document.getElementById("btn-nueva-venta")?.addEventListener("click", nuevaVenta);
     document.getElementById("btn-guardar-venta")?.addEventListener("click", guardarVentaActiva);

@@ -336,7 +336,6 @@ async function guardarCliente() {
     const btn = document.getElementById("btn-guardar-cliente");
     const editandoId = clienteEditandoId;
     const nuevo = {
-        id: editandoId || Date.now().toString(),
         nombre: normalizarTexto(document.getElementById("cliente-nombre")?.value),
         telefono: normalizarTexto(document.getElementById("cliente-telefono")?.value),
         email: normalizarTexto(document.getElementById("cliente-correo")?.value),
@@ -355,9 +354,10 @@ async function guardarCliente() {
 
     try {
         if (editandoId) {
-            await eliminarEntidad(editandoId, "clientes");
+            await putCliente(editandoId, nuevo);
+        } else {
+            await postCliente(nuevo);
         }
-        await postCliente(nuevo);
         showToast(editandoId ? "Cliente actualizado correctamente." : "Cliente guardado correctamente.", { type: "success" });
         reiniciarEstadoCliente();
         cerrarFormulario("clientes-form");
@@ -377,7 +377,6 @@ async function guardarProveedor() {
     const btn = document.getElementById("btn-guardar-prov");
     const editandoId = proveedorEditandoId;
     const nuevo = {
-        id: editandoId || Date.now().toString(),
         nombre: normalizarTexto(document.getElementById("prov-nombre")?.value),
         nit: normalizarTexto(document.getElementById("prov-nit")?.value),
         telefono: normalizarTexto(document.getElementById("prov-telefono")?.value)
@@ -395,9 +394,10 @@ async function guardarProveedor() {
 
     try {
         if (editandoId) {
-            await eliminarEntidad(editandoId, "proveedores");
+            await putProveedor(editandoId, nuevo);
+        } else {
+            await postProveedor(nuevo);
         }
-        await postProveedor(nuevo);
         showToast(editandoId ? "Proveedor actualizado correctamente." : "Proveedor guardado correctamente.", { type: "success" });
         reiniciarEstadoProveedor();
         cerrarFormulario("proveedores-form");
@@ -417,7 +417,6 @@ async function guardarCategoria() {
     const btn = document.getElementById("btn-guardar-cat");
     const editandoId = categoriaEditandoId;
     const nueva = {
-        id: editandoId || Date.now().toString(),
         nombre: normalizarTexto(document.getElementById("cat-nombre")?.value),
         color: normalizarTexto(document.getElementById("cat-color")?.value) || "#6d28d9"
     };
@@ -434,9 +433,10 @@ async function guardarCategoria() {
 
     try {
         if (editandoId) {
-            await eliminarEntidad(editandoId, "categorias");
+            await putCategoria(editandoId, nueva);
+        } else {
+            await postCategoria(nueva);
         }
-        await postCategoria(nueva);
         showToast(editandoId ? "Categoria actualizada correctamente." : "Categoria guardada correctamente.", { type: "success" });
         reiniciarEstadoCategoria();
         cerrarFormulario("categorias-form");

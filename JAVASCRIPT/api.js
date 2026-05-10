@@ -1,6 +1,28 @@
 // api.js - Gestión del catálogo conectada al Backend (Node.js)
 
 let catalogoProductos = [];
+const API_BASE_URL = "http://localhost:3000/api";
+
+async function apiRequest(path, options = {}) {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    });
+
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : null;
+
+    if (!response.ok) {
+        const error = new Error(data?.error || data?.message || "Error en la solicitud");
+        error.response = data;
+        throw error;
+    }
+
+    return data;
+}
 
 // 1. UTILIDADES DE INTERFAZ
 function mostrarCargaProductos() {
@@ -26,7 +48,7 @@ function mostrarCargaProductos() {
 async function cargarProductosDesdeAPI() {
     try {
         // Conexión al controlador de tu servidor Node.js
-        const response = await fetch('http://localhost:3000/api/productos');
+        const response = await fetch(`${API_BASE_URL}/productos`);
 
         if (!response.ok) {
             throw new Error("No se pudo obtener la respuesta del servidor");
@@ -57,6 +79,7 @@ async function guardarProducto() {
     const btn = document.getElementById("btn-guardar-prod");
     // Esta función captura los datos de tus inputs (prod-nombre, prod-precio, etc.)
     const datos = obtenerDatosFormularioProducto();
+    const editandoId = typeof getProductoEditandoId === "function" ? getProductoEditandoId() : null;
 
     if (btn) {
         btn.disabled = true;
@@ -64,8 +87,8 @@ async function guardarProducto() {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/api/productos', {
-            method: 'POST',
+        const response = await fetch(editandoId ? `${API_BASE_URL}/productos/${editandoId}` : `${API_BASE_URL}/productos`, {
+            method: editandoId ? "PUT" : "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
         });
@@ -73,7 +96,7 @@ async function guardarProducto() {
         const resultado = await response.json();
 
         if (response.ok) {
-            showToast("Producto guardado exitosamente", { type: "success" });
+            showToast(editandoId ? "Producto actualizado exitosamente" : "Producto guardado exitosamente", { type: "success" });
             limpiarFormProducto();
             await cargarProductosDesdeAPI();
         } else {
@@ -92,6 +115,137 @@ async function guardarProducto() {
 }
 
 // 3. RENDERIZADO Y BÚSQUEDA POS
+async function eliminarProductoApi(id) {
+    return apiRequest(`/productos/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+async function sincronizarProductosEnMySQL(productosActualizados = []) {
+    return Promise.all(productosActualizados.map(producto => {
+        const { id, createdAt, updatedAt, ...datos } = producto;
+        return apiRequest(`/productos/${encodeURIComponent(id)}`, {
+            method: "PUT",
+            body: JSON.stringify(datos)
+        });
+    }));
+}
+
+async function getClientes() {
+    return apiRequest("/clientes");
+}
+
+async function postCliente(cliente) {
+    const { id, createdAt, updatedAt, ...datos } = cliente;
+    return apiRequest("/clientes", {
+        method: "POST",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function putCliente(id, cliente) {
+    const { id: _id, createdAt, updatedAt, ...datos } = cliente;
+    return apiRequest(`/clientes/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function getProveedores() {
+    return apiRequest("/proveedores");
+}
+
+async function postProveedor(proveedor) {
+    const { id, createdAt, updatedAt, ...datos } = proveedor;
+    return apiRequest("/proveedores", {
+        method: "POST",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function putProveedor(id, proveedor) {
+    const { id: _id, createdAt, updatedAt, ...datos } = proveedor;
+    return apiRequest(`/proveedores/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function getCategorias() {
+    return apiRequest("/categorias");
+}
+
+async function postCategoria(categoria) {
+    const { id, createdAt, updatedAt, ...datos } = categoria;
+    return apiRequest("/categorias", {
+        method: "POST",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function putCategoria(id, categoria) {
+    const { id: _id, createdAt, updatedAt, ...datos } = categoria;
+    return apiRequest(`/categorias/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function eliminarEntidad(id, hoja) {
+    const rutas = {
+        clientes: "clientes",
+        proveedores: "proveedores",
+        categorias: "categorias"
+    };
+    const ruta = rutas[hoja];
+    if (!ruta) throw new Error("Entidad desconocida");
+
+    return apiRequest(`/${ruta}/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+async function getVentas() {
+    return apiRequest("/ventas");
+}
+
+async function postVenta(venta) {
+    return apiRequest("/ventas", {
+        method: "POST",
+        body: JSON.stringify(venta)
+    });
+}
+
+async function deleteVentaApi(id) {
+    return apiRequest(`/ventas/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+async function getVentasPendientes() {
+    return apiRequest("/ventas/pendientes");
+}
+
+async function postVentaPendiente(venta) {
+    return apiRequest("/ventas/pendientes", {
+        method: "POST",
+        body: JSON.stringify(venta)
+    });
+}
+
+async function deleteVentaPendienteApi(id) {
+    return apiRequest(`/ventas/pendientes/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+async function getCompras() {
+    return apiRequest("/compras");
+}
+
+async function postCompra(compra) {
+    return apiRequest("/compras", {
+        method: "POST",
+        body: JSON.stringify(compra)
+    });
+}
+
+async function deleteCompraApi(id) {
+    return apiRequest(`/compras/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
 function renderResultados(lista) {
     const posResults = document.getElementById("pos-results");
     if (!posResults) return;
@@ -145,7 +299,6 @@ function filtrarYRenderizar() {
 // 4. PERSISTENCIA Y CATEGORÍAS
 function actualizarCatalogo(productos) {
     catalogoProductos = productos;
-    localStorage.setItem("pos_catalogo", JSON.stringify(productos));
     poblarSelectCategorias();
 }
 
