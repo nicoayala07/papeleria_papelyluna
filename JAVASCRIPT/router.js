@@ -30,3 +30,11 @@ document.querySelectorAll(".nav-btn[data-vista]").forEach(btn => {
 
 // Volver desde factura al historial
 document.getElementById("btn-volver-historial")?.addEventListener("click", () => navegarA("historial"));
+
+// Pantalla de inicio
+document.getElementById("btn-entrar-pos")?.addEventListener("click", () => {
+    const login = document.getElementById("vista-login");
+    if (login) login.classList.add("oculto");
+    navegarA("venta");
+    document.getElementById("pos-search")?.focus();
+});

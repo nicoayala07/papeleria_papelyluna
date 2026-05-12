@@ -9,6 +9,22 @@
 </head>
 <body>
 
+    <!-- INICIO DE SESION -->
+    <section id="vista-login">
+        <div class="login__card">
+            <div class="login__logo-wrap">
+                <img src="Logo.png" alt="Logo Papel y Luna" class="login__logo-img">
+                <h1 class="login__logo-nombre">Papel y Luna</h1>
+                <p class="login__logo-tagline">Sistema punto de venta</p>
+            </div>
+            <div class="login__divisor"></div>
+            <button class="login__btn-entrar" id="btn-entrar-pos" type="button" autofocus>
+                <i class="fa-solid fa-cash-register"></i>
+                Entrar al POS
+            </button>
+        </div>
+    </section>
+
     <!-- SIDEBAR DE NAVEGACIÓN -->
     <nav class="sidebar-nav">
         <div class="sidebar-nav__logo">
@@ -51,7 +67,7 @@
                         <div class="pos__busqueda-input-wrap">
                             <i class="fa-solid fa-magnifying-glass pos__busqueda-icon"></i>
                             <input type="text" id="pos-search" class="pos__busqueda-input"
-                                placeholder="Buscar producto por nombre o código..." autocomplete="off" autofocus>
+                                placeholder="Buscar producto por nombre o código..." autocomplete="off">
                             <button class="pos__busqueda-clear" id="pos-search-clear" title="Limpiar">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
@@ -60,12 +76,78 @@
                             <option value="">Todas las categorías</option>
                         </select>
                     </div>
+                    <div id="pos-category-tiles" class="pos__category-tiles"></div>
+                    <div id="pos-edit-paused" class="pos__edit-paused" hidden></div>
                     <div id="pos-results" class="pos__results">
                         <div class="pos__results-empty">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <p>Busca un producto para agregarlo a la venta</p>
                         </div>
                     </div>
+
+                    <aside id="pos-editor" class="pos__editor pos__editor--hidden" aria-hidden="true">
+                        <div class="pos__editor-header">
+                            <div>
+                                <span class="pos__editor-kicker">Edición de producto</span>
+                                <h3 id="pos-editor-title">Editar producto</h3>
+                                <p id="pos-editor-subtitle">Los cambios se pueden pausar y continuar luego.</p>
+                            </div>
+                            <button class="btn btn--ghost btn--sm" id="pos-editor-close" type="button" title="Pausar edición">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <div class="pos__editor-body">
+                            <div class="form__group">
+                                <label>Nombre</label>
+                                <input type="text" id="pos-edit-nombre" placeholder="Nombre del producto">
+                            </div>
+                            <div class="form__group">
+                                <label>Categoría</label>
+                                <input type="text" id="pos-edit-categoria" list="pos-editor-categorias" placeholder="Categoria">
+                                <datalist id="pos-editor-categorias"></datalist>
+                            </div>
+                            <div class="form__group form__group--row">
+                                <div>
+                                    <label>Precio de venta</label>
+                                    <input type="number" id="pos-edit-precio" min="0" placeholder="0">
+                                </div>
+                                <div>
+                                    <label>Costo de compra</label>
+                                    <input type="number" id="pos-edit-costo" min="0" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="form__group form__group--row">
+                                <div>
+                                    <label>Código interno</label>
+                                    <input type="text" id="pos-edit-codigo" placeholder="Codigo">
+                                </div>
+                                <div>
+                                    <label>Stock</label>
+                                    <input type="number" id="pos-edit-stock" min="0" placeholder="0">
+                                </div>
+                            </div>
+                            <div class="form__group">
+                                <label>Seguimiento de inventario</label>
+                                <select id="pos-edit-seguimiento">
+                                    <option value="si">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pos__editor-actions">
+                            <button class="btn btn--outline" id="pos-editor-pause" type="button">
+                                <i class="fa-solid fa-pause"></i> Pausar
+                            </button>
+                            <button class="btn btn--secondary" id="pos-editor-discard" type="button">
+                                Descartar
+                            </button>
+                            <button class="btn btn--success" id="pos-editor-save" type="button">
+                                Guardar cambios
+                            </button>
+                        </div>
+                    </aside>
                 </div>
 
                 <aside class="pos__venta">
@@ -143,7 +225,7 @@
                 </div>
                 <div class="productos__form" id="productos-form">
                     <div class="Form__header">
-                        <h3 class="productos__form--title" id="form-title">Nuevo Producto</h3>
+                        <h3 class="productos__form-title" id="form-title">Nuevo Producto</h3>
                     </div>
                     <div class="form__group">
                         <label>Nombre</label>
@@ -202,7 +284,7 @@
                 </div>
                 <div class="productos__form" id="compras-form" style="display:none">
                     <div class="Form__header">
-                        <h3 class="productos__form--title">Registrar compra</h3>
+                        <h3 class="productos__form-title">Registrar compra</h3>
                     </div>
                     <div class="form__group">
                         <label>Proveedor</label>
@@ -252,7 +334,7 @@
                 </div>
                 <div class="productos__form" id="clientes-form">
                     <div class="Form__header">
-                        <h3 class="productos__form--title" id="cliente-form-title">Nuevo Cliente</h3>
+                        <h3 class="productos__form-title" id="cliente-form-title">Nuevo Cliente</h3>
                     </div>
                     <div class="form__group">
                         <label>Nombre</label>
@@ -288,7 +370,7 @@
                 </div>
                 <div class="productos__form" id="proveedores-form">
                     <div class="Form__header">
-                        <h3 class="productos__form--title" id="prov-form-title">Nuevo Proveedor</h3>
+                        <h3 class="productos__form-title" id="prov-form-title">Nuevo Proveedor</h3>
                     </div>
                     <div class="form__group">
                         <label>Nombre</label>
@@ -324,7 +406,7 @@
                 </div>
                 <div class="productos__form" id="categorias-form">
                     <div class="Form__header">
-                        <h3 class="productos__form--title" id="cat-form-title">Nueva Categoría</h3>
+                        <h3 class="productos__form-title" id="cat-form-title">Nueva Categoría</h3>
                     </div>
                     <div class="form__group">
                         <label>Nombre</label>
