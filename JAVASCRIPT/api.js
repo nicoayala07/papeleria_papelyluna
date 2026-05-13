@@ -2,17 +2,49 @@
 
 let catalogoProductos = [];
 const API_BASE_URL = "http://localhost:3000/api";
+const AUTH_STORAGE_KEY = "papelYLuna.auth";
 const POS_DRAFTS_STORAGE_KEY = "papelYLuna.pos.productoDrafts";
 let posCategoriaActiva = "";
 let posProductoEditandoId = null;
 let posEditorDrafts = {};
 
+function cargarSesionAuth() {
+    try {
+        return JSON.parse(sessionStorage.getItem(AUTH_STORAGE_KEY) || "null");
+    } catch (error) {
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
+        return null;
+    }
+}
+
+let authSession = cargarSesionAuth();
+
+function haySesionActiva() {
+    return Boolean(authSession?.token);
+}
+
+function guardarSesionAuth(session) {
+    authSession = session;
+    sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+}
+
+function limpiarSesionAuth() {
+    authSession = null;
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
+}
+
 async function apiRequest(path, options = {}) {
+    const { skipAuth = false, headers = {}, ...fetchOptions } = options;
+    const authHeaders = !skipAuth && authSession?.token
+        ? { Authorization: `Bearer ${authSession.token}` }
+        : {};
+
     const response = await fetch(`${API_BASE_URL}${path}`, {
-        ...options,
+        ...fetchOptions,
         headers: {
             "Content-Type": "application/json",
-            ...(options.headers || {})
+            ...authHeaders,
+            ...headers
         }
     });
 
@@ -22,9 +54,21 @@ async function apiRequest(path, options = {}) {
     if (!response.ok) {
         const error = new Error(data?.error || data?.message || "Error en la solicitud");
         error.response = data;
+        error.status = response.status;
+        if (response.status === 401 && !skipAuth) limpiarSesionAuth();
         throw error;
     }
 
+    return data;
+}
+
+async function loginApi(username, password) {
+    const data = await apiRequest("/login", {
+        method: "POST",
+        skipAuth: true,
+        body: JSON.stringify({ username, password })
+    });
+    guardarSesionAuth(data);
     return data;
 }
 
@@ -52,13 +96,7 @@ function mostrarCargaProductos() {
 async function cargarProductosDesdeAPI() {
     try {
         // Conexión al controlador de tu servidor Node.js
-        const response = await fetch(`${API_BASE_URL}/productos`);
-
-        if (!response.ok) {
-            throw new Error("No se pudo obtener la respuesta del servidor");
-        }
-
-        const datos = await response.json();
+        const datos = await apiRequest("/productos");
 
         if (Array.isArray(datos)) {
             catalogoProductos = datos.map(p => ({
@@ -91,25 +129,17 @@ async function guardarProducto() {
     }
 
     try {
-        const response = await fetch(editandoId ? `${API_BASE_URL}/productos/${editandoId}` : `${API_BASE_URL}/productos`, {
+        await apiRequest(editandoId ? `/productos/${editandoId}` : "/productos", {
             method: editandoId ? "PUT" : "POST",
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
         });
 
-        const resultado = await response.json();
-
-        if (response.ok) {
-            showToast(editandoId ? "Producto actualizado exitosamente" : "Producto guardado exitosamente", { type: "success" });
-            limpiarFormProducto();
-            await cargarProductosDesdeAPI();
-        } else {
-            // Aquí capturamos los errores que vienen de productos.validators.js
-            const errorMsg = resultado.errors ? resultado.errors[0].msg : "Error en los datos";
-            showToast(`Error: ${errorMsg}`, { type: "error" });
-        }
+        showToast(editandoId ? "Producto actualizado exitosamente" : "Producto guardado exitosamente", { type: "success" });
+        limpiarFormProducto();
+        await cargarProductosDesdeAPI();
     } catch (error) {
-        showToast("No se pudo conectar con el servidor", { type: "error" });
+        const errorMsg = error.response?.errors?.[0]?.msg || error.message || "No se pudo conectar con el servidor";
+        showToast(`Error: ${errorMsg}`, { type: "error" });
     } finally {
         if (btn) {
             btn.disabled = false;
@@ -738,8 +768,10 @@ function poblarSelectCategorias() {
 
 document.addEventListener("DOMContentLoaded", () => {
     cargarBorradoresPos();
-    mostrarCargaProductos();
-    cargarProductosDesdeAPI();
+    if (haySesionActiva()) {
+        mostrarCargaProductos();
+        cargarProductosDesdeAPI();
+    }
 
     document.getElementById("pos-search")?.addEventListener("input", filtrarYRenderizar);
     document.getElementById("pos-category-filter")?.addEventListener("change", event => {

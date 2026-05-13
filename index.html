@@ -18,10 +18,21 @@
                 <p class="login__logo-tagline">Sistema punto de venta</p>
             </div>
             <div class="login__divisor"></div>
-            <button class="login__btn-entrar" id="btn-entrar-pos" type="button" autofocus>
-                <i class="fa-solid fa-cash-register"></i>
-                Entrar al POS
-            </button>
+            <form id="login-form">
+                <div class="login__campo">
+                    <label for="login-username">Usuario</label>
+                    <input type="text" id="login-username" autocomplete="username" required autofocus>
+                </div>
+                <div class="login__campo">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" autocomplete="current-password" required>
+                </div>
+                <p class="login__error" id="login-error"></p>
+                <button class="login__btn-entrar" id="btn-entrar-pos" type="submit">
+                    <i class="fa-solid fa-cash-register"></i>
+                    Entrar al POS
+                </button>
+            </form>
         </div>
     </section>
 

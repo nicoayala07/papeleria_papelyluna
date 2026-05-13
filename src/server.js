@@ -11,6 +11,9 @@ const ventasRoutes      = require('./routes/ventas.routes');
 const comprasRoutes     = require('./routes/compras.routes');
 const requestLogger = require('./middlewares/requestLogger');
 const sanitizeIds = require('./middlewares/sanitizeIds');
+const authRoutes   = require('./routes/auth.routes');
+const authJwt      = require('./middlewares/authJwt');
+const requireRole  = require('./middlewares/requireRole');
 
 const PORT = process.env.PORT || 3000;
 
@@ -19,12 +22,13 @@ app.use(express.json());
 app.use(requestLogger);
 app.use(sanitizeIds);
 
-app.use('/api/productos',   productosRoutes);
-app.use('/api/clientes',    clientesRoutes);
-app.use('/api/proveedores', proveedoresRoutes);
-app.use('/api/categorias',  categoriasRoutes);
-app.use('/api/ventas',      ventasRoutes);
-app.use('/api/compras',     comprasRoutes);
+app.use('/api',             authRoutes);
+app.use('/api/productos',   authJwt, productosRoutes);
+app.use('/api/clientes',    authJwt, clientesRoutes);
+app.use('/api/proveedores', authJwt, requireRole('ADMIN'), proveedoresRoutes);
+app.use('/api/categorias',  authJwt, categoriasRoutes);
+app.use('/api/ventas',      authJwt, ventasRoutes);
+app.use('/api/compras',     authJwt, comprasRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
