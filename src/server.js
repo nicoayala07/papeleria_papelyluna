@@ -10,12 +10,14 @@ const categoriasRoutes  = require('./routes/categorias.routes');
 const ventasRoutes      = require('./routes/ventas.routes');
 const comprasRoutes     = require('./routes/compras.routes');
 const requestLogger = require('./middlewares/requestLogger');
+const sanitizeIds = require('./middlewares/sanitizeIds');
 
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
+app.use(sanitizeIds);
 
 app.use('/api/productos',   productosRoutes);
 app.use('/api/clientes',    clientesRoutes);

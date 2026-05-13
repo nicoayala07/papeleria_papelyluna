@@ -1,24 +1,68 @@
 const { body, validationResult } = require('express-validator');
 
 exports.createRules = [
-    // Reglas basadas en tu formulario de productos
-    body('nombre').isString().notEmpty().withMessage('El nombre es obligatorio'),
-    body('precio').isFloat({ min: 1 }).withMessage('El precio debe ser mayor a 0'),
-    body('stock').isInt({ min: 0 }).withMessage('El stock no puede ser negativo'),
-    body('categoria').notEmpty().withMessage('Debes seleccionar una categoría')
-];
-exports.updateRules = [
-    body('nombre').optional().isString().notEmpty().withMessage('El nombre no puede estar vacío'),
-    body('precio').optional().isFloat({ min: 1 }).withMessage('El precio debe ser mayor a 0'),
-    body('stock').optional().isInt({ min: 0 }).withMessage('El stock no puede ser negativo'),
-    body('categoria').optional().notEmpty().withMessage('La categoría no puede estar vacía')
+    body('nombre')
+        .exists({ values: 'undefined' }).withMessage('El nombre es obligatorio')
+        .bail()
+        .isString().withMessage('El nombre debe ser texto')
+        .bail()
+        .trim()
+        .notEmpty().withMessage('El nombre no puede estar vacio'),
+    body('precio')
+        .exists({ values: 'undefined' }).withMessage('El precio es obligatorio')
+        .bail()
+        .isFloat({ min: 1 }).withMessage('El precio debe ser un numero mayor a 0')
+        .toFloat(),
+    body('stock')
+        .exists({ values: 'undefined' }).withMessage('El stock es obligatorio')
+        .bail()
+        .isInt({ min: 0 }).withMessage('El stock debe ser un numero entero mayor o igual a 0')
+        .toInt(),
+    body('categoria')
+        .exists({ values: 'undefined' }).withMessage('La categoria es obligatoria')
+        .bail()
+        .isString().withMessage('La categoria debe ser texto')
+        .bail()
+        .trim()
+        .notEmpty().withMessage('La categoria no puede estar vacia')
 ];
 
-// Este middleware revisa si hubo errores en las reglas de arriba
+exports.updateRules = [
+    body('nombre')
+        .optional({ values: 'undefined' })
+        .isString().withMessage('El nombre debe ser texto')
+        .bail()
+        .trim()
+        .notEmpty().withMessage('El nombre no puede estar vacio'),
+    body('precio')
+        .optional({ values: 'undefined' })
+        .isFloat({ min: 1 }).withMessage('El precio debe ser un numero mayor a 0')
+        .toFloat(),
+    body('stock')
+        .optional({ values: 'undefined' })
+        .isInt({ min: 0 }).withMessage('El stock debe ser un numero entero mayor o igual a 0')
+        .toInt(),
+    body('categoria')
+        .optional({ values: 'undefined' })
+        .isString().withMessage('La categoria debe ser texto')
+        .bail()
+        .trim()
+        .notEmpty().withMessage('La categoria no puede estar vacia')
+];
+
 exports.handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        const details = errors.array().map(error => ({
+            campo: error.path,
+            msg: error.msg,
+            mensaje: error.msg
+        }));
+
+        return res.status(400).json({
+            error: 'Datos invalidos',
+            errors: details
+        });
     }
     next();
 };
