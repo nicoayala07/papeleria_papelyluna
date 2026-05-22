@@ -22,6 +22,15 @@ app.use(express.json());
 app.use(requestLogger);
 app.use(sanitizeIds);
 
+
+app.get('/authors', (req, res) => {
+  res.json([
+    { nombre: 'Cristian Cifuentes (el chifu)', codigo: '349918' },
+    { nombre: 'Tomas Poveda (Tom Tom)' ,                  codigo: '350571' },
+    { nombre: 'Nicolas ayala (el que se apellida como mi ex)',             codigo: '354774' }
+  ]);
+});
+
 app.use('/api',             authRoutes);
 app.use('/api/productos',   authJwt, productosRoutes);
 app.use('/api/clientes',    authJwt, clientesRoutes);
@@ -38,8 +47,10 @@ app.use((err, req, res, next) => {
 async function startServer() {
   try {
     await sequelize.authenticate();
-    console.log('Conexion a MySQL exitosa');
-    await sequelize.sync();
+    console.log('Conexion a BD exitosa');
+    if (process.env.NODE_ENV !== 'production') {
+      await sequelize.sync();
+    }
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });
