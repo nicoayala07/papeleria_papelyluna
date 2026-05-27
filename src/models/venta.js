@@ -15,7 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     metodoPago: { type: DataTypes.STRING, allowNull: false, defaultValue: 'Pendiente' },
     pagoCon: { type: DataTypes.FLOAT, defaultValue: 0 },
     clienteId: { type: DataTypes.STRING },
-    estado: { type: DataTypes.STRING, allowNull: false, defaultValue: 'completada' }
+    estado: { type: DataTypes.STRING, allowNull: false, defaultValue: 'completada' },
+    corregida:       { type: DataTypes.BOOLEAN, defaultValue: false },
+    corregidaPor:    { type: DataTypes.STRING,  allowNull: true },
+    fechaCorreccion: { type: DataTypes.DATE,    allowNull: true }
   }, {
     sequelize,
     modelName: 'Venta',

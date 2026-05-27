@@ -9,5 +9,7 @@ router.post('/pendientes', ctrl.saveVentaPendiente);
 router.delete('/pendientes/:id', ctrl.deleteVentaPendiente);
 router.get('/:id', ctrl.getVenta);
 router.delete('/:id', ctrl.deleteVenta);
+router.put('/:id',            ctrl.corregirVenta);
+router.post('/:id/reembolso', ctrl.reembolsarVenta);
 
 module.exports = router;

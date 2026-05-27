@@ -15,6 +15,7 @@ const authRoutes   = require('./routes/auth.routes');
 const authJwt      = require('./middlewares/authJwt');
 const requireRole  = require('./middlewares/requireRole');
 
+
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
@@ -38,6 +39,8 @@ app.use('/api/proveedores', authJwt, requireRole('ADMIN'), proveedoresRoutes);
 app.use('/api/categorias',  authJwt, categoriasRoutes);
 app.use('/api/ventas',      authJwt, ventasRoutes);
 app.use('/api/compras',     authJwt, comprasRoutes);
+app.use('/api/descuentos', authJwt, descuentosRoutes);
+app.use('/api/faltantes',  authJwt, faltantesRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

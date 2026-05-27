@@ -82,6 +82,14 @@ exports.saveVenta = async (req, res, next) => {
       clienteId: req.body.clienteId || '',
       estado: 'completada'
     });
+    const { Producto } = require('../models');
+    const items = parseJsonList(productos);
+    for (const item of items) {
+        const prod = await Producto.findByPk(item.id);
+      if (prod && prod.seguimientoInventario === 'si') {
+        await prod.update({ stock: prod.stock - item.cantidad });
+      }
+}
 
     res.status(201).json(toVentaDto(venta));
   } catch (error) {
@@ -93,6 +101,14 @@ exports.deleteVenta = async (req, res, next) => {
   try {
     const venta = await Venta.findByPk(req.params.id);
     if (!venta) return res.status(404).json({ error: 'Venta no encontrada' });
+    const { Producto } = require('../models');
+    const items = parseJsonList(venta.productosJson);
+    for (const item of items) {
+      const prod = await Producto.findByPk(item.id);
+      if (prod && prod.seguimientoInventario === 'si') {
+        await prod.update({ stock: prod.stock + item.cantidad });
+  }
+}
     await venta.destroy();
     res.json({ mensaje: `Venta ${req.params.id} eliminada` });
   } catch (error) {
@@ -151,4 +167,67 @@ exports.deleteVentaPendiente = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+exports.corregirVenta = async (req, res, next) => {
+  try {
+    const venta = await Venta.findByPk(req.params.id);
+    if (!venta) return res.status(404).json({ error: 'Venta no encontrada' });
+
+    const { Producto } = require('../models');
+    const productosAnteriores = parseJsonList(venta.productosJson);
+    const productosNuevos     = req.body.productos || [];
+
+    // Restaurar stock de productos anteriores
+    for (const item of productosAnteriores) {
+      const prod = await Producto.findByPk(item.id);
+      if (prod && prod.seguimientoInventario === 'si') {
+        await prod.update({ stock: prod.stock + item.cantidad });
+      }
+    }
+
+    // Descontar stock de productos nuevos
+    for (const item of productosNuevos) {
+      const prod = await Producto.findByPk(item.id);
+      if (prod && prod.seguimientoInventario === 'si') {
+        await prod.update({ stock: prod.stock - item.cantidad });
+      }
+    }
+
+    await venta.update({
+      productosJson:   JSON.stringify(productosNuevos),
+      total:           req.body.total,
+      metodoPago:      req.body.metodoPago      || venta.metodoPago,
+      clienteId:       req.body.clienteId       || venta.clienteId,
+      corregida:       true,
+      corregidaPor:    req.body.corregidaPor    || 'usuario',
+      fechaCorreccion: new Date()
+    });
+
+    res.json(toVentaDto(venta));
+  } catch (error) { next(error); }
+};
+
+exports.reembolsarVenta = async (req, res, next) => {
+  try {
+    const venta = await Venta.findByPk(req.params.id);
+    if (!venta) return res.status(404).json({ error: 'Venta no encontrada' });
+
+    const { Producto } = require('../models');
+    // items: [{ id, cantidad, retornaInventario }]
+    const items = req.body.items || [];
+
+    for (const item of items) {
+      if (item.retornaInventario) {
+        const prod = await Producto.findByPk(item.id);
+        if (prod && prod.seguimientoInventario === 'si') {
+          await prod.update({ stock: prod.stock + item.cantidad });
+        }
+      }
+    }
+
+    // Marcar venta como reembolsada
+    await venta.update({ estado: 'reembolsada' });
+
+    res.json({ mensaje: 'Reembolso registrado', venta: toVentaDto(venta) });
+  } catch (error) { next(error); }
 };

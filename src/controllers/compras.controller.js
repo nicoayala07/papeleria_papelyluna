@@ -53,6 +53,14 @@ exports.saveCompra = async (req, res, next) => {
       total: Number(req.body.total) || 0,
       itemsJson: stringifyList(items)
     });
+    const { Producto } = require('../models');
+    const itemsLista = parseJsonList(items);
+    for (const item of itemsLista) {
+      const prod = await Producto.findByPk(item.id);
+    if (prod && prod.seguimientoInventario === 'si') {
+      await prod.update({ stock: prod.stock + item.cantidad });
+  }
+}
 
     res.status(201).json(toCompraDto(compra));
   } catch (error) {
