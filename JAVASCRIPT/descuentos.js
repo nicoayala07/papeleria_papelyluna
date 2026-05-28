@@ -45,8 +45,7 @@ function renderDescuentos() {
                 <button class="btn-editar" type="button" data-id="${desc.id}" title="Editar">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
-                <button class="btn-eliminar-desc" type="button" data-id="${desc.id}" title="Eliminar">
-                    <i class="fa-solid fa-trash"></i>
+<button class="btn-eliminar-prod" type="button" data-id="${desc.id}" title="Eliminar">                    <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
         `;
