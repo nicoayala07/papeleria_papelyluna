@@ -617,6 +617,7 @@ body {
 ============================================================ */
 #vista-productos.activa,
 #vista-compras.activa,
+#vista-faltantes.activa,
 #vista-clientes.activa,
 #vista-proveedores.activa,
 #vista-categorias.activa {
@@ -647,6 +648,7 @@ body {
 }
 
 #compras-form,
+#faltantes-form,
 #clientes-form,
 #proveedores-form,
 #categorias-form {
@@ -724,6 +726,7 @@ body {
 
 #productos-container,
 #compras-lista,
+#faltantes-lista,
 #clientes-container,
 #proveedores-container,
 #categorias-container {
@@ -736,7 +739,8 @@ body {
 #proveedores-container > p,
 #categorias-container > p,
 #productos-container > p,
-#compras-lista > p {
+#compras-lista > p,
+#faltantes-lista > p {
     background: var(--fondo-panel);
     border: 1px dashed var(--borde-fuerte);
     border-radius: var(--radio);
@@ -844,6 +848,7 @@ body {
 #vista-clientes .productos__form,
 #vista-proveedores .productos__form,
 #vista-categorias .productos__form,
+#vista-faltantes .productos__form,
 #vista-compras .productos__form {
     background: var(--fondo-card);
 }
@@ -851,9 +856,205 @@ body {
 #vista-clientes .productos__lista-header .vista-title,
 #vista-proveedores .productos__lista-header .vista-title,
 #vista-categorias .productos__lista-header .vista-title,
+#vista-faltantes .productos__lista-header .vista-title,
 #vista-compras .productos__lista-header .vista-title,
 #vista-productos .productos__lista-header .vista-title {
     font-size: 1.9rem;
+}
+
+#vista-faltantes .productos__layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    width: 100%;
+}
+
+#vista-faltantes #faltantes-form {
+    display: flex;
+}
+
+.faltantes-filtros,
+.reportes-filtros {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.faltante-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.95rem 1rem;
+    background: var(--fondo-card);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.faltante-card:hover {
+    border-color: var(--dorado-borde);
+    box-shadow: var(--sombra-panel);
+}
+
+.faltante-card__info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.faltante-card__tipo {
+    width: fit-content;
+    padding: 0.18rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(200,153,42,0.1);
+    border: 1px solid rgba(200,153,42,0.25);
+    color: var(--dorado-osc);
+    font-size: 0.72rem;
+}
+
+.faltante-card__info h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--texto);
+}
+
+.faltante-card__info p,
+.faltante-card__info small {
+    color: var(--texto-suave);
+    font-size: 0.82rem;
+}
+
+.faltante-card__acciones {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-shrink: 0;
+}
+
+.faltante-estado {
+    height: 42px;
+    min-width: 138px;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    background: var(--fondo);
+    color: var(--texto);
+    padding: 0 0.65rem;
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+#vista-reportes {
+    min-height: 100vh;
+    background: var(--fondo);
+}
+
+#vista-reportes.activa {
+    display: block;
+}
+
+.reportes-header {
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.reportes-filtros {
+    margin-bottom: 0;
+}
+
+.reportes-filtros .filter-input {
+    width: auto;
+    min-width: 145px;
+}
+
+#reporte-stock-minimo {
+    width: 96px;
+    min-width: 96px;
+}
+
+.reportes-contenido {
+    padding: 1.5rem 2.5rem 2.5rem;
+}
+
+.reportes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.reporte-card {
+    background: var(--fondo-card);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.reporte-card span {
+    font-size: 0.78rem;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.reporte-card strong {
+    font-size: 1.55rem;
+    font-weight: 500;
+    color: var(--dorado-osc);
+    font-family: 'Playfair Display', serif;
+}
+
+.reporte-card small {
+    color: var(--texto-suave);
+    font-size: 0.82rem;
+}
+
+.reportes-panels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.reporte-panel {
+    background: var(--fondo-card);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 1rem;
+}
+
+.reporte-panel h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.85rem;
+    color: var(--texto);
+}
+
+.reporte-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-top: 1px solid var(--borde);
+    color: var(--texto);
+}
+
+.reporte-row span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.reporte-row strong {
+    color: var(--dorado-osc);
+    white-space: nowrap;
+}
+
+.reportes-empty {
+    color: var(--texto-suave);
+    padding: 0.6rem 0;
 }
 
 /* ============================================================
@@ -2981,6 +3182,11 @@ body {
         min-height: 100dvh;
     }
 
+    #vista-faltantes .productos__layout {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
     .productos__lista { padding: 0.95rem; overflow: visible; }
 
     .productos__form {
@@ -3152,6 +3358,41 @@ body {
 
     .compra__item-campos { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
     .compra__item-subtotal, .compra__item-eliminar { grid-column: 1 / -1; }
+
+    .faltante-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .faltante-card__acciones {
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding-top: 0.7rem;
+        border-top: 1px dashed var(--borde);
+    }
+
+    .faltante-estado {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .reportes-filtros {
+        width: 100%;
+    }
+
+    .reportes-filtros .filter-input,
+    #reporte-stock-minimo {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .reportes-contenido {
+        padding: 1rem;
+    }
+
+    .reportes-panels {
+        grid-template-columns: 1fr;
+    }
 
 }
 

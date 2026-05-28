@@ -19,6 +19,8 @@ function navegarA(nombreVista) {
     }
     if (nombreVista === "categorias" && typeof listarCategorias === "function") listarCategorias();
     if (nombreVista === "compras" && typeof listarCompras === "function") listarCompras();
+    if (nombreVista === "faltantes" && typeof renderFaltantes === "function") renderFaltantes();
+    if (nombreVista === "reportes" && typeof renderReportes === "function") renderReportes();
 }
 
 function entrarAlPos() {

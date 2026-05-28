@@ -54,6 +54,12 @@
             <button class="nav-btn" data-vista="compras" title="Compras">
                 <i class="fa-solid fa-truck"></i>
             </button>
+            <button class="nav-btn" data-vista="faltantes" title="Faltantes">
+                <i class="fa-solid fa-clipboard-list"></i>
+            </button>
+            <button class="nav-btn" data-vista="reportes" title="Reportes">
+                <i class="fa-solid fa-chart-line"></i>
+            </button>
         </div>
         <div class="sidebar-nav__bottom">
            <button class="nav-btn" data-vista="clientes" title="Clientes">
@@ -331,6 +337,76 @@
             </div>
         </section>
 
+        <!-- VISTA: FALTANTES -->
+        <section id="vista-faltantes" class="vista">
+            <div class="productos__layout">
+                <div class="productos__lista">
+                    <div class="productos__lista-header">
+                        <h2 class="vista-title">Faltantes</h2>
+                    </div>
+                    <div id="faltantes-resumen" class="reportes-grid"></div>
+                    <div class="faltantes-filtros">
+                        <select id="faltantes-filtro-estado" class="filter-select">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente">Pendientes</option>
+                            <option value="resuelto">Resueltos</option>
+                            <option value="descartado">Descartados</option>
+                        </select>
+                        <select id="faltantes-filtro-tipo" class="filter-select">
+                            <option value="">Todos los tipos</option>
+                            <option value="agotado">Agotado</option>
+                            <option value="no_registrado">No registrado</option>
+                        </select>
+                    </div>
+                    <div id="faltantes-lista"></div>
+                </div>
+                <div class="productos__form" id="faltantes-form">
+                    <div class="Form__header">
+                        <h3 class="productos__form-title">Registrar faltante</h3>
+                    </div>
+                    <div class="form__group">
+                        <label>Producto</label>
+                        <input type="text" id="faltante-nombre" placeholder="Nombre del producto" required>
+                    </div>
+                    <div class="form__group">
+                        <label>Tipo</label>
+                        <select id="faltante-tipo">
+                            <option value="agotado">Agotado</option>
+                            <option value="no_registrado">No registrado</option>
+                        </select>
+                    </div>
+                    <div class="form__group">
+                        <label>Cantidad requerida</label>
+                        <input type="number" id="faltante-cantidad" min="1" placeholder="Opcional">
+                    </div>
+                    <div class="form__group">
+                        <label>Observacion</label>
+                        <input type="text" id="faltante-observacion" placeholder="Nota corta">
+                    </div>
+                    <div class="form__actions">
+                        <button class="btn btn--secondary" id="btn-limpiar-faltante">Limpiar</button>
+                        <button class="btn btn--success" id="btn-guardar-faltante">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: REPORTES -->
+        <section id="vista-reportes" class="vista">
+            <div class="vista-header reportes-header">
+                <h2 class="vista-title">Reportes</h2>
+                <div class="reportes-filtros">
+                    <input type="date" id="reporte-desde" class="filter-input">
+                    <input type="date" id="reporte-hasta" class="filter-input">
+                    <input type="number" id="reporte-stock-minimo" class="filter-input" min="0" value="3" title="Stock minimo">
+                    <button class="btn btn--success btn--sm" id="btn-actualizar-reportes">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="reportes-contenido" class="reportes-contenido"></div>
+        </section>
+
         <!-- VISTA: CLIENTES -->
         <section id="vista-clientes" class="vista">
             <div class="productos__layout">
@@ -491,6 +567,8 @@
     <script src="JAVASCRIPT/historial.js"></script>
     <script src="JAVASCRIPT/productos.js"></script>
     <script src="JAVASCRIPT/compras.js"></script>
+    <script src="JAVASCRIPT/faltantes.js"></script>
+    <script src="JAVASCRIPT/reportes.js"></script>
     <script src="JAVASCRIPT/entidades.js"></script> 
 </body>
 </html>

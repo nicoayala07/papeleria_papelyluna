@@ -9,6 +9,9 @@ const proveedoresRoutes = require('./routes/proveedores.routes');
 const categoriasRoutes  = require('./routes/categorias.routes');
 const ventasRoutes      = require('./routes/ventas.routes');
 const comprasRoutes     = require('./routes/compras.routes');
+const descuentosRoutes  = require('./routes/descuentos.routes');
+const faltantesRoutes   = require('./routes/faltantes.routes');
+const reportesRoutes    = require('./routes/reportes.routes');
 const requestLogger = require('./middlewares/requestLogger');
 const sanitizeIds = require('./middlewares/sanitizeIds');
 const authRoutes   = require('./routes/auth.routes');
@@ -39,8 +42,9 @@ app.use('/api/proveedores', authJwt, requireRole('ADMIN'), proveedoresRoutes);
 app.use('/api/categorias',  authJwt, categoriasRoutes);
 app.use('/api/ventas',      authJwt, ventasRoutes);
 app.use('/api/compras',     authJwt, comprasRoutes);
-app.use('/api/descuentos', authJwt, descuentosRoutes);
-app.use('/api/faltantes',  authJwt, faltantesRoutes);
+app.use('/api/descuentos',  authJwt, descuentosRoutes);
+app.use('/api/faltantes',   authJwt, faltantesRoutes);
+app.use('/api/reportes',    authJwt, reportesRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

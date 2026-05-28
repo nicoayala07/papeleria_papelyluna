@@ -20,10 +20,15 @@ exports.saveFaltante = async (req, res, next) => {
     const { nombreProducto, tipo, cantidad, observacion } = req.body;
     if (!nombreProducto || !tipo)
       return res.status(400).json({ error: 'nombreProducto y tipo son requeridos' });
+    if (!['agotado', 'no_registrado'].includes(tipo))
+      return res.status(400).json({ error: 'Tipo de faltante invalido' });
 
     const faltante = await Faltante.create({
       nombreProducto: nombreProducto.trim().toLowerCase(),
-      tipo, cantidad, observacion, estado: 'pendiente'
+      tipo,
+      cantidad: cantidad ? Number(cantidad) : null,
+      observacion: observacion ? observacion.trim() : '',
+      estado: 'pendiente'
     });
     res.status(201).json(faltante);
   } catch (error) { next(error); }
@@ -33,6 +38,8 @@ exports.updateEstado = async (req, res, next) => {
   try {
     const faltante = await Faltante.findByPk(req.params.id);
     if (!faltante) return res.status(404).json({ error: 'Faltante no encontrado' });
+    if (!['pendiente', 'resuelto', 'descartado'].includes(req.body.estado))
+      return res.status(400).json({ error: 'Estado de faltante invalido' });
 
     await faltante.update({ estado: req.body.estado });
     res.json(faltante);

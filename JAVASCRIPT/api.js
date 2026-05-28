@@ -280,6 +280,42 @@ async function deleteCompraApi(id) {
     return apiRequest(`/compras/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
 
+async function getFaltantes(query = {}) {
+    const params = new URLSearchParams();
+    Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") params.set(key, value);
+    });
+    const qs = params.toString();
+    return apiRequest(`/faltantes${qs ? "?" + qs : ""}`);
+}
+
+async function postFaltante(faltante) {
+    return apiRequest("/faltantes", {
+        method: "POST",
+        body: JSON.stringify(faltante)
+    });
+}
+
+async function patchFaltanteEstado(id, estado) {
+    return apiRequest(`/faltantes/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: JSON.stringify({ estado })
+    });
+}
+
+async function deleteFaltanteApi(id) {
+    return apiRequest(`/faltantes/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+async function getReporteResumen(query = {}) {
+    const params = new URLSearchParams();
+    Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") params.set(key, value);
+    });
+    const qs = params.toString();
+    return apiRequest(`/reportes/resumen${qs ? "?" + qs : ""}`);
+}
+
 function renderResultados(lista) {
     const posResults = document.getElementById("pos-results");
     if (!posResults) return;
