@@ -1,7 +1,14 @@
 // api.js - Gestión del catálogo conectada al Backend (Node.js)
 
 let catalogoProductos = [];
-const API_BASE_URL = "http://localhost:3000/api";
+const REMOTE_API_BASE_URL = "https://papeleria-papelyluna.onrender.com/api";
+const API_BASE_URL = window.PAPEL_API_BASE_URL || (
+    window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://localhost:3000/api"
+        : window.location.hostname.endsWith("github.io")
+            ? REMOTE_API_BASE_URL
+            : `${window.location.origin}/api`
+);
 const AUTH_STORAGE_KEY = "papelYLuna.auth";
 const POS_DRAFTS_STORAGE_KEY = "papelYLuna.pos.productoDrafts";
 let posCategoriaActiva = "";

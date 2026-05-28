@@ -1,5 +1,6 @@
 require('dotenv').config();
 const app = require('./app');
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { sequelize } = require('./models');
@@ -25,6 +26,7 @@ app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 app.use(sanitizeIds);
+app.use(express.static(path.join(__dirname, '..')));
 
 
 app.get('/authors', (req, res) => {
