@@ -38,7 +38,21 @@ function obtenerUsuarioActual() {
 
 function guardarSesionAuth(session) {
     authSession = session;
-    sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+}
+
+function cargarSesionAuth() {
+    try {
+        return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
+    } catch (error) {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        return null;
+    }
+}
+
+function limpiarSesionAuth() {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    authSession = null;
 }
 
 function limpiarSesionAuth() {
