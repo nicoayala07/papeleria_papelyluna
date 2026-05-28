@@ -3,7 +3,8 @@ const app = require('./app');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
-const { sequelize } = require('./models');
+const bcrypt = require('bcrypt');
+const { sequelize, Usuario } = require('./models');
 const productosRoutes   = require('./routes/productos.routes');
 const clientesRoutes    = require('./routes/clientes.routes');
 const proveedoresRoutes = require('./routes/proveedores.routes');
@@ -21,6 +22,10 @@ const requireRole  = require('./middlewares/requireRole');
 
 
 const PORT = process.env.PORT || 3000;
+const DEFAULT_USERS = [
+  { username: 'admin', password: 'admin123', role: 'ADMIN' },
+  { username: 'vendedor', password: 'vendedor123', role: 'USER' }
+];
 
 app.use(cors());
 app.use(express.json());
@@ -53,6 +58,20 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Algo salio mal en el servidor' });
 });
 
+async function ensureDefaultUsers() {
+  for (const user of DEFAULT_USERS) {
+    const existente = await Usuario.findOne({ where: { username: user.username } });
+    if (existente) continue;
+
+    await Usuario.create({
+      username: user.username,
+      password: await bcrypt.hash(user.password, 10),
+      role: user.role
+    });
+    console.log(`Usuario por defecto creado: ${user.username}`);
+  }
+}
+
 async function startServer() {
   try {
     await sequelize.authenticate();
@@ -60,6 +79,7 @@ async function startServer() {
     if (process.env.NODE_ENV !== 'production') {
       await sequelize.sync();
     }
+    await ensureDefaultUsers();
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });

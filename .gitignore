@@ -22,4 +22,3 @@ temp/
 Thumbs.db
 .vscode/
 .idea/
-src/config/database.js
