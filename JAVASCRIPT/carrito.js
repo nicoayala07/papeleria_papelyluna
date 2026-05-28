@@ -332,7 +332,6 @@ document.getElementById('btn-seleccionar-descuento')?.addEventListener('click', 
 });
 
 function mostrarSelectorDescuento(descuentos) {
-    // Si ya hay un modal abierto lo quitamos
     document.getElementById('modal-desc-selector')?.remove();
 
     const modal = document.createElement('div');
@@ -342,8 +341,7 @@ function mostrarSelectorDescuento(descuentos) {
     const opciones = descuentos.map(d => {
         const val = d.tipo === 'porcentaje' ? `${d.valor}%` : `$${Number(d.valor).toLocaleString('es-CO')}`;
         return `
-            <button class="btn btn--outline" data-id="${d.id}"
-                style="width:100%;margin-bottom:0.4rem;text-align:left;display:flex;justify-content:space-between">
+            <button class="modal-desc-selector__item" data-id="${d.id}">
                 <span>${d.nombre}</span>
                 <strong>${val}</strong>
             </button>
@@ -351,10 +349,10 @@ function mostrarSelectorDescuento(descuentos) {
     }).join('');
 
     modal.innerHTML = `
-        <div style="background:var(--color-background-primary);border-radius:12px;padding:1.5rem;min-width:280px;max-width:360px;width:90%">
-            <h3 style="margin:0 0 1rem;font-size:1rem">Seleccionar descuento</h3>
+        <div class="modal-desc-selector">
+            <h3>Seleccionar descuento</h3>
             ${opciones}
-            <button class="btn btn--secondary" id="btn-cerrar-desc-selector" style="width:100%;margin-top:0.5rem">Cancelar</button>
+            <button class="modal-desc-selector__cancelar" id="btn-cerrar-desc-selector">Cancelar</button>
         </div>
     `;
 

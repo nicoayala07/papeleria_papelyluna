@@ -3190,6 +3190,58 @@ body.sidebar-oculta .sidebar-toggle--floating {
     }
     .pos__venta-guardada-chip { white-space: nowrap; flex: 0 0 auto; }
 }
+/* ── MODAL SELECTOR DESCUENTO ─────────────────────── */
+.modal-desc-selector {
+    background: var(--fondo);
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-width: 280px;
+    max-width: 360px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.modal-desc-selector h3 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.modal-desc-selector__item {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    background: var(--fondo);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    transition: background 0.15s;
+}
+
+.modal-desc-selector__item:hover {
+    background: var(--fondo-suave);
+}
+
+.modal-desc-selector__item strong {
+    color: var(--acento);
+}
+
+.modal-desc-selector__cancelar {
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.6rem;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    background: var(--fondo-suave);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
 
 @media (max-width: 900px) {
     :root { --sidebar-w: 56px; }
