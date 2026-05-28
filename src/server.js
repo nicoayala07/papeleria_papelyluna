@@ -4,7 +4,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const { sequelize, Usuario } = require('./models');
+const { sequelize, Usuario, Producto, Cliente, Proveedor, Categoria } = require('./models');
 const productosRoutes   = require('./routes/productos.routes');
 const clientesRoutes    = require('./routes/clientes.routes');
 const proveedoresRoutes = require('./routes/proveedores.routes');
@@ -81,6 +81,22 @@ async function ensureDefaultUsers() {
   }
 }
 
+async function seedTableIfEmpty(model, seederPath, label) {
+  const total = await model.count();
+  if (total > 0) return;
+
+  const seeder = require(seederPath);
+  await seeder.up(sequelize.getQueryInterface(), sequelize.Sequelize);
+  console.log(`Datos iniciales cargados: ${label}`);
+}
+
+async function ensureDemoData() {
+  await seedTableIfEmpty(Categoria, './seeders/20260508132722-demo-categorias', 'categorias');
+  await seedTableIfEmpty(Proveedor, './seeders/20260508132721-demo-proveedores', 'proveedores');
+  await seedTableIfEmpty(Cliente, './seeders/20260508132720-demo-clientes', 'clientes');
+  await seedTableIfEmpty(Producto, './seeders/20260508132719-demo-productos', 'productos');
+}
+
 async function startServer() {
   try {
     await sequelize.authenticate();
@@ -89,6 +105,7 @@ async function startServer() {
       await sequelize.sync();
     }
     await ensureDefaultUsers();
+    await ensureDemoData();
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });
