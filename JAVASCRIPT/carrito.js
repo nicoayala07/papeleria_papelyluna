@@ -308,3 +308,65 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btn-nueva-venta")?.addEventListener("click", nuevaVenta);
     document.getElementById("btn-guardar-venta")?.addEventListener("click", guardarVentaActiva);
 });
+
+document.getElementById('btn-tile-descuento')?.addEventListener('click', async () => {
+    const descuentos = await getDescuentos();
+
+    if (descuentos.length === 0) {
+        showToast('No hay descuentos registrados.', { type: 'warning' });
+        return;
+    }
+
+    mostrarSelectorDescuento(descuentos);
+});
+
+document.getElementById('btn-seleccionar-descuento')?.addEventListener('click', async () => {
+    const descuentos = await getDescuentos();
+
+    if (descuentos.length === 0) {
+        showToast('No hay descuentos registrados.', { type: 'warning' });
+        return;
+    }
+
+    mostrarSelectorDescuento(descuentos);
+});
+
+function mostrarSelectorDescuento(descuentos) {
+    // Si ya hay un modal abierto lo quitamos
+    document.getElementById('modal-desc-selector')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'modal-desc-selector';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999';
+
+    const opciones = descuentos.map(d => {
+        const val = d.tipo === 'porcentaje' ? `${d.valor}%` : `$${Number(d.valor).toLocaleString('es-CO')}`;
+        return `
+            <button class="btn btn--outline" data-id="${d.id}"
+                style="width:100%;margin-bottom:0.4rem;text-align:left;display:flex;justify-content:space-between">
+                <span>${d.nombre}</span>
+                <strong>${val}</strong>
+            </button>
+        `;
+    }).join('');
+
+    modal.innerHTML = `
+        <div style="background:var(--color-background-primary);border-radius:12px;padding:1.5rem;min-width:280px;max-width:360px;width:90%">
+            <h3 style="margin:0 0 1rem;font-size:1rem">Seleccionar descuento</h3>
+            ${opciones}
+            <button class="btn btn--secondary" id="btn-cerrar-desc-selector" style="width:100%;margin-top:0.5rem">Cancelar</button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelectorAll('[data-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const desc = descuentos.find(d => String(d.id) === btn.dataset.id);
+            aplicarDescuentoCarrito(desc);
+            modal.remove();
+        });
+    });
+
+    document.getElementById('btn-cerrar-desc-selector')?.addEventListener('click', () => modal.remove());
+}
