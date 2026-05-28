@@ -32,6 +32,15 @@ function entrarAlPos() {
     if (typeof cargarDescuentos === "function") cargarDescuentos();
 }
 
+function salirDelPos() {
+    if (typeof limpiarSesionAuth === "function") limpiarSesionAuth();
+    document.getElementById("vista-login")?.classList.remove("oculto");
+    document.querySelectorAll(".vista").forEach(v => v.classList.remove("activa"));
+    const passwordInput = document.getElementById("login-password");
+    if (passwordInput) passwordInput.value = "";
+    document.getElementById("login-username")?.focus();
+}
+
 function mostrarErrorLogin(message) {
     const errorEl = document.getElementById("login-error");
     const usernameInput = document.getElementById("login-username");
@@ -54,6 +63,8 @@ function limpiarErrorLogin() {
 document.querySelectorAll(".nav-btn[data-vista]").forEach(btn => {
     btn.addEventListener("click", () => navegarA(btn.dataset.vista));
 });
+
+document.getElementById("btn-logout")?.addEventListener("click", salirDelPos);
 
 document.getElementById("btn-volver-historial")?.addEventListener("click", () => navegarA("historial"));
 

@@ -206,40 +206,12 @@ async function registrarCompra() {
         itemsJson: JSON.stringify(itemsCompra)
     };
 
-    const productosActualizados = [];
-    itemsCompra.forEach(itemComprado => {
-        const prod = catalogoProductos.find(p => String(p.id) === String(itemComprado.id));
-        if (prod && prod.seguimientoInventario === "si") {
-            productosActualizados.push({
-                ...prod,
-                stock: (parseInt(prod.stock, 10) || 0) + itemComprado.cantidad
-            });
-        }
-    });
-
-    try {
-        if (productosActualizados.length > 0) {
-            productosActualizados.forEach(actualizado => {
-                const idx = catalogoProductos.findIndex(p => String(p.id) === String(actualizado.id));
-                if (idx !== -1) catalogoProductos[idx] = actualizado;
-            });
-            actualizarCatalogo(catalogoProductos);
-            if (typeof ListarProductos === "function") ListarProductos();
-            if (typeof filtrarYRenderizar === "function") filtrarYRenderizar();
-            await sincronizarProductosEnMySQL(productosActualizados);
-        }
-    } catch (error) {
-        console.error("Error sincronizando stock de compra:", error);
-        showToast("No se pudo sincronizar el stock de la compra en MySQL.", { type: "error" });
-        await cargarProductosDesdeAPI();
-        return;
-    }
-
     try {
         await postCompra({
             ...compra,
             items: itemsCompra
         });
+        await cargarProductosDesdeAPI();
     } catch (err) {
         console.error("Error guardando compra en MySQL:", err);
         showToast("No se pudo guardar la compra en MySQL.", { type: "error" });

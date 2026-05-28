@@ -32,6 +32,10 @@ function haySesionActiva() {
     return Boolean(authSession?.token);
 }
 
+function obtenerUsuarioActual() {
+    return authSession?.user || null;
+}
+
 function guardarSesionAuth(session) {
     authSession = session;
     sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));

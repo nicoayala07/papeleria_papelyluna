@@ -61,11 +61,17 @@ app.use((err, req, res, next) => {
 async function ensureDefaultUsers() {
   for (const user of DEFAULT_USERS) {
     const existente = await Usuario.findOne({ where: { username: user.username } });
-    if (existente) continue;
+    const password = await bcrypt.hash(user.password, 10);
+
+    if (existente) {
+      await existente.update({ password, role: user.role });
+      console.log(`Usuario por defecto actualizado: ${user.username}`);
+      continue;
+    }
 
     await Usuario.create({
       username: user.username,
-      password: await bcrypt.hash(user.password, 10),
+      password,
       role: user.role
     });
     console.log(`Usuario por defecto creado: ${user.username}`);
