@@ -122,17 +122,14 @@ function obtenerNombresCategorias() {
 function sincronizarSelectsCategorias() {
     const categorias = obtenerNombresCategorias();
     const selects = [
-        document.getElementById("prod-categoria"),
-        document.getElementById("pos-category-filter")
+        document.getElementById("prod-categoria")
     ];
 
     selects.forEach(select => {
         if (!select) return;
 
         const valorActual = select.value;
-        const placeholder = select.id === "pos-category-filter"
-            ? "Todas las categorias"
-            : "Selecciona una categoria";
+        const placeholder = "Selecciona una categoria";
 
         select.innerHTML = `<option value="">${placeholder}</option>`;
 
