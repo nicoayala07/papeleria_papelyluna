@@ -17,7 +17,10 @@ function normalizarVenta(venta) {
         productos,
         total: Number(venta.total) || 0,
         pagoCon: Number(venta.pagoCon) || 0,
-        hora: venta.hora || ""
+        hora: venta.hora || "",
+        descuentoNombre: venta.descuentoNombre || null,
+        descuentoValor: Number(venta.descuentoValor) || 0,
+        descuentoTipo: venta.descuentoTipo || null
     };
 }
 
@@ -38,8 +41,14 @@ async function renderHistorial() {
 
     contenedor.innerHTML = "<p class='loading'>Cargando ventas...</p>";
 
+    const filtros = {
+        metodoPago: document.getElementById("hist-filtro-metodo")?.value || "",
+        desde: document.getElementById("hist-filtro-desde")?.value || "",
+        hasta: document.getElementById("hist-filtro-hasta")?.value || ""
+    };
+
     try {
-        historialVentas = (await getVentas()).map(normalizarVenta);
+        historialVentas = (await getVentasConFiltros(filtros)).map(normalizarVenta);
     } catch (error) {
         console.error(error);
         contenedor.innerHTML = "<p>Error al conectar con la base de datos.</p>";
@@ -48,19 +57,48 @@ async function renderHistorial() {
 
     contenedor.innerHTML = "";
 
+    // Barra de filtros
+    const filtrosHtml = document.createElement("div");
+    filtrosHtml.className = "historial__filtros";
+    filtrosHtml.style.cssText = "display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;";
+    filtrosHtml.innerHTML = `
+        <input type="date" id="hist-filtro-desde" class="filter-input" placeholder="Desde" value="${filtros.desde}" style="flex:1;min-width:120px;">
+        <input type="date" id="hist-filtro-hasta" class="filter-input" placeholder="Hasta" value="${filtros.hasta}" style="flex:1;min-width:120px;">
+        <select id="hist-filtro-metodo" class="filter-select" style="flex:1;min-width:120px;">
+            <option value="">Todos los métodos</option>
+            <option value="Efectivo" ${filtros.metodoPago === "Efectivo" ? "selected" : ""}>Efectivo</option>
+            <option value="Nequi" ${filtros.metodoPago === "Nequi" ? "selected" : ""}>Nequi</option>
+            <option value="Debe" ${filtros.metodoPago === "Debe" ? "selected" : ""}>Debe</option>
+        </select>
+        <button class="btn btn--success btn--sm" id="btn-aplicar-filtros-hist">
+            <i class="fa-solid fa-magnifying-glass"></i> Filtrar
+        </button>
+        <button class="btn btn--ghost btn--sm" id="btn-limpiar-filtros-hist">
+            Limpiar
+        </button>
+    `;
+    contenedor.appendChild(filtrosHtml);
+
+    document.getElementById("btn-aplicar-filtros-hist")?.addEventListener("click", renderHistorial);
+    document.getElementById("btn-limpiar-filtros-hist")?.addEventListener("click", () => {
+        document.getElementById("hist-filtro-desde").value = "";
+        document.getElementById("hist-filtro-hasta").value = "";
+        document.getElementById("hist-filtro-metodo").value = "";
+        renderHistorial();
+    });
+
+    // Contador
     const header = document.createElement("div");
     header.classList.add("historial__topbar");
-    header.innerHTML = `
-        <p class="historial__count">${historialVentas.length} venta${historialVentas.length !== 1 ? "s" : ""} registrada${historialVentas.length !== 1 ? "s" : ""}</p>
-    `;
+    header.innerHTML = `<p class="historial__count">${historialVentas.length} venta${historialVentas.length !== 1 ? "s" : ""} registrada${historialVentas.length !== 1 ? "s" : ""}</p>`;
     contenedor.appendChild(header);
 
     if (historialVentas.length === 0) {
         contenedor.innerHTML += `
             <div class="historial__empty">
                 <i class="fa-solid fa-clock-rotate-left historial__empty-icon"></i>
-                <p class="historial__empty-title">Sin ventas registradas</p>
-                <p class="historial__empty-sub">Las ventas completadas apareceran aqui</p>
+                <p class="historial__empty-title">Sin ventas para los filtros aplicados</p>
+                <p class="historial__empty-sub">Intenta cambiar el rango de fechas o el método de pago</p>
             </div>
         `;
         return;
@@ -77,12 +115,15 @@ async function renderHistorial() {
         }[venta.metodoPago] || "btn--outline";
 
         const fechaDisplay = `${venta.fecha || ""}${venta.hora ? " - " + venta.hora : ""}`;
+        const corregidaBadge = venta.corregida
+            ? `<span style="font-size:0.7rem;color:#d97706;margin-left:4px;"><i class="fa-solid fa-pen"></i> Corregida</span>`
+            : "";
 
         card.innerHTML = `
             <div class="historial__card-left">
                 <span class="historial__numero">#${String(venta.numero || "").padStart(3, "0")}</span>
                 <div class="historial__info">
-                    <p class="historial__fecha">${fechaDisplay}</p>
+                    <p class="historial__fecha">${fechaDisplay} ${corregidaBadge}</p>
                     <p class="historial__resumen">${venta.productos.length} producto${venta.productos.length !== 1 ? "s" : ""}</p>
                 </div>
             </div>
@@ -108,7 +149,7 @@ async function renderHistorial() {
 
     contenedor.querySelectorAll(".btn-eliminar-venta").forEach(btn => {
         btn.addEventListener("click", async () => {
-            const ok = await showConfirmDialog("Se eliminara esta venta del historial.", {
+            const ok = await showConfirmDialog("Se eliminará esta venta del historial.", {
                 title: "Eliminar venta",
                 confirmText: "Eliminar"
             });
@@ -127,6 +168,10 @@ function renderFacturaDesdeHistorial(ventaId) {
     const cambio = venta.metodoPago === "Efectivo" && venta.pagoCon
         ? (venta.pagoCon - venta.total).toLocaleString("es-CO")
         : null;
+    const subtotal = venta.productos.reduce((acc, p) => {
+        return acc + (Number(p.precio) || 0) * (Number(p.cantidad) || 0);
+    }, 0);
+    const descuentoMonto = Math.max(0, subtotal - venta.total);
 
     contenedor.innerHTML = `
         <div class="factura">
@@ -156,6 +201,15 @@ function renderFacturaDesdeHistorial(ventaId) {
                 </tbody>
             </table>
             <div class="factura__totales">
+                ${venta.descuentoNombre ? `
+                <div class="factura__fila">
+                    <span>Subtotal</span>
+                    <span>$${subtotal.toLocaleString("es-CO")}</span>
+                </div>
+                <div class="factura__fila">
+                    <span>Descuento (${venta.descuentoNombre})</span>
+                    <span>-$${descuentoMonto.toLocaleString("es-CO")}</span>
+                </div>` : ""}
                 <div class="factura__fila factura__fila--total">
                     <span>Total</span>
                     <span>$${venta.total.toLocaleString("es-CO")}</span>

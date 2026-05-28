@@ -7,6 +7,8 @@ const POS_DRAFTS_STORAGE_KEY = "papelYLuna.pos.productoDrafts";
 let posCategoriaActiva = "";
 let posProductoEditandoId = null;
 let posEditorDrafts = {};
+let posUltimosProductos = [];
+let posUltimosDescuentos = [];
 
 function cargarSesionAuth() {
     try {
@@ -633,6 +635,7 @@ function filtrarYRenderizar() {
     const texto = (document.getElementById("pos-search")?.value || "").toLowerCase().trim();
     const selectCategoria = document.getElementById("pos-category-filter")?.value || "";
     const categoriaFiltro = normalizarTextoPos(posCategoriaActiva || selectCategoria).toLowerCase();
+    const posResults = document.getElementById("pos-results");
 
     const resultados = catalogoProductos.filter(p => {
         const nombre = (p.nombre || "").toLowerCase();
@@ -642,10 +645,98 @@ function filtrarYRenderizar() {
         const coincideCat = !categoriaFiltro || categoria === categoriaFiltro;
         return coincideTexto && coincideCat;
     });
+    posUltimosProductos = resultados;
 
     renderPosCategoriaTiles();
     renderPosPausedDrafts();
     renderResultados(resultados);
+
+    if (texto && typeof listaDescuentos !== "undefined" && posResults) {
+        const descsFiltrados = listaDescuentos.filter(d =>
+            (d.nombre || "").toLowerCase().includes(texto)
+        );
+        posUltimosDescuentos = descsFiltrados;
+
+        if (descsFiltrados.length > 0 && resultados.length === 0) {
+            posResults.innerHTML = "";
+        }
+
+        descsFiltrados.forEach(desc => {
+            const valorDisplay = desc.tipo === "porcentaje"
+                ? `${desc.valor}%`
+                : `$${Number(desc.valor).toLocaleString("es-CO")}`;
+            const div = document.createElement("article");
+            div.className = "pos__product-card pos__discount-card";
+            div.dataset.descId = desc.id;
+            div.innerHTML = `
+                <div class="pos__product-card-top">
+                    <span class="pos__product-category">Descuento</span>
+                    <i class="fa-solid fa-tag"></i>
+                </div>
+                <div class="pos__product-card-body">
+                    <h3 class="pos__product-name">${desc.nombre}</h3>
+                    <p class="pos__product-code">${desc.tipo === "porcentaje" ? "Porcentaje" : "Valor fijo"}</p>
+                </div>
+                <div class="pos__product-card-footer">
+                    <span class="pos__product-price">-${valorDisplay}</span>
+                    <span class="pos__product-stock">Una por venta</span>
+                </div>
+                <button class="pos__product-add" type="button" data-desc-id="${desc.id}">
+                    <i class="fa-solid fa-tag"></i> Aplicar
+                </button>
+            `;
+
+            div.addEventListener("click", () => {
+                if (typeof aplicarDescuentoCarrito === "function") aplicarDescuentoCarrito(desc);
+            });
+            div.querySelector(".pos__product-add")?.addEventListener("click", event => {
+                event.stopPropagation();
+                if (typeof aplicarDescuentoCarrito === "function") aplicarDescuentoCarrito(desc);
+            });
+            posResults.appendChild(div);
+        });
+    } else {
+        posUltimosDescuentos = [];
+    }
+}
+
+function limpiarBusquedaPos() {
+    const input = document.getElementById("pos-search");
+    if (!input) return;
+    input.value = "";
+    filtrarYRenderizar();
+    input.focus();
+}
+
+function agregarResultadoPosRapido() {
+    const input = document.getElementById("pos-search");
+    const texto = (input?.value || "").toLowerCase().trim();
+    if (!texto) return;
+
+    const exacto = posUltimosProductos.find(producto =>
+        (producto.codigo || "").toLowerCase() === texto ||
+        (producto.nombre || "").toLowerCase() === texto
+    );
+    const producto = exacto || (posUltimosProductos.length === 1 ? posUltimosProductos[0] : null);
+
+    if (producto) {
+        const agotado = producto.seguimientoInventario === "si" && producto.stock <= 0;
+        if (agotado) {
+            showToast("Ese producto esta sin stock.", { type: "warning" });
+            return;
+        }
+        if (typeof agregarAlCarrito === "function") agregarAlCarrito(producto);
+        limpiarBusquedaPos();
+        return;
+    }
+
+    if (posUltimosDescuentos.length === 1 && typeof aplicarDescuentoCarrito === "function") {
+        aplicarDescuentoCarrito(posUltimosDescuentos[0]);
+        limpiarBusquedaPos();
+        return;
+    }
+
+    showToast("Hay varios resultados. Toca el que vas a agregar.", { type: "info" });
 }
 
 function setValorInput(id, valor) {
@@ -801,6 +892,38 @@ function poblarSelectCategorias() {
         }
     });
 }
+async function getDescuentos() {
+    return apiRequest("/descuentos");
+}
+
+async function postDescuento(descuento) {
+    const { id, createdAt, updatedAt, ...datos } = descuento;
+    return apiRequest("/descuentos", {
+        method: "POST",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function putDescuento(id, descuento) {
+    const { id: _id, createdAt, updatedAt, ...datos } = descuento;
+    return apiRequest(`/descuentos/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify(datos)
+    });
+}
+
+async function deleteDescuento(id) {
+    return apiRequest(`/descuentos/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+async function getVentasConFiltros(filtros = {}) {
+    const params = new URLSearchParams();
+    Object.entries(filtros).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") params.set(key, value);
+    });
+    const qs = params.toString();
+    return apiRequest(`/ventas${qs ? "?" + qs : ""}`);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     cargarBorradoresPos();
@@ -810,6 +933,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("pos-search")?.addEventListener("input", filtrarYRenderizar);
+    document.getElementById("pos-search")?.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            agregarResultadoPosRapido();
+        }
+    });
+    document.getElementById("pos-search-clear")?.addEventListener("click", limpiarBusquedaPos);
     document.getElementById("pos-category-filter")?.addEventListener("change", event => {
         posCategoriaActiva = event.target.value;
         filtrarYRenderizar();

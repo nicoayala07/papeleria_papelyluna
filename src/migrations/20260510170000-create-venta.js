@@ -16,6 +16,9 @@ module.exports = {
       metodoPago: { allowNull: false, type: Sequelize.STRING, defaultValue: 'Pendiente' },
       pagoCon: { type: Sequelize.FLOAT, defaultValue: 0 },
       clienteId: { type: Sequelize.STRING },
+      descuentoNombre: { type: Sequelize.STRING, allowNull: true },
+      descuentoValor: { type: Sequelize.FLOAT, allowNull: true },
+      descuentoTipo: { type: Sequelize.STRING, allowNull: true },
       estado: { allowNull: false, type: Sequelize.STRING, defaultValue: 'completada' },
       createdAt: { allowNull: false, type: Sequelize.DATE },
       updatedAt: { allowNull: false, type: Sequelize.DATE }

@@ -4,10 +4,12 @@ let ventaActiva = {
 };
 
 let ventasGuardadas = [];
+let descuentoActivo = null;
 
 function generarId() {
     return "V-" + Date.now().toString().slice(-6);
 }
+
 
 function obtenerProductoCatalogo(productoId) {
     if (typeof catalogoProductos === "undefined" || !Array.isArray(catalogoProductos)) return null;
@@ -99,7 +101,36 @@ function obtenerCarrito() {
 }
 
 function calcularTotal() {
+    const subtotal = ventaActiva.items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+    if (!descuentoActivo) return subtotal;
+    if (descuentoActivo.tipo === "porcentaje") {
+        return Math.max(0, subtotal - subtotal * descuentoActivo.valor / 100);
+    }
+    return Math.max(0, subtotal - descuentoActivo.valor);
+}
+
+function calcularSubtotalSinDescuento() {
     return ventaActiva.items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+}
+
+function aplicarDescuentoCarrito(descuento) {
+    descuentoActivo = descuento;
+    renderCarrito();
+    showToast(`Descuento "${descuento.nombre}" aplicado.`, { type: "success" });
+}
+
+function quitarDescuentoCarrito() {
+    descuentoActivo = null;
+    renderCarrito();
+    showToast("Descuento eliminado de la venta.", { type: "info" });
+}
+
+function limpiarDescuentoCarrito() {
+    descuentoActivo = null;
+}
+
+function obtenerDescuentoActivo() {
+    return descuentoActivo;
 }
 
 async function guardarVentaActiva() {
@@ -158,6 +189,7 @@ async function nuevaVenta() {
         if (!ok) return;
     }
 
+    descuentoActivo = null;
     ventaActiva = { id: generarId(), items: [] };
     renderCarrito();
 }
@@ -177,9 +209,34 @@ function renderCarrito() {
 
     contenedor.querySelectorAll(".pos__item").forEach(el => el.remove());
 
+    const subtotal = calcularSubtotalSinDescuento();
     const total = calcularTotal();
+
     if (totalEl) totalEl.textContent = "$" + total.toLocaleString("es-CO");
     if (btnCobrar) btnCobrar.disabled = ventaActiva.items.length === 0;
+
+    const descuentoRowId = "pos-descuento-row";
+    let descRow = document.getElementById(descuentoRowId);
+    if (descuentoActivo) {
+        const ahorro = subtotal - total;
+        if (!descRow) {
+            descRow = document.createElement("div");
+            descRow.id = descuentoRowId;
+            descRow.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:0.85rem;color:#16a34a;";
+            totalEl?.parentElement?.insertBefore(descRow, totalEl);
+        }
+        descRow.innerHTML = `
+            <span>Descuento: ${descuentoActivo.nombre}</span>
+            <span style="display:flex;align-items:center;gap:6px;">
+                -$${ahorro.toLocaleString("es-CO")}
+                <button onclick="quitarDescuentoCarrito()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:0.8rem;" title="Quitar descuento">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </span>
+        `;
+    } else if (descRow) {
+        descRow.remove();
+    }
 
     if (ventaActiva.items.length === 0) {
         if (emptyMsg) emptyMsg.style.display = "flex";

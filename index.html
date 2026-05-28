@@ -41,6 +41,9 @@
         <div class="sidebar-nav__logo">
             <img src="Logo.png" alt="Logo" class="sidebar-nav__logo-img">
         </div>
+        <button class="sidebar-toggle sidebar-toggle--inside" id="btn-sidebar-hide" type="button" title="Ocultar menu">
+            <i class="fa-solid fa-angles-left"></i>
+        </button>
         <div class="sidebar-nav__links">
             <button class="nav-btn activa" data-vista="venta" title="Nueva Venta">
                 <i class="fa-solid fa-cash-register"></i>
@@ -71,8 +74,14 @@
             <button class="nav-btn" data-vista="categorias" title="Categorías">
                 <i class="fa-solid fa-tags"></i>
             </button>
+            <button class="nav-btn" data-vista="descuentos" title="Descuentos">
+                <i class="fa-solid fa-percent"></i>
+            </button>
         </div>
     </nav>
+    <button class="sidebar-toggle sidebar-toggle--floating" id="btn-sidebar-show" type="button" title="Mostrar menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 
     <main class="main-container">
 
@@ -92,6 +101,26 @@
                         <select id="pos-category-filter" class="filter-select pos__categoria-select">
                             <option value="">Todas las categorías</option>
                         </select>
+                        <div class="pos__quick-actions">
+                            <button class="btn btn--outline btn--sm" type="button" data-pos-quick="producto">
+                                <i class="fa-solid fa-box"></i> Producto
+                            </button>
+                            <button class="btn btn--outline btn--sm" type="button" data-pos-quick="cliente">
+                                <i class="fa-solid fa-user-plus"></i> Cliente
+                            </button>
+                            <button class="btn btn--outline btn--sm" type="button" data-pos-quick="proveedor">
+                                <i class="fa-solid fa-truck"></i> Proveedor
+                            </button>
+                            <button class="btn btn--outline btn--sm" type="button" data-pos-quick="descuento">
+                                <i class="fa-solid fa-tag"></i> Descuento
+                            </button>
+                            <button class="btn btn--outline btn--sm" type="button" data-pos-quick="categoria">
+                                <i class="fa-solid fa-layer-group"></i> Categoria
+                            </button>
+                            <button class="btn btn--outline btn--sm" type="button" data-pos-quick="faltante">
+                                <i class="fa-solid fa-clipboard-list"></i> Faltante
+                            </button>
+                        </div>
                     </div>
                     <div id="pos-category-tiles" class="pos__category-tiles"></div>
                     <div id="pos-edit-paused" class="pos__edit-paused" hidden></div>
@@ -514,6 +543,44 @@
                 </div>
             </div>
         </section>
+        <!-- VISTA: DESCUENTOS -->
+<section id="vista-descuentos" class="vista">
+    <div class="productos__layout">
+        <div class="productos__lista">
+            <div class="productos__lista-header">
+                <h2 class="vista-title">Descuentos</h2>
+                <button class="btn btn--success" id="btn-nuevo-desc">
+                    <i class="fa-solid fa-plus"></i> Nuevo
+                </button>
+            </div>
+            <div id="descuentos-container"></div>
+        </div>
+        <div class="productos__form" id="descuentos-form" style="display:none">
+            <div class="Form__header">
+                <h3 class="productos__form-title" id="desc-form-title">Nuevo Descuento</h3>
+            </div>
+            <div class="form__group">
+                <label>Nombre</label>
+                <input type="text" id="desc-nombre" placeholder="Ej: Descuento estudiante" required>
+            </div>
+            <div class="form__group">
+                <label>Tipo</label>
+                <select id="desc-tipo" class="filter-select">
+                    <option value="porcentaje">Porcentaje (%)</option>
+                    <option value="fijo">Valor fijo ($)</option>
+                </select>
+            </div>
+            <div class="form__group">
+                <label>Valor</label>
+                <input type="number" id="desc-valor" min="0" placeholder="Ej: 10">
+            </div>
+            <div class="form__actions">
+                <button class="btn btn--secondary" id="btn-cancelar-desc">Cancelar</button>
+                <button class="btn btn--success" id="btn-guardar-desc">Guardar</button>
+            </div>
+        </div>
+    </div>
+</section>
 
     </main>
 
@@ -551,6 +618,9 @@
                 <select id="cobro-cliente" class="filter-select">
                     <option value="">Selecciona un cliente</option>
                 </select>
+                <button class="btn btn--outline btn--sm" type="button" data-pos-quick="cliente">
+                    <i class="fa-solid fa-user-plus"></i> Crear cliente
+                </button>
             </div>
             <div class="modal-actions">
                 <button class="btn btn--danger" id="btn-cancelar-cobro-2">Cancelar</button>
@@ -559,8 +629,26 @@
         </div>
     </div>
 
+    <!-- MODAL ACCIONES RAPIDAS POS -->
+    <div id="modal-pos-rapido" class="modal-overlay">
+        <div class="modal-content modal-pos-rapido">
+            <div class="modal-header">
+                <h3 id="pos-rapido-title">Accion rapida</h3>
+                <button class="btn btn--ghost btn--sm" id="pos-rapido-close" type="button">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="pos-rapido-body" class="pos-rapido__body"></div>
+            <div class="modal-actions">
+                <button class="btn btn--secondary" id="pos-rapido-cancel" type="button">Cancelar</button>
+                <button class="btn btn--success" id="pos-rapido-save" type="button">Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="JAVASCRIPT/api.js"></script>
     <script src="JAVASCRIPT/ui.js"></script>
+    <script src="JAVASCRIPT/sidebar.js"></script>
     <script src="JAVASCRIPT/router.js"></script>
     <script src="JAVASCRIPT/carrito.js"></script>
     <script src="JAVASCRIPT/ventas.js"></script>
@@ -569,6 +657,8 @@
     <script src="JAVASCRIPT/compras.js"></script>
     <script src="JAVASCRIPT/faltantes.js"></script>
     <script src="JAVASCRIPT/reportes.js"></script>
-    <script src="JAVASCRIPT/entidades.js"></script> 
+    <script src="JAVASCRIPT/entidades.js"></script>
+    <script src="JAVASCRIPT/descuentos.js"></script>
+    <script src="JAVASCRIPT/pos-rapido.js"></script>
 </body>
 </html>

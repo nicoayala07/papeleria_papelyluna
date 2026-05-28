@@ -21,6 +21,7 @@ function navegarA(nombreVista) {
     if (nombreVista === "compras" && typeof listarCompras === "function") listarCompras();
     if (nombreVista === "faltantes" && typeof renderFaltantes === "function") renderFaltantes();
     if (nombreVista === "reportes" && typeof renderReportes === "function") renderReportes();
+    if (nombreVista === "descuentos" && typeof cargarDescuentos === "function") cargarDescuentos();
 }
 
 function entrarAlPos() {
@@ -28,6 +29,7 @@ function entrarAlPos() {
     if (login) login.classList.add("oculto");
     navegarA("venta");
     document.getElementById("pos-search")?.focus();
+    if (typeof cargarDescuentos === "function") cargarDescuentos();
 }
 
 function mostrarErrorLogin(message) {

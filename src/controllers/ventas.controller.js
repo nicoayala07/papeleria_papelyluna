@@ -36,7 +36,13 @@ function toVentaDto(venta, numero = null) {
     metodoPago: venta.metodoPago,
     pagoCon: Number(venta.pagoCon) || 0,
     clienteId: venta.clienteId || '',
+    descuentoNombre: venta.descuentoNombre || null,
+    descuentoValor: venta.descuentoValor === null || venta.descuentoValor === undefined ? null : Number(venta.descuentoValor),
+    descuentoTipo: venta.descuentoTipo || null,
     estado: venta.estado,
+    corregida: Boolean(venta.corregida),
+    corregidaPor: venta.corregidaPor || null,
+    fechaCorreccion: venta.fechaCorreccion || null,
     createdAt: venta.createdAt,
     updatedAt: venta.updatedAt
   };
@@ -44,8 +50,21 @@ function toVentaDto(venta, numero = null) {
 
 exports.getVentas = async (req, res, next) => {
   try {
+    const { metodoPago, clienteId, estado, desde, hasta } = req.query;
+    const { Op } = require('sequelize');
+
+    const where = { estado: estado || 'completada' };
+
+    if (metodoPago) where.metodoPago = metodoPago;
+    if (clienteId) where.clienteId = clienteId;
+    if (desde || hasta) {
+      const inicio = desde ? new Date(`${desde}T00:00:00`) : new Date('1970-01-01T00:00:00');
+      const fin = hasta ? new Date(`${hasta}T23:59:59.999`) : new Date();
+      where.createdAt = { [Op.between]: [inicio, fin] };
+    }
+
     const ventas = await Venta.findAll({
-      where: { estado: 'completada' },
+      where,
       order: [['createdAt', 'DESC']]
     });
 
@@ -80,16 +99,11 @@ exports.saveVenta = async (req, res, next) => {
       metodoPago: req.body.metodoPago || 'Efectivo',
       pagoCon: Number(req.body.pagoCon) || Number(req.body.total) || 0,
       clienteId: req.body.clienteId || '',
+      descuentoNombre: req.body.descuentoNombre || null,
+      descuentoValor: req.body.descuentoValor === null || req.body.descuentoValor === undefined ? null : Number(req.body.descuentoValor),
+      descuentoTipo: req.body.descuentoTipo || null,
       estado: 'completada'
     });
-    const { Producto } = require('../models');
-    const items = parseJsonList(productos);
-    for (const item of items) {
-        const prod = await Producto.findByPk(item.id);
-      if (prod && prod.seguimientoInventario === 'si') {
-        await prod.update({ stock: prod.stock - item.cantidad });
-      }
-}
 
     res.status(201).json(toVentaDto(venta));
   } catch (error) {

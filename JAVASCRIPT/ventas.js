@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        const descuento = obtenerDescuentoActivo();
         const venta = {
             id: ventaActiva.id,
             fecha: new Date().toLocaleString("es-CO"),
@@ -119,7 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
             total,
             metodoPago: metodo,
             pagoCon: metodo === "Efectivo" ? parseFloat(inputEfectivo.value) : total,
-            clienteId: metodo === "Debe" ? (document.getElementById("cobro-cliente")?.value || "") : ""
+            clienteId: metodo === "Debe" ? (document.getElementById("cobro-cliente")?.value || "") : "",
+            descuentoNombre: descuento ? descuento.nombre : null,
+            descuentoValor: descuento ? descuento.valor : null,
+            descuentoTipo: descuento ? descuento.tipo : null
         };
 
         try {
@@ -132,6 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         cerrarModal();
+        if (typeof limpiarDescuentoCarrito === "function") limpiarDescuentoCarrito();
         ventaActiva = { id: generarId(), items: [] };
         renderCarrito();
         renderVentasGuardadas();
@@ -147,6 +152,10 @@ function mostrarVistaFactura(venta) {
     const cambio = venta.metodoPago === "Efectivo"
         ? (venta.pagoCon - venta.total).toLocaleString("es-CO")
         : null;
+    const subtotal = venta.productos.reduce((acc, p) => {
+        return acc + (Number(p.precio) || 0) * (Number(p.cantidad) || 0);
+    }, 0);
+    const descuentoMonto = Math.max(0, subtotal - venta.total);
 
     contenedor.innerHTML = `
         <div class="ticket-container">
@@ -173,6 +182,15 @@ function mostrarVistaFactura(venta) {
                 </tbody>
             </table>
             <div class="ticket-resumen-caja">
+                ${venta.descuentoNombre ? `
+                <div class="resumen-fila">
+                    <span>Subtotal:</span>
+                    <span>$${subtotal.toLocaleString("es-CO")}</span>
+                </div>
+                <div class="resumen-fila">
+                    <span>Descuento:</span>
+                    <span>-$${descuentoMonto.toLocaleString("es-CO")}</span>
+                </div>` : ""}
                 <div class="resumen-fila total-destacado">
                     <span>TOTAL:</span>
                     <span>$${venta.total.toLocaleString("es-CO")}</span>
