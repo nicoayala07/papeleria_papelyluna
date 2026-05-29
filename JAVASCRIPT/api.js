@@ -17,15 +17,6 @@ let posEditorDrafts = {};
 let posUltimosProductos = [];
 let posUltimosDescuentos = [];
 
-function cargarSesionAuth() {
-    try {
-        return JSON.parse(sessionStorage.getItem(AUTH_STORAGE_KEY) || "null");
-    } catch (error) {
-        sessionStorage.removeItem(AUTH_STORAGE_KEY);
-        return null;
-    }
-}
-
 let authSession = cargarSesionAuth();
 
 function haySesionActiva() {
@@ -54,12 +45,6 @@ function limpiarSesionAuth() {
     localStorage.removeItem(AUTH_STORAGE_KEY);
     authSession = null;
 }
-
-function limpiarSesionAuth() {
-    authSession = null;
-    sessionStorage.removeItem(AUTH_STORAGE_KEY);
-}
-
 async function apiRequest(path, options = {}) {
     const { skipAuth = false, headers = {}, ...fetchOptions } = options;
     const authHeaders = !skipAuth && authSession?.token
