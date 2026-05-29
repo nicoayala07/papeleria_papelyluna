@@ -153,6 +153,83 @@ async function cargarProveedoresEnSelect() {
     }
 }
 
+async function cargarProveedores(seleccionarId = "") {
+    await cargarProveedoresEnSelect();
+    const select = document.getElementById("compra-proveedor");
+    if (select && seleccionarId) select.value = String(seleccionarId);
+}
+
+function asegurarBotonProveedorRapido() {
+    const select = document.getElementById("compra-proveedor");
+    if (!select || document.getElementById("btn-nuevo-proveedor-compra")) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.style.cssText = "display:flex;gap:8px;align-items:center;";
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(select);
+    select.style.flex = "1";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "btn-nuevo-proveedor-compra";
+    btn.className = "btn btn--ghost btn--sm";
+    btn.textContent = "+ Nuevo";
+    btn.addEventListener("click", abrirModalProveedorCompra);
+    wrapper.appendChild(btn);
+}
+
+function abrirModalProveedorCompra() {
+    const modal = document.createElement("div");
+    modal.className = "modal-admin modal--activo";
+    modal.innerHTML = `
+        <div class="modal-admin__content">
+            <h3 style="margin-top:0;color:var(--texto);">Nuevo proveedor</h3>
+            <div class="form__group">
+                <label>Nombre</label>
+                <input type="text" id="compra-prov-nombre" placeholder="Nombre del proveedor" required>
+            </div>
+            <div class="form__group">
+                <label>NIT</label>
+                <input type="text" id="compra-prov-nit" placeholder="NIT o documento">
+            </div>
+            <div class="form__group">
+                <label>Telefono</label>
+                <input type="text" id="compra-prov-telefono" placeholder="Numero de contacto">
+            </div>
+            <div class="form__actions">
+                <button class="btn btn--secondary" id="btn-cancelar-prov-compra" type="button">Cancelar</button>
+                <button class="btn btn--success" id="btn-guardar-prov-compra" type="button">Guardar</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    const cerrar = () => modal.remove();
+    modal.querySelector("#btn-cancelar-prov-compra")?.addEventListener("click", cerrar);
+    modal.querySelector("#btn-guardar-prov-compra")?.addEventListener("click", async () => {
+        const proveedor = {
+            nombre: modal.querySelector("#compra-prov-nombre")?.value.trim(),
+            nit: modal.querySelector("#compra-prov-nit")?.value.trim(),
+            telefono: modal.querySelector("#compra-prov-telefono")?.value.trim()
+        };
+
+        if (!proveedor.nombre) {
+            showToast("El nombre del proveedor es obligatorio.", { type: "warning" });
+            return;
+        }
+
+        try {
+            const creado = await postProveedor(proveedor);
+            await cargarProveedores(creado?.id || creado?.nombre);
+            cerrar();
+            showToast("Proveedor creado correctamente.", { type: "success" });
+        } catch (error) {
+            console.error(error);
+            showToast(error.message || "No se pudo crear el proveedor.", { type: "error" });
+        }
+    });
+}
+
 function abrirFormularioCompra() {
     itemsCompra = [];
     renderItemsCompra();
@@ -160,7 +237,8 @@ function abrirFormularioCompra() {
     const form = document.getElementById("compras-form");
     if (form) form.style.display = "flex";
 
-    cargarProveedoresEnSelect();
+    asegurarBotonProveedorRapido();
+    cargarProveedores();
 
     const selectProv = document.getElementById("compra-proveedor");
     const selectPago = document.getElementById("compra-metodo-pago");

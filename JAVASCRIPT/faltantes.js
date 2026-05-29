@@ -80,6 +80,96 @@ async function eliminarFaltante(id) {
     }
 }
 
+async function cargarCategoriasFaltanteOptions() {
+    try {
+        const categorias = await getCategorias();
+        return (Array.isArray(categorias) ? categorias : []).map(categoria => {
+            const nombre = categoria.nombre || categoria;
+            return `<option value="${nombre}">${nombre}</option>`;
+        }).join("");
+    } catch (error) {
+        console.error("Error cargando categorias:", error);
+        return "";
+    }
+}
+
+async function abrirModalCrearProductoFaltante(id) {
+    const faltante = faltantesCache.find(item => String(item.id) === String(id));
+    if (!faltante) return;
+
+    const categoriasOptions = await cargarCategoriasFaltanteOptions();
+    const modal = document.createElement("div");
+    modal.className = "modal-admin modal--activo";
+    modal.innerHTML = `
+        <div class="modal-admin__content">
+            <h3 style="margin-top:0;color:var(--texto);">Crear producto</h3>
+            <div class="form__group">
+                <label>Nombre</label>
+                <input type="text" id="faltante-prod-nombre" value="${faltante.nombreProducto || ""}" placeholder="Nombre del producto">
+            </div>
+            <div class="form__group form__group--row">
+                <div>
+                    <label>Precio</label>
+                    <input type="number" id="faltante-prod-precio" min="1" placeholder="0" required>
+                </div>
+                <div>
+                    <label>Costo</label>
+                    <input type="number" id="faltante-prod-costo" min="0" placeholder="0">
+                </div>
+            </div>
+            <div class="form__group">
+                <label>Categoria</label>
+                <select id="faltante-prod-categoria" class="filter-select">
+                    <option value="">Selecciona una categoria</option>
+                    ${categoriasOptions}
+                </select>
+            </div>
+            <div class="form__group">
+                <label>Seguimiento de inventario</label>
+                <select id="faltante-prod-seguimiento" class="filter-select">
+                    <option value="si">Si</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="form__actions">
+                <button class="btn btn--secondary" id="btn-cancelar-prod-faltante" type="button">Cancelar</button>
+                <button class="btn btn--success" id="btn-guardar-prod-faltante" type="button">Guardar</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    const cerrar = () => modal.remove();
+    modal.querySelector("#btn-cancelar-prod-faltante")?.addEventListener("click", cerrar);
+    modal.querySelector("#btn-guardar-prod-faltante")?.addEventListener("click", async () => {
+        const producto = {
+            nombre: modal.querySelector("#faltante-prod-nombre")?.value.trim(),
+            precio: Number(modal.querySelector("#faltante-prod-precio")?.value) || 0,
+            costo: Number(modal.querySelector("#faltante-prod-costo")?.value) || 0,
+            categoria: modal.querySelector("#faltante-prod-categoria")?.value || "",
+            seguimientoInventario: modal.querySelector("#faltante-prod-seguimiento")?.value || "si",
+            stock: 0
+        };
+
+        if (!producto.nombre || producto.precio <= 0) {
+            showToast("Nombre y precio mayor a 0 son obligatorios.", { type: "warning" });
+            return;
+        }
+
+        try {
+            await postProducto(producto);
+            showToast("Producto creado correctamente.", { type: "success" });
+            await patchFaltanteEstado(faltante.id, "resuelto");
+            cerrar();
+            await cargarProductosDesdeAPI();
+            await renderFaltantes();
+        } catch (error) {
+            console.error(error);
+            showToast(error.message || "No se pudo crear el producto.", { type: "error" });
+        }
+    });
+}
+
 function renderResumenFaltantes() {
     const resumen = document.getElementById("faltantes-resumen");
     if (!resumen) return;
@@ -127,6 +217,7 @@ async function renderFaltantes() {
     faltantesCache.forEach(faltante => {
         const card = document.createElement("div");
         card.className = "faltante-card";
+        const puedeCrearProducto = faltante.tipo === "no_registrado" && faltante.estado === "pendiente";
         card.innerHTML = `
             <div class="faltante-card__info">
                 <span class="faltante-card__tipo">${faltante.tipo === "agotado" ? "Agotado" : "No registrado"}</span>
@@ -140,6 +231,11 @@ async function renderFaltantes() {
                     <option value="resuelto" ${faltante.estado === "resuelto" ? "selected" : ""}>Resuelto</option>
                     <option value="descartado" ${faltante.estado === "descartado" ? "selected" : ""}>Descartado</option>
                 </select>
+                ${puedeCrearProducto ? `
+                    <button class="btn btn--ghost btn--sm btn-crear-producto-faltante" data-id="${faltante.id}" type="button">
+                        + Crear producto
+                    </button>
+                ` : ""}
                 <button class="btn btn--danger btn--sm btn-eliminar-faltante" data-id="${faltante.id}" title="Eliminar">
                     <i class="fa-solid fa-trash"></i>
                 </button>
@@ -153,6 +249,9 @@ async function renderFaltantes() {
     });
     contenedor.querySelectorAll(".btn-eliminar-faltante").forEach(btn => {
         btn.addEventListener("click", () => eliminarFaltante(btn.dataset.id));
+    });
+    contenedor.querySelectorAll(".btn-crear-producto-faltante").forEach(btn => {
+        btn.addEventListener("click", () => abrirModalCrearProductoFaltante(btn.dataset.id));
     });
 }
 

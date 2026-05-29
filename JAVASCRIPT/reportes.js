@@ -71,6 +71,17 @@ async function renderReportes() {
                     ${renderListaSimple(data.ventas.productosTop, "Sin ventas en el rango")}
                 </section>
                 <section class="reporte-panel">
+                    <h3>Productos mas solicitados (faltantes)</h3>
+                    ${data.faltantes.agrupados?.length
+                        ? data.faltantes.agrupados.slice(0, 10).map(f => `
+                            <div class="reporte-row">
+                                <span>${f.nombre}</span>
+                                <strong>${f.veces} ${f.veces === 1 ? "vez" : "veces"}</strong>
+                            </div>`).join("")
+                        : "<p class='reportes-empty'>Sin faltantes registrados</p>"
+                    }
+                </section>
+                <section class="reporte-panel">
                     <h3>Bajo stock</h3>
                     ${renderListaSimple(data.inventario.bajoStock, "Sin productos bajo el minimo")}
                 </section>

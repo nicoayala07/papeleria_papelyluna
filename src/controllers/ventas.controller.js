@@ -64,7 +64,9 @@ exports.getVentas = async (req, res, next) => {
     const { metodoPago, clienteId, estado, desde, hasta } = req.query;
     const { Op } = require('sequelize');
 
-    const where = { estado: estado || 'completada' };
+    const where = estado
+      ? { estado }
+      : { estado: { [Op.ne]: 'pendiente' } };
 
     if (metodoPago) where.metodoPago = metodoPago;
     if (clienteId) where.clienteId = clienteId;

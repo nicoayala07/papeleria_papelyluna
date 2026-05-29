@@ -284,6 +284,14 @@ async function postVenta(venta) {
     });
 }
 
+async function postProducto(producto) {
+    const { id, createdAt, updatedAt, ...datos } = producto;
+    return apiRequest("/productos", {
+        method: "POST",
+        body: JSON.stringify(datos)
+    });
+}
+
 async function deleteVentaApi(id) {
     return apiRequest(`/ventas/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
@@ -1013,6 +1021,8 @@ document.addEventListener("DOMContentLoaded", () => {
 async function getVentasConFiltros(filtros) {
     const params = new URLSearchParams();
     if (filtros.metodoPago) params.append("metodoPago", filtros.metodoPago);
+    if (filtros.clienteId) params.append("clienteId", filtros.clienteId);
+    if (filtros.estado) params.append("estado", filtros.estado);
     if (filtros.desde) params.append("desde", filtros.desde);
     if (filtros.hasta) params.append("hasta", filtros.hasta);
 

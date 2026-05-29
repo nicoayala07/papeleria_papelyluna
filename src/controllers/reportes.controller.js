@@ -57,6 +57,27 @@ function sumarProductosVendidos(ventas) {
     .slice(0, 10);
 }
 
+function agruparFaltantes(faltantes) {
+  const mapa = new Map();
+  faltantes.forEach(f => {
+    const nombre = f.nombreProducto || f.nombre || 'Producto sin nombre';
+    const clave = nombre.trim().toLowerCase();
+    const actual = mapa.get(clave) || {
+      nombre,
+      veces: 0,
+      ultimaFecha: f.createdAt,
+      estado: f.estado
+    };
+    actual.veces += 1;
+    if (new Date(f.createdAt) > new Date(actual.ultimaFecha)) {
+      actual.ultimaFecha = f.createdAt;
+      actual.estado = f.estado;
+    }
+    mapa.set(clave, actual);
+  });
+  return [...mapa.values()].sort((a, b) => b.veces - a.veces);
+}
+
 exports.getResumen = async (req, res, next) => {
   try {
     const { desde, hasta } = getRangoFechas(req.query);
@@ -110,7 +131,8 @@ exports.getResumen = async (req, res, next) => {
         pendientes: faltantes.filter(f => f.estado === 'pendiente').length,
         resueltos: faltantes.filter(f => f.estado === 'resuelto').length,
         descartados: faltantes.filter(f => f.estado === 'descartado').length,
-        recientes: faltantes.slice(0, 8)
+        recientes: faltantes.slice(0, 8),
+        agrupados: agruparFaltantes(faltantes)
       },
       inventario: {
         bajoStock: productosBajoStock.map(producto => ({

@@ -1,5 +1,18 @@
 // //JAVASCRIPT/historial.js 
 let historialVentas = [];
+let historialClientes = [];
+
+async function cargarClientesHistorial() {
+    if (historialClientes.length) return historialClientes;
+    try {
+        const clientes = await getClientes();
+        historialClientes = Array.isArray(clientes) ? clientes : [];
+    } catch (error) {
+        console.error("Error cargando clientes para historial:", error);
+        historialClientes = [];
+    }
+    return historialClientes;
+}
 
 function normalizarVenta(venta) {
     const productos = Array.isArray(venta.productos)
@@ -42,9 +55,12 @@ async function renderHistorial() {
     if (!contenedor) return;
 
     contenedor.innerHTML = "<p class='loading'>Cargando ventas...</p>";
+    await cargarClientesHistorial();
 
     const filtros = {
         metodoPago: document.getElementById("hist-filtro-metodo")?.value || "",
+        clienteId: document.getElementById("hist-filtro-cliente")?.value || "",
+        estado: document.getElementById("hist-filtro-estado")?.value || "",
         desde: document.getElementById("hist-filtro-desde")?.value || "",
         hasta: document.getElementById("hist-filtro-hasta")?.value || ""
     };
@@ -72,6 +88,19 @@ async function renderHistorial() {
             <option value="Nequi" ${filtros.metodoPago === "Nequi" ? "selected" : ""}>Nequi</option>
             <option value="Debe" ${filtros.metodoPago === "Debe" ? "selected" : ""}>Debe</option>
         </select>
+        <select id="hist-filtro-cliente" class="filter-select" style="flex:1;min-width:140px;">
+            <option value="">Todos los clientes</option>
+            ${historialClientes.map(cliente => `
+                <option value="${cliente.id}" ${String(filtros.clienteId) === String(cliente.id) ? "selected" : ""}>${cliente.nombre}</option>
+            `).join("")}
+        </select>
+        <select id="hist-filtro-estado" class="filter-select" style="flex:1;min-width:130px;">
+            <option value="">Todas</option>
+            <option value="completada" ${filtros.estado === "completada" ? "selected" : ""}>Completada</option>
+            <option value="corregida" ${filtros.estado === "corregida" ? "selected" : ""}>Corregida</option>
+            <option value="reembolsada" ${filtros.estado === "reembolsada" ? "selected" : ""}>Reembolsada</option>
+            <option value="anulada" ${filtros.estado === "anulada" ? "selected" : ""}>Anulada</option>
+        </select>
         <button class="btn btn--success btn--sm" id="btn-aplicar-filtros-hist">
             <i class="fa-solid fa-magnifying-glass"></i> Filtrar
         </button>
@@ -86,6 +115,8 @@ async function renderHistorial() {
         document.getElementById("hist-filtro-desde").value = "";
         document.getElementById("hist-filtro-hasta").value = "";
         document.getElementById("hist-filtro-metodo").value = "";
+        document.getElementById("hist-filtro-cliente").value = "";
+        document.getElementById("hist-filtro-estado").value = "";
         renderHistorial();
     });
 
