@@ -1,3 +1,4 @@
+// //JAVASCRIPT/historial.js 
 let historialVentas = [];
 
 function normalizarVenta(venta) {
@@ -20,7 +21,8 @@ function normalizarVenta(venta) {
         hora: venta.hora || "",
         descuentoNombre: venta.descuentoNombre || null,
         descuentoValor: Number(venta.descuentoValor) || 0,
-        descuentoTipo: venta.descuentoTipo || null
+        descuentoTipo: venta.descuentoTipo || null,
+        estado: venta.estado || "activa" // Soporte para estados de Persona 3
     };
 }
 
@@ -119,10 +121,14 @@ async function renderHistorial() {
             ? `<span style="font-size:0.7rem;color:#d97706;margin-left:4px;"><i class="fa-solid fa-pen"></i> Corregida</span>`
             : "";
 
+        // Renderizado del badge de estado dinámico (Activa, Corregida, Reembolsada)
+        const estadoVenta = venta.estado ? venta.estado.toLowerCase() : "activa";
+
         card.innerHTML = `
             <div class="historial__card-left">
                 <span class="historial__numero">#${String(venta.numero || "").padStart(3, "0")}</span>
                 <div class="historial__info">
+                    <span class="factura__estado-badge badge--${estadoVenta}">${estadoVenta}</span>
                     <p class="historial__fecha">${fechaDisplay} ${corregidaBadge}</p>
                     <p class="historial__resumen">${venta.productos.length} producto${venta.productos.length !== 1 ? "s" : ""}</p>
                 </div>
@@ -134,7 +140,13 @@ async function renderHistorial() {
                     <button class="btn btn--outline btn--sm btn-ver-factura" data-id="${venta.id}" title="Ver comprobante">
                         <i class="fa-solid fa-receipt"></i>
                     </button>
-                    <button class="btn btn--danger btn--sm btn-eliminar-venta" data-id="${venta.id}" title="Eliminar">
+                    <button class="btn btn--outline btn--sm btn-corregir-venta" data-id="${venta.id}" title="Corregir cantidades o precios">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn--outline btn--sm btn-reembolsar-venta" data-id="${venta.id}" title="Procesar reembolso / devolución">
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                    </button>
+                    <button class="btn btn--danger btn--sm btn-eliminar-venta" data-id="${venta.id}" title="Eliminar del sistema">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
@@ -143,6 +155,7 @@ async function renderHistorial() {
         contenedor.appendChild(card);
     });
 
+    // Escuchadores de eventos para acciones estándar
     contenedor.querySelectorAll(".btn-ver-factura").forEach(btn => {
         btn.addEventListener("click", () => renderFacturaDesdeHistorial(btn.dataset.id));
     });
@@ -155,6 +168,15 @@ async function renderHistorial() {
             });
             if (ok) await eliminarVenta(btn.dataset.id);
         });
+    });
+
+    // ASIGNACIÓN DE CLICS PARA TUS MODALES ADMINISTRATIVOS (Persona 3)
+    contenedor.querySelectorAll(".btn-corregir-venta").forEach(btn => {
+        btn.addEventListener("click", () => abrirModalCorregir(btn.dataset.id));
+    });
+
+    contenedor.querySelectorAll(".btn-reembolsar-venta").forEach(btn => {
+        btn.addEventListener("click", () => abrirModalReembolso(btn.dataset.id));
     });
 }
 
@@ -223,4 +245,223 @@ function renderFacturaDesdeHistorial(ventaId) {
         </div>
     `;
     navegarA("factura");
+}
+
+
+// ==========================================================================
+// OPERACIONES INTERACTIVAS DE LOS MODALES ADMINISTRATIVOS (Persona 3)
+// ==========================================================================
+
+/**
+ * Abre el modal para corregir precios o cantidades de una venta seleccionada
+ */
+function abrirModalCorregir(ventaId) {
+    const venta = historialVentas.find(v => String(v.id) === String(ventaId));
+    if (!venta) return;
+
+    // Crear el overlay del modal dinámicamente
+    const modal = document.createElement("div");
+    modal.className = "modal-admin modal--activo";
+    modal.id = "modal-corregir-dinamico";
+
+    modal.innerHTML = `
+        <div class="modal-admin__content">
+            <h3 style="margin-top:0; color:var(--texto); font-family:'Playfair Display';">Corregir Venta #${String(venta.numero || "").padStart(3, "0")}</h3>
+            <p style="font-size:0.85rem; color:var(--texto-suave); margin-top:-8px;">Modifica los campos necesarios. Se recalcularán los totales automáticamente.</p>
+            
+            <div style="max-height: 250px; overflow-y: auto;">
+                <table class="modal-admin__table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio Unitario</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${venta.productos.map((prod, index) => `
+                            <tr class="fila-producto-modificar" data-index="${index}">
+                                <td><span style="font-weight:500;">${prod.nombre}</span></td>
+                                <td>
+                                    <input type="number" class="input-admin-sm input-corr-precio" 
+                                           value="${prod.precio}" style="width:90px;" min="0">
+                                </td>
+                                <td>
+                                    <input type="number" class="input-admin-sm input-corr-cantidad" 
+                                           value="${prod.cantidad}" style="width:70px;" min="1">
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display:flex; justify-content: flex-end; gap:8px; margin-top:8px;">
+                <button class="btn btn--ghost btn--sm" id="btn-cerrar-corr">Cancelar</button>
+                <button class="btn btn--success btn--sm" id="btn-guardar-corr">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Corrección
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Eventos de cierre
+    const cerrarModal = () => modal.remove();
+    document.getElementById("btn-cerrar-corr").addEventListener("click", cerrarModal);
+
+    // Guardar cambios procesados
+    document.getElementById("btn-guardar-corr").addEventListener("click", async () => {
+        const filas = modal.querySelectorAll(".fila-producto-modificar");
+        let nuevoTotal = 0;
+        const productosActualizados = [];
+
+        filas.forEach(filas => {
+            const idx = filas.dataset.index;
+            const precioInput = Number(filas.querySelector(".input-corr-precio").value) || 0;
+            const cantInput = Number(filas.querySelector(".input-corr-cantidad").value) || 0;
+
+            nuevoTotal += (precioInput * cantInput);
+            productosActualizados.push({
+                ...venta.productos[idx],
+                precio: precioInput,
+                cantidad: cantInput
+            });
+        });
+
+        // Aplicar descuento proporcional si existía originalmente
+        if (venta.descuentoValor && venta.descuentoTipo === "fijo") {
+            nuevoTotal = Math.max(0, nuevoTotal - venta.descuentoValor);
+        }
+
+        const payload = {
+            productos: productosActualizados,
+            total: nuevoTotal,
+            corregida: true,
+            estado: "corregida"
+        };
+
+        try {
+            await corregirVentaApi(venta.id, payload);
+            showToast("Venta corregida con éxito. Stocks actualizados.", { type: "success" });
+            cerrarModal();
+            await renderHistorial(); // Refrescar vista completa
+        } catch (error) {
+            console.error(error);
+            showToast("Error al procesar la corrección en el servidor.", { type: "error" });
+        }
+    });
+}
+
+/**
+ * Abre el modal para procesar devoluciones o reembolsos reingresando productos al stock
+ */
+function abrirModalReembolso(ventaId) {
+    const venta = historialVentas.find(v => String(v.id) === String(ventaId));
+    if (!venta) return;
+
+    if (venta.estado === "reembolsada") {
+        showToast("Esta venta ya ha sido reembolsada en su totalidad.", { type: "warning" });
+        return;
+    }
+
+    const modal = document.createElement("div");
+    modal.className = "modal-admin modal--activo";
+    modal.id = "modal-reembolso-dinamico";
+
+    modal.innerHTML = `
+        <div class="modal-admin__content">
+            <h3 style="margin-top:0; color:var(--texto); font-family:'Playfair Display';">Procesar Reembolso #${String(venta.numero || "").padStart(3, "0")}</h3>
+            <p style="font-size:0.85rem; color:var(--texto-suave); margin-top:-8px;">Establece las unidades que devuelve el cliente. Estas regresarán al inventario.</p>
+            
+            <div style="max-height: 250px; overflow-y: auto;">
+                <table class="modal-admin__table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Comprados</th>
+                            <th>A Devolver</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${venta.productos.map((prod, index) => `
+                            <tr class="fila-producto-reembolso" data-index="${index}">
+                                <td><span style="font-weight:500;">${prod.nombre}</span></td>
+                                <td style="text-align:center;"><span class="badge" style="background:#EFEFEF; padding:2px 6px; border-radius:4px;">${prod.cantidad} u.</span></td>
+                                <td>
+                                    <input type="number" class="input-admin-sm input-reemb-cant" 
+                                           value="0" min="0" max="${prod.cantidad}" style="width:70px;">
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display:flex; justify-content: flex-end; gap:8px; margin-top:8px;">
+                <button class="btn btn--ghost btn--sm" id="btn-cerrar-reemb">Cancelar</button>
+                <button class="btn btn--danger btn--sm" id="btn-ejecutar-reemb">
+                    <i class="fa-solid fa-arrow-rotate-left"></i> Aplicar Devolución
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const cerrarModal = () => modal.remove();
+    document.getElementById("btn-cerrar-reemb").addEventListener("click", cerrarModal);
+
+    document.getElementById("btn-ejecutar-reemb").addEventListener("click", async () => {
+        const filas = modal.querySelectorAll(".fila-producto-reembolso");
+        const devoluciones = [];
+        let totalItemsDevueltos = 0;
+        let totalItemsOriginales = 0;
+
+        filas.forEach(filas => {
+            const idx = filas.dataset.index;
+            const cantDevolver = Number(filas.querySelector(".input-reemb-cant").value) || 0;
+            const prodOriginal = venta.productos[idx];
+
+            totalItemsOriginales += prodOriginal.cantidad;
+            totalItemsDevueltos += cantDevolver;
+
+            if (cantDevolver > 0) {
+                devoluciones.push({
+                    id: prodOriginal.id,
+                    codigo: prodOriginal.codigo,
+                    nombre: prodOriginal.nombre,
+                    cantidadDevuelta: cantDevolver
+                });
+            }
+        });
+
+        if (devoluciones.length === 0) {
+            showToast("Debes ingresar al menos una unidad para procesar la devolución.", { type: "warning" });
+            return;
+        }
+
+        // Si se devuelven todos los productos vendidos, el estado pasa a ser reembolsada
+        const determinarEstado = (totalItemsDevueltos === totalItemsOriginales) ? "reembolsada" : "corregida";
+
+        const payload = {
+            devoluciones,
+            estado: determinarEstado,
+            trazabilidad: {
+                fecha: new Date().toISOString().split('T')[0],
+                motivo: "Devolución de existencias por caja POS"
+            }
+        };
+
+        try {
+            await reembolsarVentaApi(venta.id, payload);
+            showToast("Reembolso ejecutado. El stock ha sido reingresado a MySQL.", { type: "success" });
+            cerrarModal();
+            await renderHistorial();
+        } catch (error) {
+            console.error(error);
+            showToast("No se pudo procesar el reembolso en el sistema.", { type: "error" });
+        }
+    });
 }

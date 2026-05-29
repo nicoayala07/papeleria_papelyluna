@@ -975,3 +975,72 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("pos-editor-discard")?.addEventListener("click", descartarEditorProductoPos);
     document.getElementById("pos-editor-save")?.addEventListener("click", guardarEditorProductoPos);
 });
+
+// ==========================================================================
+// OPERACIONES ADMINISTRATIVAS AVANZADAS (Persona 3)
+// Enlaces al Backend de correcciones y reembolsos de ventas
+// ==========================================================================
+
+/**
+ * Obtiene el historial de ventas aplicando filtros de fecha y método de pago
+ */
+async function getVentasConFiltros(filtros) {
+    const params = new URLSearchParams();
+    if (filtros.metodoPago) params.append("metodoPago", filtros.metodoPago);
+    if (filtros.desde) params.append("desde", filtros.desde);
+    if (filtros.hasta) params.append("hasta", filtros.hasta);
+
+    try {
+        // Llama al controlador de listado en tu backend Node.js
+        return await apiRequest(`/ventas?${params.toString()}`);
+    } catch (error) {
+        console.error("Error en getVentasConFiltros:", error);
+        throw error;
+    }
+}
+
+/**
+ * Elimina físicamente una venta del historial de la base de datos MySQL
+ */
+async function deleteVentaApi(ventaId) {
+    try {
+        return await apiRequest(`/ventas/${ventaId}`, {
+            method: "DELETE"
+        });
+    } catch (error) {
+        console.error("Error en deleteVentaApi:", error);
+        throw error;
+    }
+}
+
+/**
+ * Registra una corrección completa sobre una venta modificando sus productos o totales
+ */
+async function corregirVentaApi(ventaId, datosCorregidos) {
+    try {
+        // Petición PUT que pasa por tus Middlewares y Controllers en Express
+        return await apiRequest(`/ventas/${ventaId}/corregir`, {
+            method: "PUT",
+            body: JSON.stringify(datosCorregidos)
+        });
+    } catch (error) {
+        console.error("Error en corregirVentaApi:", error);
+        throw error;
+    }
+}
+
+/**
+ * Procesa un reembolso (Devolución) total o parcial, reintegrando existencias al stock de inventario
+ */
+async function reembolsarVentaApi(ventaId, datosReembolso) {
+    try {
+        // Envía el payload al endpoint POST encargado de la lógica y la trazabilidad
+        return await apiRequest(`/ventas/${ventaId}/reembolsar`, {
+            method: "POST",
+            body: JSON.stringify(datosReembolso)
+        });
+    } catch (error) {
+        console.error("Error en reembolsarVentaApi:", error);
+        throw error;
+    }
+}

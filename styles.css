@@ -4470,3 +4470,108 @@ body.sidebar-oculta .sidebar-toggle--floating {
 .pos__product-add {
     margin-top: auto;
 }
+
+/* ============================================================
+   ESTILOS ADICIONALES - GESTIÓN AVANZADA DE HISTORIAL (Persona 3)
+============================================================ */
+
+/* Badges informativos de estados de venta */
+.factura__estado-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 6px;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    width: fit-content;
+}
+
+.badge--activa {
+    background-color: var(--verde-suave);
+    color: var(--verde);
+    border: 1px solid rgba(46, 125, 82, 0.2);
+}
+
+.badge--corregida {
+    background-color: #FEF3C7; /* Amarillo suave */
+    color: #D97706; /* Ámbar oscuro */
+    border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.badge--reembolsada {
+    background-color: #F3F4F6; /* Gris neutro */
+    color: #4B5563; /* Gris oscuro */
+    border: 1px solid rgba(75, 85, 99, 0.2);
+}
+
+/* Modales Administrativos */
+.modal-admin {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(42, 34, 21, 0.5); /* Desenfoque con color de fondo-sidebar */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.modal-admin.modal--activo {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-admin__content {
+    background: var(--fondo-card);
+    border: 1px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    width: 90%;
+    max-width: 550px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.modal-admin__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin: 0.5rem 0;
+}
+
+.modal-admin__table th {
+    text-align: left;
+    padding: 0.5rem;
+    background: var(--fondo-2);
+    color: var(--texto);
+    font-weight: 500;
+}
+
+.modal-admin__table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--borde);
+    vertical-align: middle;
+}
+
+.input-admin-sm {
+    width: 70px;
+    padding: 0.3rem;
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    text-align: center;
+    outline: none;
+}
+
+.input-admin-sm:focus {
+    border-color: var(--dorado);
+}
