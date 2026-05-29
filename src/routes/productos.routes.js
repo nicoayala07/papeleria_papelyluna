@@ -6,6 +6,7 @@ const { createRules, updateRules, handleValidationErrors } = require('../validat
 
 // GET - listar productos
 router.get('/', prodCtrl.getProductos);
+router.get('/:id/proveedores', prodCtrl.getProveedoresByProducto);
 
 // POST - crear producto (con validación antes del controlador)
 router.post('/', createRules, handleValidationErrors, prodCtrl.saveProducto);

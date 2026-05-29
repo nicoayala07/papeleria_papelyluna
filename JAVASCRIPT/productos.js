@@ -18,6 +18,39 @@ function cerrarFormProducto() {
     if (form) form.style.display = "none";
 }
 
+function renderProveedoresProducto(proveedores = []) {
+    const box = document.getElementById("prod-proveedores-box");
+    const lista = document.getElementById("prod-proveedores-lista");
+    if (!box || !lista) return;
+
+    box.style.display = "block";
+    if (!proveedores.length) {
+        lista.innerHTML = "Ninguno registrado";
+        return;
+    }
+
+    lista.innerHTML = proveedores.map(proveedor => `
+        <div class="proveedores-producto-item">
+            <strong>${proveedor.nombre || "Sin nombre"}</strong>
+            <span>${proveedor.nit ? "NIT: " + proveedor.nit : "Sin NIT"}</span>
+        </div>
+    `).join("");
+}
+
+async function cargarProveedoresProducto(id) {
+    renderProveedoresProducto([]);
+    const lista = document.getElementById("prod-proveedores-lista");
+    if (lista) lista.textContent = "Cargando proveedores...";
+
+    try {
+        const proveedores = await getProveedoresProducto(id);
+        renderProveedoresProducto(proveedores);
+    } catch (error) {
+        console.error(error);
+        if (lista) lista.textContent = "No se pudieron cargar los proveedores.";
+    }
+}
+
 function getProductoEditandoId() {
     return productoEditandoId;
 }
@@ -49,6 +82,9 @@ function limpiarFormProducto() {
     if (categoria) categoria.value = "";
     if (seguimiento) seguimiento.value = "si";
     if (titulo) titulo.textContent = "Nuevo Producto";
+    document.getElementById("prod-proveedores-box")?.style.setProperty("display", "none");
+    const proveedoresLista = document.getElementById("prod-proveedores-lista");
+    if (proveedoresLista) proveedoresLista.textContent = "Ninguno registrado";
 
     cerrarFormProducto();
 }
@@ -75,6 +111,7 @@ function editarProducto(id) {
     if (titulo) titulo.textContent = "Editar Producto";
 
     abrirFormProducto();
+    cargarProveedoresProducto(producto.id);
 }
 
 async function eliminarProducto(id) {

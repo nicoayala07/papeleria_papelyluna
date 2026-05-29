@@ -195,6 +195,32 @@ async function putCliente(id, cliente) {
     });
 }
 
+async function getSaldoCliente(id) {
+    return apiRequest(`/clientes/${encodeURIComponent(id)}/saldo`);
+}
+
+async function postAbonoCliente(id, monto) {
+    return apiRequest(`/clientes/${encodeURIComponent(id)}/abonar`, {
+        method: "POST",
+        body: JSON.stringify({ monto })
+    });
+}
+
+async function getProveedoresProducto(id) {
+    return apiRequest(`/productos/${encodeURIComponent(id)}/proveedores`);
+}
+
+async function getConfiguracionNegocio() {
+    return apiRequest("/configuracion");
+}
+
+async function putConfiguracionNegocio(configuracion) {
+    return apiRequest("/configuracion", {
+        method: "PUT",
+        body: JSON.stringify(configuracion)
+    });
+}
+
 async function getProveedores() {
     return apiRequest("/proveedores");
 }

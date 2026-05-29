@@ -1,4 +1,4 @@
-const { Venta } = require('../models');
+const { Cliente, Venta } = require('../models');
 
 function parseJsonList(value) {
   if (Array.isArray(value)) return value;
@@ -48,6 +48,17 @@ function toVentaDto(venta, numero = null) {
   };
 }
 
+async function ajustarDebeCliente(clienteId, monto) {
+  const valor = Number(monto) || 0;
+  if (!clienteId || !valor) return;
+
+  const cliente = await Cliente.findByPk(clienteId);
+  if (!cliente) return;
+
+  const debeActual = Number(cliente.debe) || 0;
+  await cliente.update({ debe: Math.max(0, debeActual + valor) });
+}
+
 exports.getVentas = async (req, res, next) => {
   try {
     const { metodoPago, clienteId, estado, desde, hasta } = req.query;
@@ -89,13 +100,14 @@ exports.saveVenta = async (req, res, next) => {
     const fechaHora = splitFechaHora(req.body.fecha);
     const id = req.body.id || `V-${Date.now().toString().slice(-6)}`;
     const productos = req.body.productos || req.body.productosJson || [];
+    const total = Number(req.body.total) || 0;
 
     const venta = await Venta.create({
       id,
       fecha: req.body.fechaSolo || fechaHora.fecha,
       hora: req.body.hora || fechaHora.hora,
       productosJson: stringifyList(productos),
-      total: Number(req.body.total) || 0,
+      total,
       metodoPago: req.body.metodoPago || 'Efectivo',
       pagoCon: Number(req.body.pagoCon) || Number(req.body.total) || 0,
       clienteId: req.body.clienteId || '',
@@ -104,6 +116,10 @@ exports.saveVenta = async (req, res, next) => {
       descuentoTipo: req.body.descuentoTipo || null,
       estado: 'completada'
     });
+
+    if (venta.metodoPago === 'Debe' && venta.clienteId) {
+      await ajustarDebeCliente(venta.clienteId, total);
+    }
 
     res.status(201).json(toVentaDto(venta));
   } catch (error) {
@@ -123,6 +139,9 @@ exports.deleteVenta = async (req, res, next) => {
         await prod.update({ stock: prod.stock + item.cantidad });
   }
 }
+    if (venta.metodoPago === 'Debe' && venta.clienteId) {
+      await ajustarDebeCliente(venta.clienteId, -Number(venta.total));
+    }
     await venta.destroy();
     res.json({ mensaje: `Venta ${req.params.id} eliminada` });
   } catch (error) {
@@ -190,6 +209,12 @@ exports.corregirVenta = async (req, res, next) => {
     const { Producto } = require('../models');
     const productosAnteriores = parseJsonList(venta.productosJson);
     const productosNuevos     = req.body.productos || [];
+    const totalAnterior = Number(venta.total) || 0;
+    const metodoAnterior = venta.metodoPago;
+    const clienteAnteriorId = venta.clienteId;
+    const totalNuevo = Number(req.body.total) || 0;
+    const metodoNuevo = req.body.metodoPago || venta.metodoPago;
+    const clienteNuevoId = req.body.clienteId === undefined ? venta.clienteId : req.body.clienteId;
 
     // Restaurar stock de productos anteriores
     for (const item of productosAnteriores) {
@@ -209,13 +234,20 @@ exports.corregirVenta = async (req, res, next) => {
 
     await venta.update({
       productosJson:   JSON.stringify(productosNuevos),
-      total:           req.body.total,
-      metodoPago:      req.body.metodoPago      || venta.metodoPago,
-      clienteId:       req.body.clienteId       || venta.clienteId,
+      total:           totalNuevo,
+      metodoPago:      metodoNuevo,
+      clienteId:       clienteNuevoId || '',
       corregida:       true,
       corregidaPor:    req.body.corregidaPor    || 'usuario',
       fechaCorreccion: new Date()
     });
+
+    if (metodoAnterior === 'Debe' && clienteAnteriorId) {
+      await ajustarDebeCliente(clienteAnteriorId, -totalAnterior);
+    }
+    if (metodoNuevo === 'Debe' && clienteNuevoId) {
+      await ajustarDebeCliente(clienteNuevoId, totalNuevo);
+    }
 
     res.json(toVentaDto(venta));
   } catch (error) { next(error); }
@@ -233,6 +265,7 @@ exports.reembolsarVenta = async (req, res, next) => {
     const productosOriginales = parseJsonList(venta.productosJson);
     let totalOriginal = 0;
     let totalDevuelto = 0;
+    let montoReembolsado = 0;
 
     productosOriginales.forEach(p => totalOriginal += p.cantidad);
 
@@ -245,13 +278,23 @@ exports.reembolsarVenta = async (req, res, next) => {
         }
       }
       totalDevuelto += item.cantidad;
+
+      const prodOriginal = productosOriginales.find(p => String(p.id) === String(item.id));
+      if (prodOriginal) {
+        montoReembolsado += (Number(prodOriginal.precio) || 0) * (Number(item.cantidad) || 0);
+      }
     }
 
     // Determinar estado según si fue total o parcial
     const nuevoEstado = totalDevuelto >= totalOriginal ? 'reembolsada' : 'corregida';
+    const nuevoTotal = Math.max(0, (Number(venta.total) || 0) - montoReembolsado);
 
-    await venta.update({ estado: nuevoEstado });
+    await venta.update({ estado: nuevoEstado, total: nuevoTotal });
 
-    res.json({ mensaje: 'Reembolso registrado', venta: toVentaDto(venta) });
+    if (venta.metodoPago === 'Debe' && venta.clienteId && montoReembolsado > 0) {
+      await ajustarDebeCliente(venta.clienteId, -montoReembolsado);
+    }
+
+    res.json({ mensaje: 'Reembolso registrado', montoReembolsado, venta: toVentaDto(venta) });
   } catch (error) { next(error); }
 };

@@ -22,6 +22,7 @@ function navegarA(nombreVista) {
     if (nombreVista === "faltantes" && typeof renderFaltantes === "function") renderFaltantes();
     if (nombreVista === "reportes" && typeof renderReportes === "function") renderReportes();
     if (nombreVista === "descuentos" && typeof cargarDescuentos === "function") cargarDescuentos();
+    if (nombreVista === "configuracion" && typeof cargarConfiguracion === "function") cargarConfiguracion();
 }
 
 function entrarAlPos() {

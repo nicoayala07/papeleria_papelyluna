@@ -180,7 +180,7 @@ async function renderHistorial() {
     });
 }
 
-function renderFacturaDesdeHistorial(ventaId) {
+async function renderFacturaDesdeHistorial(ventaId) {
     const venta = historialVentas.find(v => String(v.id) === String(ventaId));
     if (!venta) return;
 
@@ -194,13 +194,26 @@ function renderFacturaDesdeHistorial(ventaId) {
         return acc + (Number(p.precio) || 0) * (Number(p.cantidad) || 0);
     }, 0);
     const descuentoMonto = Math.max(0, subtotal - venta.total);
+    const config = typeof obtenerConfiguracionFactura === "function"
+        ? await obtenerConfiguracionFactura()
+        : {};
+    const nombreNegocio = config.nombreNegocio || "Papel y Luna";
+    const logoUrl = config.logoUrl || "Logo.png";
+    const datosNegocio = [
+        config.nit ? `NIT: ${config.nit}` : "",
+        config.direccion || "",
+        config.telefono ? `Tel: ${config.telefono}` : ""
+    ].filter(Boolean);
 
     contenedor.innerHTML = `
         <div class="factura">
             <div class="factura__header">
                 <div class="factura__logo">
-                    <img src="Logo.png" alt="Logo" class="factura__logo-img">
-                    <span class="factura__logo-nombre">Papel y Luna</span>
+                    <img src="${logoUrl}" alt="Logo" class="factura__logo-img">
+                    <div>
+                        <span class="factura__logo-nombre">${nombreNegocio}</span>
+                        ${datosNegocio.map(dato => `<p class="factura__fecha">${dato}</p>`).join("")}
+                    </div>
                 </div>
                 <div class="factura__meta">
                     <p class="factura__numero">Venta #${String(venta.numero || "").padStart(3, "0")}</p>
@@ -448,8 +461,9 @@ function abrirModalReembolso(ventaId) {
         };
 
         try {
-            await reembolsarVentaApi(venta.id, payload);
-            showToast("Reembolso ejecutado. El stock ha sido reingresado a MySQL.", { type: "success" });
+            const resultado = await reembolsarVentaApi(venta.id, payload);
+            const monto = Number(resultado?.montoReembolsado) || 0;
+            showToast(`Reembolso ejecutado por $${monto.toLocaleString("es-CO")}.`, { type: "success" });
             cerrarModal();
             await renderHistorial();
         } catch (error) {

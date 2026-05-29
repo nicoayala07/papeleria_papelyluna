@@ -10,6 +10,10 @@ function normalizarTexto(valor) {
     return (valor || "").toString().trim();
 }
 
+function formatearDebeCOP(valor) {
+    return "$" + (Number(valor) || 0).toLocaleString("es-CO");
+}
+
 function abrirFormulario(id) {
     const form = document.getElementById(id);
     if (form) form.style.display = "flex";
@@ -191,6 +195,49 @@ function bindBotonesEntidad(contenedor, hoja, editarFn) {
     });
 }
 
+function abrirModalAbono(clienteId) {
+    const cliente = listaClientes.find(item => String(item.id) === String(clienteId));
+    if (!cliente) return;
+
+    const modal = document.createElement("div");
+    modal.className = "modal-admin modal--activo";
+    modal.innerHTML = `
+        <div class="modal-admin__content">
+            <h3 style="margin-top:0;color:var(--texto);">Registrar abono</h3>
+            <p style="font-size:0.9rem;color:var(--texto-suave);">Saldo actual de ${cliente.nombre}: ${formatearDebeCOP(cliente.debe)}</p>
+            <div class="form__group">
+                <label>Monto abonado</label>
+                <input type="number" id="abono-cliente-monto" min="1" placeholder="0">
+            </div>
+            <div class="form__actions">
+                <button class="btn btn--secondary" id="btn-cancelar-abono" type="button">Cancelar</button>
+                <button class="btn btn--success" id="btn-guardar-abono" type="button">Guardar abono</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    const cerrar = () => modal.remove();
+    modal.querySelector("#btn-cancelar-abono")?.addEventListener("click", cerrar);
+    modal.querySelector("#btn-guardar-abono")?.addEventListener("click", async () => {
+        const monto = Number(modal.querySelector("#abono-cliente-monto")?.value) || 0;
+        if (monto <= 0) {
+            showToast("El monto del abono debe ser mayor a 0.", { type: "warning" });
+            return;
+        }
+
+        try {
+            await postAbonoCliente(cliente.id, monto);
+            showToast("Abono registrado correctamente.", { type: "success" });
+            cerrar();
+            await cargarYListarClientes();
+        } catch (error) {
+            console.error(error);
+            showToast("No se pudo registrar el abono.", { type: "error" });
+        }
+    });
+}
+
 // --- CLIENTES ---
 async function cargarYListarClientes() {
     const contenedor = document.getElementById("clientes-container");
@@ -216,8 +263,12 @@ async function cargarYListarClientes() {
                     <p class="producto__item-nombre">${cli.nombre || "Sin nombre"}</p>
                     <p class="producto__item-codigo">${cli.telefono || "Sin telefono"}</p>
                     <p style="font-size:0.8rem; color:#aaa;">${cli.email || "Sin correo"}</p>
+                    <p style="font-size:0.85rem; color:var(--dorado-osc);">Debe: ${formatearDebeCOP(cli.debe)}</p>
                 </div>
                 <div class="producto__item-acciones">
+                    <button class="btn-abonar" type="button" data-id="${cli.id}" title="Registrar abono">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </button>
                     <button class="btn-editar" type="button" data-id="${cli.id}" title="Editar cliente">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
@@ -230,6 +281,9 @@ async function cargarYListarClientes() {
         });
 
         bindBotonesEntidad(contenedor, "clientes", editarCliente);
+        contenedor.querySelectorAll(".btn-abonar").forEach(btn => {
+            btn.addEventListener("click", () => abrirModalAbono(btn.dataset.id));
+        });
         poblarSelectClientesCobro();
     } catch (error) {
         console.error(error);
@@ -335,8 +389,7 @@ async function guardarCliente() {
     const nuevo = {
         nombre: normalizarTexto(document.getElementById("cliente-nombre")?.value),
         telefono: normalizarTexto(document.getElementById("cliente-telefono")?.value),
-        email: normalizarTexto(document.getElementById("cliente-correo")?.value),
-        debe: 0
+        email: normalizarTexto(document.getElementById("cliente-correo")?.value)
     };
 
     if (!nuevo.nombre) {
@@ -353,7 +406,7 @@ async function guardarCliente() {
         if (editandoId) {
             await putCliente(editandoId, nuevo);
         } else {
-            await postCliente(nuevo);
+            await postCliente({ ...nuevo, debe: 0 });
         }
         showToast(editandoId ? "Cliente actualizado correctamente." : "Cliente guardado correctamente.", { type: "success" });
         reiniciarEstadoCliente();

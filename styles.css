@@ -674,7 +674,8 @@ body.sidebar-oculta .sidebar-toggle--floating {
 #vista-faltantes.activa,
 #vista-clientes.activa,
 #vista-proveedores.activa,
-#vista-categorias.activa {
+#vista-categorias.activa,
+#vista-configuracion.activa {
     display: flex;
     flex: 1;
     min-height: 100vh;
@@ -707,6 +708,32 @@ body.sidebar-oculta .sidebar-toggle--floating {
 #proveedores-form,
 #categorias-form {
     display: none;
+}
+
+.proveedores-producto-lista,
+.config-logo-preview {
+    color: var(--texto-suave);
+    font-size: 0.9rem;
+}
+
+.proveedores-producto-lista {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.proveedores-producto-item {
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 0.65rem 0.75rem;
+    background: var(--fondo);
+}
+
+.config-logo-preview img {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: var(--radio);
+    border: 1px solid var(--borde);
+    object-fit: contain;
 }
 
 .Form__header {
@@ -860,6 +887,7 @@ body.sidebar-oculta .sidebar-toggle--floating {
 }
 
 .btn-editar,
+.btn-abonar,
 .btn-eliminar-prod,
 .producto__item-acciones .btn-eliminar {
     width: 32px;
@@ -884,6 +912,17 @@ body.sidebar-oculta .sidebar-toggle--floating {
     background: var(--dorado);
     color: var(--fondo-card);
     border-color: var(--dorado);
+}
+
+.btn-abonar {
+    background: rgba(39,174,96,0.1);
+    color: var(--verde);
+    border: 1px solid rgba(39,174,96,0.25);
+}
+
+.btn-abonar:hover {
+    background: var(--verde);
+    color: #fff;
 }
 
 .btn-eliminar-prod,
@@ -3746,7 +3785,8 @@ body.sidebar-oculta .sidebar-toggle--floating {
     #vista-faltantes.activa,
     #vista-clientes.activa,
     #vista-proveedores.activa,
-    #vista-categorias.activa {
+    #vista-categorias.activa,
+    #vista-configuracion.activa {
         min-height: auto;
         width: 100%;
     }

@@ -14,6 +14,7 @@ const comprasRoutes     = require('./routes/compras.routes');
 const descuentosRoutes  = require('./routes/descuentos.routes');
 const faltantesRoutes   = require('./routes/faltantes.routes');
 const reportesRoutes    = require('./routes/reportes.routes');
+const configuracionRoutes = require('./routes/configuracion.routes');
 const requestLogger = require('./middlewares/requestLogger');
 const sanitizeIds = require('./middlewares/sanitizeIds');
 const authRoutes   = require('./routes/auth.routes');
@@ -52,6 +53,7 @@ app.use('/api/compras',     authJwt, requireRole('ADMIN'), comprasRoutes);
 app.use('/api/descuentos', authJwt, requireRole('ADMIN'), descuentosRoutes);
 app.use('/api/faltantes',  authJwt, requireRole('ADMIN'), faltantesRoutes); 
 app.use('/api/reportes',   authJwt, requireRole('ADMIN'), reportesRoutes);
+app.use('/api/configuracion', authJwt, requireRole('ADMIN'), configuracionRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
