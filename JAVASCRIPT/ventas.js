@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
             descuentoNombre: descuento ? descuento.nombre : null,
             descuentoValor: descuento ? descuento.valor : null,
             descuentoTipo: descuento ? descuento.tipo : null
+            
         };
 
         try {
