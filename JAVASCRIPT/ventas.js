@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
             total,
             metodoPago: metodo,
             pagoCon: metodo === "Efectivo" ? parseFloat(inputEfectivo.value) : total,
-            clienteId: metodo === "Debe" ? (document.getElementById("cobro-cliente")?.value || "") : "",
+            clienteId: document.getElementById("cobro-cliente")?.value || "",
             descuentoNombre: descuento ? descuento.nombre : null,
             descuentoValor: descuento ? descuento.valor : null,
             descuentoTipo: descuento ? descuento.tipo : null

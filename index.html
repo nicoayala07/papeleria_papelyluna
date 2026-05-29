@@ -670,14 +670,21 @@
                     <span id="cambio-valor" class="cambio-valor">$0</span>
                 </div>
             </div>
-            <div id="seccion-debe" class="debe-box" style="display:none">
-                <label>Asociar a cliente</label>
+            <div class="form__group">
+                <label>Cliente (opcional)</label>
                 <select id="cobro-cliente" class="filter-select">
-                    <option value="">Selecciona un cliente</option>
+                    <option value="">Sin cliente</option>
                 </select>
                 <button class="btn btn--outline btn--sm" type="button" data-pos-quick="cliente">
                     <i class="fa-solid fa-user-plus"></i> Crear cliente
                 </button>
+            </div>
+            <div id="seccion-debe" class="debe-box" style="display:none">
+                <p style="font-size:0.8rem;color:#d97706;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 
+                    Método "Debe" requiere seleccionar un cliente.
+                </p>
+            </div>
             </div>
             <div class="modal-actions">
                 <button class="btn btn--danger" id="btn-cancelar-cobro-2">Cancelar</button>

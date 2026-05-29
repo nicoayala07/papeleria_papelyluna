@@ -1015,25 +1015,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // Enlaces al Backend de correcciones y reembolsos de ventas
 // ==========================================================================
 
-/**
- * Obtiene el historial de ventas aplicando filtros de fecha y método de pago
- */
-async function getVentasConFiltros(filtros) {
-    const params = new URLSearchParams();
-    if (filtros.metodoPago) params.append("metodoPago", filtros.metodoPago);
-    if (filtros.clienteId) params.append("clienteId", filtros.clienteId);
-    if (filtros.estado) params.append("estado", filtros.estado);
-    if (filtros.desde) params.append("desde", filtros.desde);
-    if (filtros.hasta) params.append("hasta", filtros.hasta);
-
-    try {
-        // Llama al controlador de listado en tu backend Node.js
-        return await apiRequest(`/ventas?${params.toString()}`);
-    } catch (error) {
-        console.error("Error en getVentasConFiltros:", error);
-        throw error;
-    }
-}
 
 /**
  * Elimina físicamente una venta del historial de la base de datos MySQL

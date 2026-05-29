@@ -40,14 +40,16 @@ function renderDescuentos() {
             <div class="producto__item-info">
                 <p class="producto__item-nombre">${desc.nombre}</p>
                 <p class="producto__item-codigo">${desc.tipo === "porcentaje" ? "Porcentaje" : "Valor fijo"} · ${valorDisplay}</p>
-            </div>
+        </div>
             <div class="producto__item-acciones">
                 <button class="btn-editar" type="button" data-id="${desc.id}" title="Editar">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
-<button class="btn-eliminar-prod" type="button" data-id="${desc.id}" title="Eliminar">                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </div>
+                <button class="btn-eliminar-desc" type="button" data-id="${desc.id}" title="Eliminar">
+                <i class="fa-solid fa-trash"></i>
+                </button>                
+            </button>
+        </div>
         `;
         contenedor.appendChild(item);
     });
