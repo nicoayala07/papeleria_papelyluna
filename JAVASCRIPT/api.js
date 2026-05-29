@@ -17,8 +17,6 @@ let posEditorDrafts = {};
 let posUltimosProductos = [];
 let posUltimosDescuentos = [];
 
-let authSession = cargarSesionAuth();
-
 function haySesionActiva() {
     return Boolean(authSession?.token);
 }
@@ -40,6 +38,8 @@ function cargarSesionAuth() {
         return null;
     }
 }
+let authSession = cargarSesionAuth();
+
 
 function limpiarSesionAuth() {
     localStorage.removeItem(AUTH_STORAGE_KEY);
