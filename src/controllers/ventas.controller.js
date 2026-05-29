@@ -227,9 +227,16 @@ exports.reembolsarVenta = async (req, res, next) => {
     if (!venta) return res.status(404).json({ error: 'Venta no encontrada' });
 
     const { Producto } = require('../models');
-    // items: [{ id, cantidad, retornaInventario }]
     const items = req.body.items || [];
 
+    // Calcular total de items originales vs devueltos
+    const productosOriginales = parseJsonList(venta.productosJson);
+    let totalOriginal = 0;
+    let totalDevuelto = 0;
+
+    productosOriginales.forEach(p => totalOriginal += p.cantidad);
+
+    // Actualizar stock de productos reembolsados
     for (const item of items) {
       if (item.retornaInventario) {
         const prod = await Producto.findByPk(item.id);
@@ -237,10 +244,13 @@ exports.reembolsarVenta = async (req, res, next) => {
           await prod.update({ stock: prod.stock + item.cantidad });
         }
       }
+      totalDevuelto += item.cantidad;
     }
 
-    // Marcar venta como reembolsada
-    await venta.update({ estado: 'reembolsada' });
+    // Determinar estado según si fue total o parcial
+    const nuevoEstado = totalDevuelto >= totalOriginal ? 'reembolsada' : 'corregida';
+
+    await venta.update({ estado: nuevoEstado });
 
     res.json({ mensaje: 'Reembolso registrado', venta: toVentaDto(venta) });
   } catch (error) { next(error); }

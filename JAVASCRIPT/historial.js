@@ -344,7 +344,8 @@ function abrirModalCorregir(ventaId) {
             await corregirVentaApi(venta.id, payload);
             showToast("Venta corregida con éxito. Stocks actualizados.", { type: "success" });
             cerrarModal();
-            await renderHistorial(); // Refrescar vista completa
+            await renderHistorial();
+            showToast("Reembolso ejecutado correctamente.", { type: "success" });
         } catch (error) {
             console.error(error);
             showToast("Error al procesar la corrección en el servidor.", { type: "error" });
