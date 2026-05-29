@@ -1019,7 +1019,7 @@ async function deleteVentaApi(ventaId) {
 async function corregirVentaApi(ventaId, datosCorregidos) {
     try {
         // Petición PUT que pasa por tus Middlewares y Controllers en Express
-        return await apiRequest(`/ventas/${ventaId}/corregir`, {
+        return await apiRequest(`/ventas/${ventaId}`, {
             method: "PUT",
             body: JSON.stringify(datosCorregidos)
         });
@@ -1035,7 +1035,7 @@ async function corregirVentaApi(ventaId, datosCorregidos) {
 async function reembolsarVentaApi(ventaId, datosReembolso) {
     try {
         // Envía el payload al endpoint POST encargado de la lógica y la trazabilidad
-        return await apiRequest(`/ventas/${ventaId}/reembolsar`, {
+        return await apiRequest(`/ventas/${ventaId}/reembolso`, {
             method: "POST",
             body: JSON.stringify(datosReembolso)
         });
