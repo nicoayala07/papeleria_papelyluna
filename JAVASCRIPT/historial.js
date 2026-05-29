@@ -338,10 +338,8 @@ function abrirModalCorregir(ventaId) {
         const payload = {
             productos: productosActualizados,
             total: nuevoTotal,
-            corregida: true,
-            estado: "corregida"
+            corregidaPor: obtenerUsuarioActual()?.username || 'usuario'
         };
-
         try {
             await corregirVentaApi(venta.id, payload);
             showToast("Venta corregida con éxito. Stocks actualizados.", { type: "success" });
@@ -430,9 +428,8 @@ function abrirModalReembolso(ventaId) {
             if (cantDevolver > 0) {
                 devoluciones.push({
                     id: prodOriginal.id,
-                    codigo: prodOriginal.codigo,
-                    nombre: prodOriginal.nombre,
-                    cantidadDevuelta: cantDevolver
+                    cantidad: cantDevolver,
+                    retornaInventario: true
                 });
             }
         });
@@ -446,12 +443,7 @@ function abrirModalReembolso(ventaId) {
         const determinarEstado = (totalItemsDevueltos === totalItemsOriginales) ? "reembolsada" : "corregida";
 
         const payload = {
-            devoluciones,
-            estado: determinarEstado,
-            trazabilidad: {
-                fecha: new Date().toISOString().split('T')[0],
-                motivo: "Devolución de existencias por caja POS"
-            }
+            items: devoluciones
         };
 
         try {
