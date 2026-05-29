@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 const CLAVE_HISTORIAL = "papelyluna_historial";
+=======
+//JAVASCRIPT/historial.js 
+let historialVentas = [];
+>>>>>>> Stashed changes
 
 function cargarHistorial() {
     return JSON.parse(localStorage.getItem(CLAVE_HISTORIAL) || "[]");
